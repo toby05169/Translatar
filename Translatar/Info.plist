@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- 应用基本信息 -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>zh_CN</string>
+    <key>CFBundleDisplayName</key>
+    <string>Translatar</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    
+    <!-- 最低iOS版本 -->
+    <key>MinimumOSVersion</key>
+    <string>17.0</string>
+    
+    <!-- 支持的设备方向 -->
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    
+    <!-- 麦克风使用权限说明（必须！） -->
+    <!-- 这是苹果审核的硬性要求，必须清楚说明为什么需要麦克风 -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Translatar需要使用麦克风来捕获语音，以便为您提供实时翻译服务。您的语音数据仅用于翻译，不会被存储或用于其他目的。</string>
+    
+    <!-- 语音识别权限说明 -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Translatar需要语音识别权限来将语音转换为文字，以提供更准确的翻译和字幕显示。</string>
+    
+    <!-- 后台模式 -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <!-- 后台音频：允许应用在后台继续录制和播放音频 -->
+        <string>audio</string>
+    </array>
+    
+    <!-- 应用传输安全设置 -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <false/>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <!-- 允许连接到OpenAI API -->
+            <key>api.openai.com</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <false/>
+                <key>NSExceptionRequiresForwardSecrecy</key>
+                <true/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    
+    <!-- 启动画面配置 -->
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+</dict>
+</plist>
