@@ -1,0 +1,93 @@
+{
+  "identifier" : "com.translatar.app.storekit",
+  "type" : "Configuration",
+  "version" : 3,
+  "subscriptionGroups" : [
+    {
+      "id" : "translatar_premium",
+      "localizations" : [
+        {
+          "description" : "解锁Translatar全部高级功能",
+          "displayName" : "Translatar Premium",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "解锁Translatar全部高级功能",
+          "displayName" : "Translatar 高级版",
+          "locale" : "zh_CN"
+        }
+      ],
+      "name" : "Translatar Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "monthly_001",
+          "introductoryOffer" : {
+            "internalID" : "monthly_trial",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited translation with all features",
+              "displayName" : "Monthly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "无限翻译时长，全部功能解锁",
+              "displayName" : "月度会员",
+              "locale" : "zh_CN"
+            }
+          ],
+          "productID" : "com.translatar.app.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly Subscription",
+          "subscriptionGroupID" : "translatar_premium",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "59.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "yearly_001",
+          "introductoryOffer" : {
+            "internalID" : "yearly_trial",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited translation with all features, save 40%",
+              "displayName" : "Yearly",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "无限翻译时长，全部功能解锁，省40%",
+              "displayName" : "年度会员",
+              "locale" : "zh_CN"
+            }
+          ],
+          "productID" : "com.translatar.app.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Subscription",
+          "subscriptionGroupID" : "translatar_premium",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "translatar_app",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "zh_CN",
+    "_storefront" : "CHN",
+    "_storeKitErrors" : []
+  }
+}

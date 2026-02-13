@@ -1,13 +1,15 @@
 // ContentView.swift
 // Translatar - AI实时翻译耳机应用
 //
-// 应用主界面（第二阶段增强版）
-// 新增：模式切换、降噪开关、离线状态指示、沉浸模式专属UI
+// 应用主界面（第三阶段完整版）
+// 精美UI + 订阅检查 + 免费额度提示 + 动效升级
 
 import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var viewModel: TranslationViewModel
+    @EnvironmentObject var subscriptionService: SubscriptionService
+    @State private var showPaywall = false
     
     var body: some View {
         NavigationStack {
@@ -22,9 +24,21 @@ struct ContentView: View {
                     ModeSwitcherView()
                         .padding(.top, 4)
                     
+                    // 免费额度提示（仅免费用户显示）
+                    if subscriptionService.currentSubscription == .free {
+                        FreeQuotaBanner(
+                            remainingSeconds: subscriptionService.remainingFreeSeconds,
+                            totalSeconds: subscriptionService.freeQuotaSeconds
+                        ) {
+                            showPaywall = true
+                        }
+                        .padding(.top, 8)
+                        .padding(.horizontal, 20)
+                    }
+                    
                     // 顶部语言选择区域
                     LanguageSelectorView()
-                        .padding(.top, 8)
+                        .padding(.top, 12)
                     
                     // 状态栏（降噪、离线、网络）
                     StatusBarView()
@@ -40,8 +54,8 @@ struct ContentView: View {
                     TranslationControlButton()
                         .padding(.bottom, 16)
                     
-                    // 翻译历史列表
-                    TranslationHistoryView()
+                    // 翻译历史预览
+                    TranslationHistoryPreview()
                 }
             }
             .navigationTitle("")
@@ -52,6 +66,26 @@ struct ContentView: View {
                             .font(.title2)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
+                        
+                        // 会员标识
+                        if subscriptionService.currentSubscription != .free {
+                            Text("PRO")
+                                .font(.caption2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.yellow)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [.yellow.opacity(0.3), .orange.opacity(0.3)],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
+                                        )
+                                )
+                        }
                         
                         // 离线模式标识
                         if viewModel.isOfflineMode {
@@ -79,20 +113,12 @@ struct ContentView: View {
                                 .foregroundColor(viewModel.isNoiseSuppressionEnabled ? .cyan : .white.opacity(0.4))
                                 .font(.title3)
                         }
-                        
-                        // 设置按钮
-                        Button {
-                            viewModel.showSettings = true
-                        } label: {
-                            Image(systemName: "gearshape.fill")
-                                .foregroundColor(.white.opacity(0.8))
-                        }
                     }
                 }
             }
-            .sheet(isPresented: $viewModel.showSettings) {
-                SettingsView()
-                    .environmentObject(viewModel)
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
+                    .environmentObject(subscriptionService)
             }
             .alert("提示", isPresented: $viewModel.showError) {
                 Button("确定", role: .cancel) {}
@@ -129,6 +155,88 @@ struct ContentView: View {
                 )
             }
         }
+    }
+}
+
+// MARK: - 免费额度提示条
+
+struct FreeQuotaBanner: View {
+    let remainingSeconds: Int
+    let totalSeconds: Int
+    let onUpgrade: () -> Void
+    
+    private var progress: Double {
+        Double(totalSeconds - remainingSeconds) / Double(totalSeconds)
+    }
+    
+    private var remainingMinutes: String {
+        let minutes = remainingSeconds / 60
+        let seconds = remainingSeconds % 60
+        return "\(minutes):\(String(format: "%02d", seconds))"
+    }
+    
+    var body: some View {
+        HStack(spacing: 10) {
+            // 进度环
+            ZStack {
+                Circle()
+                    .stroke(Color.white.opacity(0.1), lineWidth: 3)
+                    .frame(width: 28, height: 28)
+                
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(
+                        remainingSeconds < 60 ? Color.red : Color.cyan,
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                    )
+                    .frame(width: 28, height: 28)
+                    .rotationEffect(.degrees(-90))
+                
+                Image(systemName: "clock")
+                    .font(.system(size: 10))
+                    .foregroundColor(.white.opacity(0.5))
+            }
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("今日免费额度")
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.4))
+                Text("剩余 \(remainingMinutes)")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(remainingSeconds < 60 ? .red : .white.opacity(0.7))
+            }
+            
+            Spacer()
+            
+            Button(action: onUpgrade) {
+                Text("升级 PRO")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [.cyan, .indigo],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                    )
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white.opacity(0.06))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                )
+        )
     }
 }
 
@@ -179,21 +287,18 @@ struct StatusBarView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // 网络状态
             StatusChip(
                 icon: viewModel.isNetworkConnected ? "wifi" : "wifi.slash",
                 text: viewModel.isNetworkConnected ? "在线" : "离线",
                 color: viewModel.isNetworkConnected ? .green : .orange
             )
             
-            // 降噪状态
             StatusChip(
                 icon: "waveform.badge.minus",
                 text: viewModel.isNoiseSuppressionEnabled ? "降噪开" : "降噪关",
                 color: viewModel.isNoiseSuppressionEnabled ? .cyan : .gray
             )
             
-            // 模式说明
             StatusChip(
                 icon: viewModel.translationMode.iconName,
                 text: viewModel.translationMode == .immersive ? "环境监听" : "对话翻译",
@@ -206,7 +311,6 @@ struct StatusBarView: View {
     }
 }
 
-/// 状态标签组件
 struct StatusChip: View {
     let icon: String
     let text: String
@@ -337,7 +441,6 @@ struct TranslationDisplayView: View {
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 
-                // 沉浸模式下显示持续监听提示
                 if viewModel.translationMode == .immersive && viewModel.connectionState.isActive {
                     HStack(spacing: 4) {
                         Image(systemName: "ear.trianglebadge.exclamationmark")
@@ -400,7 +503,6 @@ struct TranslationDisplayView: View {
         .animation(.easeInOut(duration: 0.3), value: viewModel.currentTranscript)
     }
     
-    /// 状态文本（区分在线/离线）
     private var statusText: String {
         if viewModel.isOfflineMode {
             return viewModel.offlineState.displayText
@@ -409,9 +511,7 @@ struct TranslationDisplayView: View {
     }
     
     private var statusColor: Color {
-        if viewModel.isOfflineMode {
-            return .orange
-        }
+        if viewModel.isOfflineMode { return .orange }
         switch viewModel.connectionState {
         case .disconnected: return .gray
         case .connecting: return .yellow
@@ -461,11 +561,19 @@ struct AudioWaveView: View {
 
 struct TranslationControlButton: View {
     @EnvironmentObject var viewModel: TranslationViewModel
+    @EnvironmentObject var subscriptionService: SubscriptionService
     @State private var isPulsing = false
     
     var body: some View {
         VStack(spacing: 8) {
             Button {
+                // 检查免费额度
+                if subscriptionService.currentSubscription == .free &&
+                   !subscriptionService.canUseTranslation &&
+                   !viewModel.connectionState.isActive {
+                    NotificationCenter.default.post(name: .showPaywall, object: nil)
+                    return
+                }
                 viewModel.toggleTranslation()
             } label: {
                 ZStack {
@@ -488,7 +596,6 @@ struct TranslationControlButton: View {
                         .frame(width: 90, height: 90)
                         .shadow(color: buttonShadowColor, radius: 20)
                     
-                    // 按钮图标
                     VStack(spacing: 4) {
                         Image(systemName: buttonIcon)
                             .font(.system(size: 28))
@@ -501,7 +608,6 @@ struct TranslationControlButton: View {
                 }
             }
             
-            // 模式描述
             Text(viewModel.translationMode.description)
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.35))
@@ -512,16 +618,12 @@ struct TranslationControlButton: View {
     }
     
     private var buttonIcon: String {
-        if viewModel.connectionState.isActive {
-            return "stop.fill"
-        }
+        if viewModel.connectionState.isActive { return "stop.fill" }
         return viewModel.translationMode == .immersive ? "ear.fill" : "mic.fill"
     }
     
     private var buttonText: String {
-        if viewModel.connectionState.isActive {
-            return "停止"
-        }
+        if viewModel.connectionState.isActive { return "停止" }
         return viewModel.translationMode == .immersive ? "开始监听" : "开始翻译"
     }
     
@@ -546,25 +648,18 @@ struct TranslationControlButton: View {
     }
 }
 
-// MARK: - 翻译历史列表
+// MARK: - 翻译历史预览（首页底部简化版）
 
-struct TranslationHistoryView: View {
+struct TranslationHistoryPreview: View {
     @EnvironmentObject var viewModel: TranslationViewModel
     
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("翻译记录")
+                Text("最近翻译")
                     .font(.headline)
                     .foregroundColor(.white.opacity(0.8))
                 Spacer()
-                if !viewModel.translationHistory.isEmpty {
-                    Button("清空") {
-                        viewModel.clearHistory()
-                    }
-                    .font(.caption)
-                    .foregroundColor(.white.opacity(0.4))
-                }
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 8)
@@ -586,14 +681,14 @@ struct TranslationHistoryView: View {
                         }
                         .padding(.top, 30)
                     } else {
-                        ForEach(viewModel.translationHistory) { entry in
+                        ForEach(viewModel.translationHistory.prefix(5)) { entry in
                             TranslationEntryCard(entry: entry)
                         }
                     }
                 }
                 .padding(.horizontal, 20)
             }
-            .frame(maxHeight: 250)
+            .frame(maxHeight: 220)
         }
         .background(
             RoundedRectangle(cornerRadius: 20)
@@ -670,4 +765,5 @@ extension Color {
 #Preview {
     ContentView()
         .environmentObject(TranslationViewModel())
+        .environmentObject(SubscriptionService())
 }
