@@ -119,7 +119,7 @@ class SubscriptionService: ObservableObject {
             switch result {
             case .success(let verification):
                 // 验证交易
-                let transaction = try checkVerified(verification)
+                let transaction = try Self.checkVerified(verification)
                 // 更新订阅状态
                 await updateSubscriptionStatus(transaction)
                 // 完成交易
@@ -177,7 +177,7 @@ class SubscriptionService: ObservableObject {
         
         for await result in Transaction.currentEntitlements {
             do {
-                let transaction = try checkVerified(result)
+                let transaction = try Self.checkVerified(result)
                 
                 if transaction.productType == .autoRenewable {
                     if let expirationDate = transaction.expirationDate,
@@ -246,11 +246,11 @@ class SubscriptionService: ObservableObject {
     
     /// 持续监听交易更新
     private func listenForTransactions() -> Task<Void, Error> {
-        return Task.detached {
+        return Task.detached { [weak self] in
             for await result in Transaction.updates {
                 do {
-                    let transaction = try self.checkVerified(result)
-                    await self.updateSubscriptionStatus(transaction)
+                    let transaction = try Self.checkVerified(result)
+                    await self?.updateSubscriptionStatus(transaction)
                     await transaction.finish()
                 } catch {
                     print("[订阅] 交易更新验证失败: \(error)")
@@ -275,8 +275,11 @@ class SubscriptionService: ObservableObject {
         }
     }
     
+    // MARK: - 交易验证（静态方法，避免actor隔离问题）
+    
     /// 验证交易签名
-    private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+    /// 使用nonisolated static方法，使其可以在任何上下文中调用
+    nonisolated static func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
         case .unverified(_, let error):
             throw error
