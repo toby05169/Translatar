@@ -18,9 +18,9 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>2.0.0</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
     
     <!-- 最低iOS版本 -->
     <key>MinimumOSVersion</key>
@@ -32,30 +32,39 @@
         <string>UIInterfaceOrientationPortrait</string>
     </array>
     
-    <!-- 麦克风使用权限说明（必须！） -->
-    <!-- 这是苹果审核的硬性要求，必须清楚说明为什么需要麦克风 -->
+    <!-- ===== 权限声明（苹果审核硬性要求） ===== -->
+    
+    <!-- 麦克风使用权限 -->
     <key>NSMicrophoneUsageDescription</key>
     <string>Translatar需要使用麦克风来捕获语音，以便为您提供实时翻译服务。您的语音数据仅用于翻译，不会被存储或用于其他目的。</string>
     
-    <!-- 语音识别权限说明 -->
+    <!-- 语音识别权限（离线翻译需要） -->
     <key>NSSpeechRecognitionUsageDescription</key>
-    <string>Translatar需要语音识别权限来将语音转换为文字，以提供更准确的翻译和字幕显示。</string>
+    <string>Translatar需要语音识别权限来将语音转换为文字，以提供离线翻译和实时字幕显示功能。语音数据在设备本地处理，不会上传到服务器。</string>
     
-    <!-- 后台模式 -->
+    <!-- ===== 后台模式 ===== -->
     <key>UIBackgroundModes</key>
     <array>
         <!-- 后台音频：允许应用在后台继续录制和播放音频 -->
+        <!-- 沉浸模式需要此权限来持续监听环境音（如机场广播） -->
         <string>audio</string>
+        <!-- 后台处理：允许应用在后台执行短时间任务 -->
+        <string>processing</string>
     </array>
     
-    <!-- 应用传输安全设置 -->
+    <!-- 后台任务标识符（用于沉浸模式后台翻译） -->
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>com.translatar.app.immersive-translation</string>
+    </array>
+    
+    <!-- ===== 网络安全设置 ===== -->
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>
         <false/>
         <key>NSExceptionDomains</key>
         <dict>
-            <!-- 允许连接到OpenAI API -->
             <key>api.openai.com</key>
             <dict>
                 <key>NSExceptionAllowsInsecureHTTPLoads</key>

@@ -20,8 +20,8 @@ settings:
     SWIFT_VERSION: "5.9"
     TARGETED_DEVICE_FAMILY: "1"  # 仅iPhone
     INFOPLIST_FILE: Translatar/Info.plist
-    MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "1"
+    MARKETING_VERSION: "2.0.0"
+    CURRENT_PROJECT_VERSION: "2"
     DEVELOPMENT_TEAM: ""  # 请在Xcode中手动设置您的开发团队
 
 packages:
@@ -43,6 +43,11 @@ targets:
         INFOPLIST_FILE: Translatar/Info.plist
     dependencies:
       - package: Starscream
+      - sdk: Speech.framework
+      - sdk: AVFoundation.framework
+      - sdk: Network.framework
+      - sdk: Translation.framework
+        weak: true  # 弱链接，iOS 18以下不会崩溃
     entitlements:
       path: Translatar/Translatar.entitlements
       properties:

@@ -1,8 +1,8 @@
 // ContentView.swift
 // Translatar - AI实时翻译耳机应用
 //
-// 应用主界面
-// 包含语言选择、翻译控制按钮、实时字幕显示和翻译历史
+// 应用主界面（第二阶段增强版）
+// 新增：模式切换、降噪开关、离线状态指示、沉浸模式专属UI
 
 import SwiftUI
 
@@ -12,32 +12,33 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // 背景渐变
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(hex: "0F0F1A"),
-                        Color(hex: "1A1A2E"),
-                        Color(hex: "16213E")
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                // 背景渐变（根据模式变化）
+                backgroundGradient
+                    .ignoresSafeArea()
+                    .animation(.easeInOut(duration: 0.5), value: viewModel.translationMode)
                 
                 VStack(spacing: 0) {
+                    // 模式切换标签栏
+                    ModeSwitcherView()
+                        .padding(.top, 4)
+                    
                     // 顶部语言选择区域
                     LanguageSelectorView()
                         .padding(.top, 8)
                     
+                    // 状态栏（降噪、离线、网络）
+                    StatusBarView()
+                        .padding(.top, 8)
+                    
                     // 实时翻译显示区域
                     TranslationDisplayView()
-                        .padding(.top, 16)
+                        .padding(.top, 12)
                     
                     Spacer()
                     
                     // 中央控制按钮
                     TranslationControlButton()
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 16)
                     
                     // 翻译历史列表
                     TranslationHistoryView()
@@ -46,17 +47,46 @@ struct ContentView: View {
             .navigationTitle("")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("Translatar")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
+                    HStack(spacing: 6) {
+                        Text("Translatar")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                        
+                        // 离线模式标识
+                        if viewModel.isOfflineMode {
+                            Text("离线")
+                                .font(.caption2)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.orange)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule().fill(Color.orange.opacity(0.2))
+                                )
+                        }
+                    }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .foregroundColor(.white.opacity(0.8))
+                    HStack(spacing: 12) {
+                        // 降噪开关
+                        Button {
+                            viewModel.toggleNoiseSuppression()
+                        } label: {
+                            Image(systemName: viewModel.isNoiseSuppressionEnabled
+                                  ? "waveform.circle.fill"
+                                  : "waveform.circle")
+                                .foregroundColor(viewModel.isNoiseSuppressionEnabled ? .cyan : .white.opacity(0.4))
+                                .font(.title3)
+                        }
+                        
+                        // 设置按钮
+                        Button {
+                            viewModel.showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .foregroundColor(.white.opacity(0.8))
+                        }
                     }
                 }
             }
@@ -72,6 +102,135 @@ struct ContentView: View {
         }
         .preferredColorScheme(.dark)
     }
+    
+    /// 根据翻译模式切换背景渐变
+    private var backgroundGradient: some View {
+        Group {
+            switch viewModel.translationMode {
+            case .conversation:
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(hex: "0F0F1A"),
+                        Color(hex: "1A1A2E"),
+                        Color(hex: "16213E")
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            case .immersive:
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(hex: "0A1628"),
+                        Color(hex: "0D2137"),
+                        Color(hex: "0F2B46")
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
+        }
+    }
+}
+
+// MARK: - 模式切换器
+
+struct ModeSwitcherView: View {
+    @EnvironmentObject var viewModel: TranslationViewModel
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(TranslationMode.allCases) { mode in
+                Button {
+                    withAnimation(.spring(response: 0.3)) {
+                        viewModel.switchMode(mode)
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: mode.iconName)
+                            .font(.subheadline)
+                        Text(mode.displayName)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundColor(viewModel.translationMode == mode ? .white : .white.opacity(0.4))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(viewModel.translationMode == mode
+                                  ? (mode == .immersive ? Color.indigo.opacity(0.5) : Color.cyan.opacity(0.3))
+                                  : Color.clear)
+                    )
+                }
+            }
+        }
+        .padding(4)
+        .background(
+            Capsule()
+                .fill(Color.white.opacity(0.08))
+        )
+    }
+}
+
+// MARK: - 状态栏
+
+struct StatusBarView: View {
+    @EnvironmentObject var viewModel: TranslationViewModel
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // 网络状态
+            StatusChip(
+                icon: viewModel.isNetworkConnected ? "wifi" : "wifi.slash",
+                text: viewModel.isNetworkConnected ? "在线" : "离线",
+                color: viewModel.isNetworkConnected ? .green : .orange
+            )
+            
+            // 降噪状态
+            StatusChip(
+                icon: "waveform.badge.minus",
+                text: viewModel.isNoiseSuppressionEnabled ? "降噪开" : "降噪关",
+                color: viewModel.isNoiseSuppressionEnabled ? .cyan : .gray
+            )
+            
+            // 模式说明
+            StatusChip(
+                icon: viewModel.translationMode.iconName,
+                text: viewModel.translationMode == .immersive ? "环境监听" : "对话翻译",
+                color: viewModel.translationMode == .immersive ? .indigo : .cyan
+            )
+            
+            Spacer()
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
+/// 状态标签组件
+struct StatusChip: View {
+    let icon: String
+    let text: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 9))
+            Text(text)
+                .font(.system(size: 10))
+        }
+        .foregroundColor(color.opacity(0.8))
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(
+            Capsule()
+                .fill(color.opacity(0.1))
+                .overlay(
+                    Capsule()
+                        .stroke(color.opacity(0.2), lineWidth: 0.5)
+                )
+        )
+    }
 }
 
 // MARK: - 语言选择器
@@ -81,13 +240,11 @@ struct LanguageSelectorView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            // 源语言选择
             LanguagePickerButton(
                 label: "对方说",
                 language: $viewModel.config.sourceLanguage
             )
             
-            // 交换按钮
             Button {
                 withAnimation(.spring(response: 0.3)) {
                     viewModel.swapLanguages()
@@ -103,7 +260,6 @@ struct LanguageSelectorView: View {
                     )
             }
             
-            // 目标语言选择
             LanguagePickerButton(
                 label: "翻译成",
                 language: $viewModel.config.targetLanguage
@@ -113,7 +269,6 @@ struct LanguageSelectorView: View {
     }
 }
 
-/// 语言选择按钮组件
 struct LanguagePickerButton: View {
     let label: String
     @Binding var language: SupportedLanguage
@@ -177,10 +332,26 @@ struct TranslationDisplayView: View {
                 Circle()
                     .fill(statusColor)
                     .frame(width: 8, height: 8)
-                Text(viewModel.connectionState.displayText)
+                Text(statusText)
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
+                
+                // 沉浸模式下显示持续监听提示
+                if viewModel.translationMode == .immersive && viewModel.connectionState.isActive {
+                    HStack(spacing: 4) {
+                        Image(systemName: "ear.trianglebadge.exclamationmark")
+                            .font(.caption2)
+                        Text("持续监听中")
+                            .font(.caption2)
+                    }
+                    .foregroundColor(.indigo.opacity(0.8))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(
+                        Capsule().fill(Color.indigo.opacity(0.15))
+                    )
+                }
             }
             .padding(.horizontal, 24)
             
@@ -217,16 +388,30 @@ struct TranslationDisplayView: View {
             
             // 音频波形动画
             if viewModel.connectionState.isActive {
-                AudioWaveView(level: viewModel.audioLevel)
-                    .frame(height: 40)
-                    .padding(.horizontal, 24)
+                AudioWaveView(
+                    level: viewModel.audioLevel,
+                    accentColor: viewModel.translationMode == .immersive ? .indigo : .cyan
+                )
+                .frame(height: 40)
+                .padding(.horizontal, 24)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: viewModel.currentTranslatedText)
         .animation(.easeInOut(duration: 0.3), value: viewModel.currentTranscript)
     }
     
+    /// 状态文本（区分在线/离线）
+    private var statusText: String {
+        if viewModel.isOfflineMode {
+            return viewModel.offlineState.displayText
+        }
+        return viewModel.connectionState.displayText
+    }
+    
     private var statusColor: Color {
+        if viewModel.isOfflineMode {
+            return .orange
+        }
         switch viewModel.connectionState {
         case .disconnected: return .gray
         case .connecting: return .yellow
@@ -241,6 +426,7 @@ struct TranslationDisplayView: View {
 
 struct AudioWaveView: View {
     let level: Float
+    var accentColor: Color = .cyan
     
     var body: some View {
         HStack(spacing: 3) {
@@ -248,7 +434,7 @@ struct AudioWaveView: View {
                 RoundedRectangle(cornerRadius: 2)
                     .fill(
                         LinearGradient(
-                            colors: [.cyan.opacity(0.6), .cyan],
+                            colors: [accentColor.opacity(0.6), accentColor],
                             startPoint: .bottom,
                             endPoint: .top
                         )
@@ -278,48 +464,85 @@ struct TranslationControlButton: View {
     @State private var isPulsing = false
     
     var body: some View {
-        Button {
-            viewModel.toggleTranslation()
-        } label: {
-            ZStack {
-                // 外圈脉冲动画（翻译中时显示）
-                if viewModel.connectionState.isActive {
+        VStack(spacing: 8) {
+            Button {
+                viewModel.toggleTranslation()
+            } label: {
+                ZStack {
+                    // 外圈脉冲动画
+                    if viewModel.connectionState.isActive {
+                        Circle()
+                            .stroke(pulseColor.opacity(0.3), lineWidth: 2)
+                            .frame(width: 120, height: 120)
+                            .scaleEffect(isPulsing ? 1.3 : 1.0)
+                            .opacity(isPulsing ? 0 : 0.8)
+                            .animation(
+                                .easeInOut(duration: 1.5).repeatForever(autoreverses: false),
+                                value: isPulsing
+                            )
+                    }
+                    
+                    // 主按钮
                     Circle()
-                        .stroke(Color.cyan.opacity(0.3), lineWidth: 2)
-                        .frame(width: 120, height: 120)
-                        .scaleEffect(isPulsing ? 1.3 : 1.0)
-                        .opacity(isPulsing ? 0 : 0.8)
-                        .animation(
-                            .easeInOut(duration: 1.5).repeatForever(autoreverses: false),
-                            value: isPulsing
-                        )
-                }
-                
-                // 主按钮
-                Circle()
-                    .fill(
-                        viewModel.connectionState.isActive
-                            ? LinearGradient(colors: [.red.opacity(0.8), .red], startPoint: .topLeading, endPoint: .bottomTrailing)
-                            : LinearGradient(colors: [.cyan.opacity(0.8), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
-                    )
-                    .frame(width: 90, height: 90)
-                    .shadow(color: viewModel.connectionState.isActive ? .red.opacity(0.4) : .cyan.opacity(0.4), radius: 20)
-                
-                // 按钮图标
-                VStack(spacing: 4) {
-                    Image(systemName: viewModel.connectionState.isActive ? "stop.fill" : "ear.fill")
-                        .font(.system(size: 28))
-                        .foregroundColor(.white)
-                    Text(viewModel.connectionState.isActive ? "停止" : "开始翻译")
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .foregroundColor(.white.opacity(0.9))
+                        .fill(buttonGradient)
+                        .frame(width: 90, height: 90)
+                        .shadow(color: buttonShadowColor, radius: 20)
+                    
+                    // 按钮图标
+                    VStack(spacing: 4) {
+                        Image(systemName: buttonIcon)
+                            .font(.system(size: 28))
+                            .foregroundColor(.white)
+                        Text(buttonText)
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white.opacity(0.9))
+                    }
                 }
             }
+            
+            // 模式描述
+            Text(viewModel.translationMode.description)
+                .font(.caption2)
+                .foregroundColor(.white.opacity(0.35))
         }
         .onChange(of: viewModel.connectionState.isActive) { _, isActive in
             isPulsing = isActive
         }
+    }
+    
+    private var buttonIcon: String {
+        if viewModel.connectionState.isActive {
+            return "stop.fill"
+        }
+        return viewModel.translationMode == .immersive ? "ear.fill" : "mic.fill"
+    }
+    
+    private var buttonText: String {
+        if viewModel.connectionState.isActive {
+            return "停止"
+        }
+        return viewModel.translationMode == .immersive ? "开始监听" : "开始翻译"
+    }
+    
+    private var pulseColor: Color {
+        viewModel.translationMode == .immersive ? .indigo : .cyan
+    }
+    
+    private var buttonGradient: LinearGradient {
+        if viewModel.connectionState.isActive {
+            return LinearGradient(colors: [.red.opacity(0.8), .red], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+        if viewModel.translationMode == .immersive {
+            return LinearGradient(colors: [.indigo.opacity(0.8), .indigo], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+        return LinearGradient(colors: [.cyan.opacity(0.8), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+    
+    private var buttonShadowColor: Color {
+        if viewModel.connectionState.isActive { return .red.opacity(0.4) }
+        if viewModel.translationMode == .immersive { return .indigo.opacity(0.4) }
+        return .cyan.opacity(0.4)
     }
 }
 
@@ -330,7 +553,6 @@ struct TranslationHistoryView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // 标题栏
             HStack {
                 Text("翻译记录")
                     .font(.headline)
@@ -347,14 +569,22 @@ struct TranslationHistoryView: View {
             .padding(.horizontal, 24)
             .padding(.vertical, 8)
             
-            // 历史记录列表
             ScrollView {
                 LazyVStack(spacing: 8) {
                     if viewModel.translationHistory.isEmpty {
-                        Text("开始翻译后，记录将显示在这里")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.3))
-                            .padding(.top, 30)
+                        VStack(spacing: 8) {
+                            Image(systemName: viewModel.translationMode == .immersive
+                                  ? "antenna.radiowaves.left.and.right"
+                                  : "bubble.left.and.bubble.right")
+                                .font(.title2)
+                                .foregroundColor(.white.opacity(0.15))
+                            Text(viewModel.translationMode == .immersive
+                                 ? "开始监听后，环境音翻译将显示在这里"
+                                 : "开始翻译后，对话记录将显示在这里")
+                                .font(.subheadline)
+                                .foregroundColor(.white.opacity(0.3))
+                        }
+                        .padding(.top, 30)
                     } else {
                         ForEach(viewModel.translationHistory) { entry in
                             TranslationEntryCard(entry: entry)
@@ -373,13 +603,11 @@ struct TranslationHistoryView: View {
     }
 }
 
-/// 翻译记录卡片
 struct TranslationEntryCard: View {
     let entry: TranslationEntry
     
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // 时间和语言标签
             HStack {
                 Text(entry.sourceLanguage.flag)
                 Text("→")
@@ -392,13 +620,11 @@ struct TranslationEntryCard: View {
             }
             .font(.caption)
             
-            // 原文
             Text(entry.originalText)
                 .font(.subheadline)
                 .foregroundColor(.white.opacity(0.6))
                 .lineLimit(2)
             
-            // 翻译
             Text(entry.translatedText)
                 .font(.subheadline)
                 .fontWeight(.medium)
@@ -440,8 +666,6 @@ extension Color {
         )
     }
 }
-
-// MARK: - 预览
 
 #Preview {
     ContentView()
