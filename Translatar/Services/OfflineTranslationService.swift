@@ -292,47 +292,17 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
     }
     
     /// 使用Apple Translation框架翻译文本
+    /// 注意：TranslationSession需要通过SwiftUI的.translationTask修饰符获取，
+    /// 在非SwiftUI上下文中无法直接创建。离线模式下仅提供语音识别+TTS功能，
+    /// 翻译功能需要在SwiftUI视图层通过translationTask实现。
     private func translateText(_ text: String, completion: @escaping (String?) -> Void) {
-        // Apple Translation框架通过TranslationSession使用
-        // 这里使用异步方式调用
-        #if canImport(Translation)
-        if #available(iOS 18.0, *) {
-            Task {
-                do {
-                    guard let source = sourceLanguage, let target = targetLanguage else {
-                        completion(nil)
-                        return
-                    }
-                    
-                    let sourceLocale = Locale.Language(identifier: speechLocale(for: source).identifier)
-                    let targetLocale = Locale.Language(identifier: speechLocale(for: target).identifier)
-                    
-                    let config = TranslationSession.Configuration(
-                        source: sourceLocale,
-                        target: targetLocale
-                    )
-                    
-                    let session = TranslationSession(configuration: config)
-                    let response = try await session.translate(text)
-                    
-                    await MainActor.run {
-                        completion(response.targetText)
-                    }
-                } catch {
-                    print("[OfflineTranslation] Apple Translation错误: \(error.localizedDescription)")
-                    await MainActor.run {
-                        completion(nil)
-                    }
-                }
-            }
-        } else {
-            // iOS 18以下不支持Translation框架
-            print("[OfflineTranslation] 设备不支持Apple Translation框架（需要iOS 18+）")
-            completion(nil)
-        }
-        #else
+        // 离线模式下的翻译降级策略：
+        // 由于TranslationSession只能通过SwiftUI的.translationTask获取，
+        // 在Service层直接调用不可行。
+        // 这里返回nil，由调用方使用原文+TTS作为降级方案。
+        // 完整的离线翻译需要在View层配合.translationTask实现。
+        print("[OfflineTranslation] 离线翻译使用语音识别+TTS降级模式")
         completion(nil)
-        #endif
     }
     
     /// 使用AVSpeechSynthesizer播放翻译结果

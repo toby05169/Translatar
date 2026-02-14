@@ -63,8 +63,8 @@ struct SettingsView: View {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(
                             subscriptionService.currentSubscription == .free
-                            ? Color.white.opacity(0.1)
-                            : LinearGradient(colors: [.cyan.opacity(0.3), .indigo.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing).opacity(1)
+                            ? AnyShapeStyle(Color.white.opacity(0.1))
+                            : AnyShapeStyle(LinearGradient(colors: [.cyan.opacity(0.3), .indigo.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing))
                         )
                         .frame(width: 44, height: 44)
                     
