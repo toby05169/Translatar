@@ -384,15 +384,20 @@ struct LanguagePickerButton: View {
                 .foregroundColor(.white.opacity(0.5))
             
             Menu {
-                ForEach(SupportedLanguage.allCases) { lang in
-                    Button {
-                        language = lang
-                    } label: {
-                        HStack {
-                            Text(lang.flag)
-                            Text(lang.chineseName)
-                            if lang == language {
-                                Image(systemName: "checkmark")
+                // 按地区分组显示语言，方便用户查找
+                ForEach(LanguageGroup.allCases, id: \.rawValue) { group in
+                    Section(header: Text(group.displayName)) {
+                        ForEach(group.languages) { lang in
+                            Button {
+                                language = lang
+                            } label: {
+                                HStack {
+                                    Text("\(lang.flag) \(lang.chineseName)")
+                                    Spacer()
+                                    if lang == language {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
                             }
                         }
                     }
@@ -402,13 +407,13 @@ struct LanguagePickerButton: View {
                     Text(language.flag)
                         .font(.title2)
                     Text(language.chineseName)
-                        .font(.headline)
+                        .font(.subheadline)
                         .foregroundColor(.white)
                     Image(systemName: "chevron.down")
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, 14)
                 .padding(.vertical, 10)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
@@ -704,10 +709,10 @@ struct TranslationEntryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(entry.sourceLanguage.flag)
+                Text("\(entry.sourceLanguage.flag) \(entry.sourceLanguage.chineseName)")
                 Text("→")
                     .foregroundColor(.white.opacity(0.3))
-                Text(entry.targetLanguage.flag)
+                Text("\(entry.targetLanguage.flag) \(entry.targetLanguage.chineseName)")
                 Spacer()
                 Text(entry.timestamp, style: .time)
                     .font(.caption2)

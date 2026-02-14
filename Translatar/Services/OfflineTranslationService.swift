@@ -111,32 +111,88 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
     /// 将应用支持的语言映射到Apple SFSpeechRecognizer的Locale
     private func speechLocale(for language: SupportedLanguage) -> Locale {
         switch language {
+        // 东亚语言
         case .chinese: return Locale(identifier: "zh-CN")
-        case .english: return Locale(identifier: "en-US")
+        case .cantonese: return Locale(identifier: "zh-HK")
+        case .hokkien: return Locale(identifier: "zh-TW")
         case .japanese: return Locale(identifier: "ja-JP")
         case .korean: return Locale(identifier: "ko-KR")
+        // 东南亚语言
+        case .thai: return Locale(identifier: "th-TH")
+        case .vietnamese: return Locale(identifier: "vi-VN")
+        case .burmese: return Locale(identifier: "my-MM")
+        case .indonesian: return Locale(identifier: "id-ID")
+        case .malay: return Locale(identifier: "ms-MY")
+        case .tagalog: return Locale(identifier: "fil-PH")
+        case .khmer: return Locale(identifier: "km-KH")
+        case .lao: return Locale(identifier: "lo-LA")
+        // 南亚语言
+        case .hindi: return Locale(identifier: "hi-IN")
+        case .bengali: return Locale(identifier: "bn-BD")
+        case .tamil: return Locale(identifier: "ta-IN")
+        case .urdu: return Locale(identifier: "ur-PK")
+        // 欧美语言
+        case .english: return Locale(identifier: "en-US")
         case .spanish: return Locale(identifier: "es-ES")
+        case .portuguese: return Locale(identifier: "pt-BR")
         case .french: return Locale(identifier: "fr-FR")
         case .german: return Locale(identifier: "de-DE")
         case .italian: return Locale(identifier: "it-IT")
-        case .portuguese: return Locale(identifier: "pt-BR")
         case .russian: return Locale(identifier: "ru-RU")
+        case .dutch: return Locale(identifier: "nl-NL")
+        case .polish: return Locale(identifier: "pl-PL")
+        case .turkish: return Locale(identifier: "tr-TR")
+        case .greek: return Locale(identifier: "el-GR")
+        case .swedish: return Locale(identifier: "sv-SE")
+        // 中东/非洲语言
+        case .arabic: return Locale(identifier: "ar-SA")
+        case .hebrew: return Locale(identifier: "he-IL")
+        case .persian: return Locale(identifier: "fa-IR")
+        case .swahili: return Locale(identifier: "sw-KE")
         }
     }
     
     /// 将应用支持的语言映射到AVSpeechSynthesisVoice的语言代码
     private func ttsLanguageCode(for language: SupportedLanguage) -> String {
         switch language {
+        // 东亚语言
         case .chinese: return "zh-CN"
-        case .english: return "en-US"
+        case .cantonese: return "zh-HK"
+        case .hokkien: return "zh-TW"
         case .japanese: return "ja-JP"
         case .korean: return "ko-KR"
+        // 东南亚语言
+        case .thai: return "th-TH"
+        case .vietnamese: return "vi-VN"
+        case .burmese: return "my-MM"
+        case .indonesian: return "id-ID"
+        case .malay: return "ms-MY"
+        case .tagalog: return "fil-PH"
+        case .khmer: return "km-KH"
+        case .lao: return "lo-LA"
+        // 南亚语言
+        case .hindi: return "hi-IN"
+        case .bengali: return "bn-BD"
+        case .tamil: return "ta-IN"
+        case .urdu: return "ur-PK"
+        // 欧美语言
+        case .english: return "en-US"
         case .spanish: return "es-ES"
+        case .portuguese: return "pt-BR"
         case .french: return "fr-FR"
         case .german: return "de-DE"
         case .italian: return "it-IT"
-        case .portuguese: return "pt-BR"
         case .russian: return "ru-RU"
+        case .dutch: return "nl-NL"
+        case .polish: return "pl-PL"
+        case .turkish: return "tr-TR"
+        case .greek: return "el-GR"
+        case .swedish: return "sv-SE"
+        // 中东/非洲语言
+        case .arabic: return "ar-SA"
+        case .hebrew: return "he-IL"
+        case .persian: return "fa-IR"
+        case .swahili: return "sw-KE"
         }
     }
     

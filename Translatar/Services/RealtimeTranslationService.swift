@@ -155,13 +155,15 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 根据模式构建不同的VAD（语音活动检测）配置
     /// 这是解决"机场广播翻译"问题的关键参数
+    /// 注意：threshold使用NSDecimalNumber避免Double浮点精度问题
+    /// （Swift中0.3的Double表示为0.29999...17位小数，超过OpenAI API的16位限制）
     private func buildVADConfig(mode: TranslationMode) -> [String: Any] {
         switch mode {
         case .conversation:
             // 对话模式：快速响应，短静音即认为说话结束
             return [
                 "type": "server_vad",
-                "threshold": 0.5,           // 标准灵敏度
+                "threshold": NSDecimalNumber(string: "0.5"),  // 标准灵敏度
                 "prefix_padding_ms": 300,    // 语音开始前保留300ms
                 "silence_duration_ms": 500   // 静音500ms后认为说话结束
             ]
@@ -173,7 +175,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             // - 增加前缀填充：确保不丢失广播开头的内容
             return [
                 "type": "server_vad",
-                "threshold": 0.3,           // 更低的阈值，更灵敏
+                "threshold": NSDecimalNumber(string: "0.3"),  // 更低的阈值，更灵敏
                 "prefix_padding_ms": 500,    // 语音开始前保留500ms
                 "silence_duration_ms": 1500  // 静音1.5秒后才认为说话结束（广播可能有停顿）
             ]
