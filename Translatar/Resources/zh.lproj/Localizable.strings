@@ -211,3 +211,9 @@
 "offline.error.permUnknown" = "未知权限状态";
 "offline.error.recognizerUnavailable" = "语音识别器不可用，请检查语言包是否已下载";
 "offline.error.cannotCreateRequest" = "无法创建识别请求";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "试用结束后将以";
+"paywall.autorenew.suffix" = "自动续订。可随时在设置中取消。";
+"paywall.trial.prefix" = "7天免费试用";
+"paywall.trial.after" = "之后";

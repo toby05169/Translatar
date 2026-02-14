@@ -209,3 +209,9 @@
 "offline.error.permUnknown" = "สถานะสิทธิ์ไม่ทราบ";
 "offline.error.recognizerUnavailable" = "ตัวรู้จำเสียงไม่พร้อมใช้งาน กรุณาตรวจสอบว่าดาวน์โหลดชุดภาษาแล้ว";
 "offline.error.cannotCreateRequest" = "ไม่สามารถสร้างคำขอรู้จำ";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "หลังทดลองใช้ จะเรียกเก็บ";
+"paywall.autorenew.suffix" = "ต่ออายุอัตโนมัติ ยกเลิกได้ตลอดเวลาในการตั้งค่า";
+"paywall.trial.prefix" = "ทดลองใช้ฟรี 7 วัน";
+"paywall.trial.after" = "จากนั้น";

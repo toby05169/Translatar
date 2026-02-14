@@ -118,3 +118,9 @@
 "sub.free" = "Gratuit";
 "sub.monthly" = "Mensuel";
 "sub.yearly" = "Annuel";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "Après l'essai, ";
+"paywall.autorenew.suffix" = " renouvellement automatique. Annulez à tout moment.";
+"paywall.trial.prefix" = "Essai gratuit de 7 jours";
+"paywall.trial.after" = "puis ";

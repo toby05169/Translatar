@@ -145,3 +145,9 @@
 "sub.free" = "အခမဲ့";
 "sub.monthly" = "လစဉ်";
 "sub.yearly" = "နှစ်စဉ်";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "အစမ်းသုံးပြီးနောက် ";
+"paywall.autorenew.suffix" = " အလိုအလျောက်သက်တမ်းတိုးပါမည်။";
+"paywall.trial.prefix" = "7 ရက်အခမဲ့အစမ်းသုံး";
+"paywall.trial.after" = "ထို့နောက် ";

@@ -188,7 +188,7 @@ struct PaywallView: View {
             
             // 续订说明（App Store审核要求）
             if let product = selectedProduct {
-                Text(String(localized: "paywall.trial.note.prefix") + "\(product.displayPrice)/" + (product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly"))自动续订。可随时在设置中取消。")
+                Text(String(localized: "paywall.trial.note.prefix") + "\(product.displayPrice)/" + (product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly")) + String(localized: "paywall.autorenew.suffix"))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.35))
                     .multilineTextAlignment(.center)
@@ -370,7 +370,7 @@ struct SubscriptionCard: View {
                         }
                     }
                     
-                    Text(isYearly ? "7天免费试用 · 之后\(product.displayPrice)/年" : "7天免费试用 · 之后\(product.displayPrice)/月")
+                    Text(String(localized: "paywall.trial.prefix") + " · " + String(localized: "paywall.trial.after") + "\(product.displayPrice)" + (isYearly ? String(localized: "paywall.per.year") : String(localized: "paywall.per.month")))
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                 }

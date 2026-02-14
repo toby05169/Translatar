@@ -209,3 +209,9 @@
 "offline.error.permUnknown" = "Trạng thái quyền không xác định";
 "offline.error.recognizerUnavailable" = "Bộ nhận dạng giọng nói không khả dụng. Vui lòng kiểm tra gói ngôn ngữ.";
 "offline.error.cannotCreateRequest" = "Không thể tạo yêu cầu nhận dạng";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "Sau khi dùng thử, ";
+"paywall.autorenew.suffix" = " tự động gia hạn. Hủy bất cứ lúc nào trong Cài đặt.";
+"paywall.trial.prefix" = "Dùng thử miễn phí 7 ngày";
+"paywall.trial.after" = "sau đó ";

@@ -210,3 +210,9 @@
 "offline.error.permUnknown" = "Unknown permission status";
 "offline.error.recognizerUnavailable" = "Speech recognizer unavailable. Please check if language pack is downloaded.";
 "offline.error.cannotCreateRequest" = "Cannot create recognition request";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "After trial, ";
+"paywall.autorenew.suffix" = " auto-renews. Cancel anytime in Settings.";
+"paywall.trial.prefix" = "7-day free trial";
+"paywall.trial.after" = "then ";

@@ -209,3 +209,9 @@
 "offline.error.permUnknown" = "不明な権限状態";
 "offline.error.recognizerUnavailable" = "音声認識が利用できません。言語パックがダウンロードされているか確認してください。";
 "offline.error.cannotCreateRequest" = "認識リクエストを作成できません";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "トライアル終了後、";
+"paywall.autorenew.suffix" = "で自動更新されます。設定からいつでもキャンセル可能。";
+"paywall.trial.prefix" = "7日間無料トライアル";
+"paywall.trial.after" = "その後";

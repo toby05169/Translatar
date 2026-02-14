@@ -118,3 +118,9 @@
 "sub.free" = "무료";
 "sub.monthly" = "월간";
 "sub.yearly" = "연간";
+
+// === PaywallView 补充翻译 ===
+"paywall.trial.note.prefix" = "체험 종료 후 ";
+"paywall.autorenew.suffix" = " 자동 갱신됩니다. 설정에서 언제든 취소 가능.";
+"paywall.trial.prefix" = "7일 무료 체험";
+"paywall.trial.after" = "이후 ";
