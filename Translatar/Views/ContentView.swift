@@ -89,7 +89,7 @@ struct ContentView: View {
                         
                         // 离线模式标识
                         if viewModel.isOfflineMode {
-                            Text(String(localized: "common.offline.badge"))
+                            Text(NSLocalizedString("common.offline.badge", comment: ""))
                                 .font(.caption2)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.orange)
@@ -120,10 +120,10 @@ struct ContentView: View {
                 PaywallView()
                     .environmentObject(subscriptionService)
             }
-            .alert(String(localized: "common.alert.title"), isPresented: $viewModel.showError) {
-                Button(String(localized: "common.alert.ok"), role: .cancel) {}
+            .alert(NSLocalizedString("common.alert.title", comment: ""), isPresented: $viewModel.showError) {
+                Button(NSLocalizedString("common.alert.ok", comment: ""), role: .cancel) {}
             } message: {
-                Text(viewModel.errorMessage ?? String(localized: "common.alert.unknown.error"))
+                Text(viewModel.errorMessage ?? NSLocalizedString("common.alert.unknown.error", comment: ""))
             }
         }
         .preferredColorScheme(.dark)
@@ -198,10 +198,10 @@ struct FreeQuotaBanner: View {
             }
             
             VStack(alignment: .leading, spacing: 2) {
-                Text(String(localized: "quota.title"))
+                Text(NSLocalizedString("quota.title", comment: ""))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.4))
-                Text(String(localized: "quota.remaining \(remainingMinutes)"))
+                Text(NSLocalizedString("quota.remaining \(remainingMinutes)", comment: ""))
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundColor(remainingSeconds < 60 ? .red : .white.opacity(0.7))
@@ -210,7 +210,7 @@ struct FreeQuotaBanner: View {
             Spacer()
             
             Button(action: onUpgrade) {
-                Text(String(localized: "quota.upgrade"))
+                Text(NSLocalizedString("quota.upgrade", comment: ""))
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
@@ -290,24 +290,24 @@ struct StatusBarView: View {
             StatusChip(
                 icon: viewModel.isNetworkConnected ? "wifi" : "wifi.slash",
                 text: viewModel.isNetworkConnected
-                    ? String(localized: "status.online")
-                    : String(localized: "status.offline"),
+                    ? NSLocalizedString("status.online", comment: "")
+                    : NSLocalizedString("status.offline", comment: ""),
                 color: viewModel.isNetworkConnected ? .green : .orange
             )
             
             StatusChip(
                 icon: "waveform.badge.minus",
                 text: viewModel.isNoiseSuppressionEnabled
-                    ? String(localized: "status.noise.on")
-                    : String(localized: "status.noise.off"),
+                    ? NSLocalizedString("status.noise.on", comment: "")
+                    : NSLocalizedString("status.noise.off", comment: ""),
                 color: viewModel.isNoiseSuppressionEnabled ? .cyan : .gray
             )
             
             StatusChip(
                 icon: viewModel.translationMode.iconName,
                 text: viewModel.translationMode == .immersive
-                    ? String(localized: "status.listening")
-                    : String(localized: "status.chatting"),
+                    ? NSLocalizedString("status.listening", comment: "")
+                    : NSLocalizedString("status.chatting", comment: ""),
                 color: viewModel.translationMode == .immersive ? .indigo : .cyan
             )
             
@@ -351,7 +351,7 @@ struct LanguageSelectorView: View {
     var body: some View {
         HStack(spacing: 12) {
             LanguagePickerButton(
-                label: String(localized: "lang.source"),
+                label: NSLocalizedString("lang.source", comment: ""),
                 language: $viewModel.config.sourceLanguage
             )
             
@@ -371,7 +371,7 @@ struct LanguageSelectorView: View {
             }
             
             LanguagePickerButton(
-                label: String(localized: "lang.target"),
+                label: NSLocalizedString("lang.target", comment: ""),
                 language: $viewModel.config.targetLanguage
             )
         }
@@ -456,7 +456,7 @@ struct TranslationDisplayView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "ear.trianglebadge.exclamationmark")
                             .font(.caption2)
-                        Text(String(localized: "status.monitoring"))
+                        Text(NSLocalizedString("status.monitoring", comment: ""))
                             .font(.caption2)
                     }
                     .foregroundColor(.indigo.opacity(0.8))
@@ -472,7 +472,7 @@ struct TranslationDisplayView: View {
             // 原文显示
             if !viewModel.currentTranscript.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: "display.original"))
+                    Text(NSLocalizedString("display.original", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                     Text(viewModel.currentTranscript)
@@ -487,7 +487,7 @@ struct TranslationDisplayView: View {
             // 翻译结果显示
             if !viewModel.currentTranslatedText.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: "display.translated"))
+                    Text(NSLocalizedString("display.translated", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.cyan.opacity(0.6))
                     Text(viewModel.currentTranslatedText)
@@ -635,11 +635,11 @@ struct TranslationControlButton: View {
     
     private var buttonText: String {
         if viewModel.connectionState.isActive {
-            return String(localized: "button.stop")
+            return NSLocalizedString("button.stop", comment: "")
         }
         return viewModel.translationMode == .immersive
-            ? String(localized: "button.start.listen")
-            : String(localized: "button.start.translate")
+            ? NSLocalizedString("button.start.listen", comment: "")
+            : NSLocalizedString("button.start.translate", comment: "")
     }
     
     private var pulseColor: Color {
@@ -671,7 +671,7 @@ struct TranslationHistoryPreview: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(String(localized: "history.recent"))
+                Text(NSLocalizedString("history.recent", comment: ""))
                     .font(.headline)
                     .foregroundColor(.white.opacity(0.8))
                 Spacer()
@@ -689,8 +689,8 @@ struct TranslationHistoryPreview: View {
                                 .font(.title2)
                                 .foregroundColor(.white.opacity(0.15))
                             Text(viewModel.translationMode == .immersive
-                                 ? String(localized: "history.empty.immersive")
-                                 : String(localized: "history.empty.conversation"))
+                                 ? NSLocalizedString("history.empty.immersive", comment: "")
+                                 : NSLocalizedString("history.empty.conversation", comment: ""))
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.3))
                         }

@@ -53,12 +53,12 @@ enum OfflineServiceState: Equatable {
     
     var displayText: String {
         switch self {
-        case .idle: return String(localized: "offline.status.standby")
-        case .preparing: return String(localized: "offline.status.preparing")
-        case .ready: return String(localized: "offline.status.ready")
-        case .listening: return String(localized: "offline.status.listening")
-        case .translating: return String(localized: "offline.status.translating")
-        case .speaking: return String(localized: "offline.status.playing")
+        case .idle: return NSLocalizedString("offline.status.standby", comment: "")
+        case .preparing: return NSLocalizedString("offline.status.preparing", comment: "")
+        case .ready: return NSLocalizedString("offline.status.ready", comment: "")
+        case .listening: return NSLocalizedString("offline.status.listening", comment: "")
+        case .translating: return NSLocalizedString("offline.status.translating", comment: "")
+        case .speaking: return NSLocalizedString("offline.status.playing", comment: "")
         case .error(let msg): return "离线错误：\(msg)"
         case .unavailable(let msg): return "离线不可用：\(msg)"
         }
@@ -233,13 +233,13 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
                     self.stateSubject.send(.error("启动语音识别失败: \(error.localizedDescription)"))
                 }
             case .denied:
-                self.stateSubject.send(.error(String(localized: "offline.error.permDenied")))
+                self.stateSubject.send(.error(NSLocalizedString("offline.error.permDenied", comment: "")))
             case .restricted:
-                self.stateSubject.send(.error(String(localized: "offline.error.notSupported")))
+                self.stateSubject.send(.error(NSLocalizedString("offline.error.notSupported", comment: "")))
             case .notDetermined:
-                self.stateSubject.send(.error(String(localized: "offline.error.permUndetermined")))
+                self.stateSubject.send(.error(NSLocalizedString("offline.error.permUndetermined", comment: "")))
             @unknown default:
-                self.stateSubject.send(.error(String(localized: "offline.error.permUnknown")))
+                self.stateSubject.send(.error(NSLocalizedString("offline.error.permUnknown", comment: "")))
             }
         }
     }
@@ -255,14 +255,14 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
         speechRecognizer = SFSpeechRecognizer(locale: locale)
         
         guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
-            stateSubject.send(.unavailable(String(localized: "offline.error.recognizerUnavailable")))
+            stateSubject.send(.unavailable(NSLocalizedString("offline.error.recognizerUnavailable", comment: "")))
             return
         }
         
         // 创建识别请求
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest = recognitionRequest else {
-            throw NSError(domain: "OfflineTranslation", code: -1, userInfo: [NSLocalizedDescriptionKey: String(localized: "offline.error.cannotCreateRequest")])
+            throw NSError(domain: "OfflineTranslation", code: -1, userInfo: [NSLocalizedDescriptionKey: NSLocalizedString("offline.error.cannotCreateRequest", comment: "")])
         }
         
         // 配置为设备端识别（离线）

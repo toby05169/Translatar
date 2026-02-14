@@ -93,7 +93,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         
         // 从配置或环境变量获取API密钥
         guard let apiKey = getAPIKey() else {
-            connectionStateSubject.send(.error(String(localized: "error.noApiKey.short")))
+            connectionStateSubject.send(.error(NSLocalizedString("error.noApiKey.short", comment: "")))
             throw TranslationError.missingAPIKey
         }
         
@@ -407,13 +407,13 @@ enum TranslationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingAPIKey:
-            return String(localized: "error.noApiKey")
+            return NSLocalizedString("error.noApiKey", comment: "")
         case .invalidURL:
-            return String(localized: "error.invalidUrl")
+            return NSLocalizedString("error.invalidUrl", comment: "")
         case .connectionFailed:
-            return String(localized: "error.connectionFailed")
+            return NSLocalizedString("error.connectionFailed", comment: "")
         case .encodingFailed:
-            return String(localized: "error.encodingFailed")
+            return NSLocalizedString("error.encodingFailed", comment: "")
         }
     }
 }

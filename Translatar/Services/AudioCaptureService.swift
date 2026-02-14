@@ -310,11 +310,11 @@ enum AudioCaptureError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .formatCreationFailed:
-            return String(localized: "error.audio.format")
+            return NSLocalizedString("error.audio.format", comment: "")
         case .converterCreationFailed:
-            return String(localized: "error.audio.converter")
+            return NSLocalizedString("error.audio.converter", comment: "")
         case .engineStartFailed:
-            return String(localized: "error.audio.engine")
+            return NSLocalizedString("error.audio.engine", comment: "")
         }
     }
 }

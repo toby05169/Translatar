@@ -16,15 +16,15 @@ enum ConnectionState: Equatable {
     var displayText: String {
         switch self {
         case .disconnected:
-            return String(localized: "status.disconnected")
+            return NSLocalizedString("status.disconnected", comment: "")
         case .connecting:
-            return String(localized: "status.connecting")
+            return NSLocalizedString("status.connecting", comment: "")
         case .connected:
-            return String(localized: "status.connected")
+            return NSLocalizedString("status.connected", comment: "")
         case .translating:
-            return String(localized: "status.translating")
+            return NSLocalizedString("status.translating", comment: "")
         case .error(let message):
-            return String(localized: "status.error \(message)")
+            return NSLocalizedString("status.error \(message)", comment: "")
         }
     }
     
@@ -47,15 +47,15 @@ enum TranslationMode: String, CaseIterable, Identifiable {
     
     var displayName: String {
         switch self {
-        case .conversation: return String(localized: "mode.conversation")
-        case .immersive: return String(localized: "mode.immersive")
+        case .conversation: return NSLocalizedString("mode.conversation", comment: "")
+        case .immersive: return NSLocalizedString("mode.immersive", comment: "")
         }
     }
     
     var description: String {
         switch self {
-        case .conversation: return String(localized: "mode.conversation.desc")
-        case .immersive: return String(localized: "mode.immersive.desc")
+        case .conversation: return NSLocalizedString("mode.conversation.desc", comment: "")
+        case .immersive: return NSLocalizedString("mode.immersive.desc", comment: "")
         }
     }
     

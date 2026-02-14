@@ -24,29 +24,29 @@ struct OnboardingView: View {
         OnboardingPage(
             icon: "airpodspro",
             title: "戴上耳机",
-            subtitle: String(localized: "onboarding.title1"),
-            description: String(localized: "onboarding.desc1"),
+            subtitle: NSLocalizedString("onboarding.title1", comment: ""),
+            description: NSLocalizedString("onboarding.desc1", comment: ""),
             accentColor: .cyan
         ),
         OnboardingPage(
             icon: "waveform.badge.mic",
-            title: String(localized: "onboarding.title2"),
-            subtitle: String(localized: "onboarding.subtitle2"),
-            description: String(localized: "onboarding.desc2"),
+            title: NSLocalizedString("onboarding.title2", comment: ""),
+            subtitle: NSLocalizedString("onboarding.subtitle2", comment: ""),
+            description: NSLocalizedString("onboarding.desc2", comment: ""),
             accentColor: .indigo
         ),
         OnboardingPage(
             icon: "ear.trianglebadge.exclamationmark",
-            title: String(localized: "onboarding.title3"),
-            subtitle: String(localized: "onboarding.subtitle3"),
-            description: String(localized: "onboarding.desc3"),
+            title: NSLocalizedString("onboarding.title3", comment: ""),
+            subtitle: NSLocalizedString("onboarding.subtitle3", comment: ""),
+            description: NSLocalizedString("onboarding.desc3", comment: ""),
             accentColor: .purple
         ),
         OnboardingPage(
             icon: "shield.checkered",
-            title: String(localized: "onboarding.title4"),
-            subtitle: String(localized: "onboarding.subtitle4"),
-            description: String(localized: "onboarding.desc4"),
+            title: NSLocalizedString("onboarding.title4", comment: ""),
+            subtitle: NSLocalizedString("onboarding.subtitle4", comment: ""),
+            description: NSLocalizedString("onboarding.desc4", comment: ""),
             accentColor: .orange
         )
     ]
@@ -62,7 +62,7 @@ struct OnboardingView: View {
                 HStack {
                     Spacer()
                     if currentPage < pages.count - 1 {
-                        Button(String(localized: "onboarding.skip")) {
+                        Button(NSLocalizedString("onboarding.skip", comment: "")) {
                             completeOnboarding()
                         }
                         .font(.subheadline)
@@ -106,7 +106,7 @@ struct OnboardingView: View {
                     }
                 } label: {
                     HStack(spacing: 8) {
-                        Text(currentPage < pages.count - 1 ? String(localized: "onboarding.next") : String(localized: "onboarding.start"))
+                        Text(currentPage < pages.count - 1 ? NSLocalizedString("onboarding.next", comment: "") : NSLocalizedString("onboarding.start", comment: ""))
                             .font(.headline)
                             .fontWeight(.semibold)
                         

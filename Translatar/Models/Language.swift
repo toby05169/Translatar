@@ -177,9 +177,9 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Codable {
         let locale = Locale.current
         switch self {
         case .cantonese:
-            return String(localized: "lang.name.cantonese", defaultValue: "粤语")
+            return NSLocalizedString("lang.name.cantonese", value: "粤语", comment: "")
         case .hokkien:
-            return String(localized: "lang.name.hokkien", defaultValue: "闽南语")
+            return NSLocalizedString("lang.name.hokkien", value: "闽南语", comment: "")
         default:
             if let name = locale.localizedString(forLanguageCode: self.rawValue) {
                 return name.prefix(1).uppercased() + name.dropFirst()
@@ -259,11 +259,11 @@ enum LanguageGroup: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .eastAsia: return String(localized: "group.eastAsia", defaultValue: "东亚语言")
-        case .southeastAsia: return String(localized: "group.southeastAsia", defaultValue: "东南亚语言")
-        case .southAsia: return String(localized: "group.southAsia", defaultValue: "南亚语言")
-        case .europeAmericas: return String(localized: "group.europeAmericas", defaultValue: "欧美语言")
-        case .middleEastAfrica: return String(localized: "group.middleEastAfrica", defaultValue: "中东/非洲语言")
+        case .eastAsia: return NSLocalizedString("group.eastAsia", value: "东亚语言", comment: "")
+        case .southeastAsia: return NSLocalizedString("group.southeastAsia", value: "东南亚语言", comment: "")
+        case .southAsia: return NSLocalizedString("group.southAsia", value: "南亚语言", comment: "")
+        case .europeAmericas: return NSLocalizedString("group.europeAmericas", value: "欧美语言", comment: "")
+        case .middleEastAfrica: return NSLocalizedString("group.middleEastAfrica", value: "中东/非洲语言", comment: "")
         }
     }
     

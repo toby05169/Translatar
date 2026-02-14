@@ -15,26 +15,26 @@ enum SubscriptionTier: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .free: return String(localized: "sub.free")
-        case .monthly: return String(localized: "sub.monthly")
-        case .yearly: return String(localized: "sub.yearly")
+        case .free: return NSLocalizedString("sub.free", comment: "")
+        case .monthly: return NSLocalizedString("sub.monthly", comment: "")
+        case .yearly: return NSLocalizedString("sub.yearly", comment: "")
         }
     }
     
     var description: String {
         switch self {
-        case .free: return String(localized: "sub.free.desc")
-        case .monthly: return String(localized: "sub.monthly.desc")
-        case .yearly: return String(localized: "sub.yearly.desc")
+        case .free: return NSLocalizedString("sub.free.desc", comment: "")
+        case .monthly: return NSLocalizedString("sub.monthly.desc", comment: "")
+        case .yearly: return NSLocalizedString("sub.yearly.desc", comment: "")
         }
     }
     
     var features: [String] {
         switch self {
         case .free:
-            return [String(localized: "sub.feature.quota"), String(localized: "sub.feature.conversation"), String(localized: "sub.feature.languages"), String(localized: "sub.feature.bilingual")]
+            return [NSLocalizedString("sub.feature.quota", comment: ""), NSLocalizedString("sub.feature.conversation", comment: ""), NSLocalizedString("sub.feature.languages", comment: ""), NSLocalizedString("sub.feature.bilingual", comment: "")]
         case .monthly, .yearly:
-            return [String(localized: "sub.feature.unlimited"), String(localized: "sub.feature.allModes"), String(localized: "sub.feature.noise"), String(localized: "sub.feature.offline"), String(localized: "sub.feature.export"), String(localized: "sub.feature.support")]
+            return [NSLocalizedString("sub.feature.unlimited", comment: ""), NSLocalizedString("sub.feature.allModes", comment: ""), NSLocalizedString("sub.feature.noise", comment: ""), NSLocalizedString("sub.feature.offline", comment: ""), NSLocalizedString("sub.feature.export", comment: ""), NSLocalizedString("sub.feature.support", comment: "")]
         }
     }
 }
@@ -101,7 +101,7 @@ class SubscriptionService: ObservableObject {
             print("[订阅] 已加载 \(products.count) 个产品")
         } catch {
             print("[订阅] 加载产品失败: \(error)")
-            errorMessage = String(localized: "sub.error.load")
+            errorMessage = NSLocalizedString("sub.error.load", comment: "")
         }
         isLoading = false
     }
@@ -135,7 +135,7 @@ class SubscriptionService: ObservableObject {
                 
             case .pending:
                 print("[订阅] 购买待处理（等待审批）")
-                errorMessage = String(localized: "sub.error.pending")
+                errorMessage = NSLocalizedString("sub.error.pending", comment: "")
                 isLoading = false
                 return false
                 

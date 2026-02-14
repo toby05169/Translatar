@@ -93,12 +93,12 @@ struct PaywallView: View {
                     )
             }
             
-            Text(String(localized: "paywall.title"))
+            Text(NSLocalizedString("paywall.title", comment: ""))
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
             
-            Text(String(localized: "paywall.subtitle"))
+            Text(NSLocalizedString("paywall.subtitle", comment: ""))
                 .font(.subheadline)
                 .foregroundColor(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
@@ -109,12 +109,12 @@ struct PaywallView: View {
     
     private var featureComparisonSection: some View {
         VStack(spacing: 12) {
-            FeatureRow(icon: "infinity", text: String(localized: "paywall.feature.unlimited"), isFree: false, isPro: true)
-            FeatureRow(icon: "ear.fill", text: String(localized: "paywall.feature.immersive"), isFree: false, isPro: true)
-            FeatureRow(icon: "waveform.badge.minus", text: String(localized: "paywall.feature.noise"), isFree: false, isPro: true)
-            FeatureRow(icon: "wifi.slash", text: String(localized: "paywall.feature.offline"), isFree: false, isPro: true)
-            FeatureRow(icon: "person.2.fill", text: String(localized: "paywall.feature.conversation"), isFree: true, isPro: true)
-            FeatureRow(icon: "captions.bubble", text: String(localized: "paywall.feature.bilingual"), isFree: true, isPro: true)
+            FeatureRow(icon: "infinity", text: NSLocalizedString("paywall.feature.unlimited", comment: ""), isFree: false, isPro: true)
+            FeatureRow(icon: "ear.fill", text: NSLocalizedString("paywall.feature.immersive", comment: ""), isFree: false, isPro: true)
+            FeatureRow(icon: "waveform.badge.minus", text: NSLocalizedString("paywall.feature.noise", comment: ""), isFree: false, isPro: true)
+            FeatureRow(icon: "wifi.slash", text: NSLocalizedString("paywall.feature.offline", comment: ""), isFree: false, isPro: true)
+            FeatureRow(icon: "person.2.fill", text: NSLocalizedString("paywall.feature.conversation", comment: ""), isFree: true, isPro: true)
+            FeatureRow(icon: "captions.bubble", text: NSLocalizedString("paywall.feature.bilingual", comment: ""), isFree: true, isPro: true)
         }
         .padding(.horizontal, 24)
     }
@@ -163,7 +163,7 @@ struct PaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text(String(localized: "paywall.trial.start"))
+                        Text(NSLocalizedString("paywall.trial.start", comment: ""))
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
@@ -188,8 +188,8 @@ struct PaywallView: View {
             
             // 续订说明（App Store审核要求）
             if let product = selectedProduct {
-                let periodText = product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly")
-                let noteText = String(localized: "paywall.trial.note.prefix") + product.displayPrice + "/" + periodText + String(localized: "paywall.autorenew.suffix")
+                let periodText = product.id.contains("yearly") ? NSLocalizedString("paywall.yearly", comment: "") : NSLocalizedString("paywall.monthly", comment: "")
+                let noteText = NSLocalizedString("paywall.trial.note.prefix", comment: "") + product.displayPrice + "/" + periodText + NSLocalizedString("paywall.autorenew.suffix", comment: "")
                 Text(noteText)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.35))
@@ -209,27 +209,27 @@ struct PaywallView: View {
                     await subscriptionService.restorePurchases()
                 }
             } label: {
-                Text(String(localized: "paywall.restore"))
+                Text(NSLocalizedString("paywall.restore", comment: ""))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.5))
             }
             
             // 条款链接（App Store审核要求）
             HStack(spacing: 16) {
-                Link(String(localized: "paywall.terms"), destination: URL(string: "https://translatar.app/terms")!)
+                Link(NSLocalizedString("paywall.terms", comment: ""), destination: URL(string: "https://translatar.app/terms")!)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
                 
                 Text("·")
                     .foregroundColor(.white.opacity(0.2))
                 
-                Link(String(localized: "paywall.privacy"), destination: URL(string: "https://translatar.app/privacy")!)
+                Link(NSLocalizedString("paywall.privacy", comment: ""), destination: URL(string: "https://translatar.app/privacy")!)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
             }
             
             // 订阅说明（App Store审核要求）
-            Text(String(localized: "paywall.terms.detail"))
+            Text(NSLocalizedString("paywall.terms.detail", comment: ""))
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.2))
                 .multilineTextAlignment(.center)
@@ -249,12 +249,12 @@ struct PaywallView: View {
                     .font(.system(size: 64))
                     .foregroundColor(.green)
                 
-                Text(String(localized: "paywall.success.title"))
+                Text(NSLocalizedString("paywall.success.title", comment: ""))
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 
-                Text(String(localized: "paywall.success.subtitle"))
+                Text(NSLocalizedString("paywall.success.subtitle", comment: ""))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.6))
             }
@@ -353,7 +353,7 @@ struct SubscriptionCard: View {
                             .foregroundColor(.white)
                         
                         if isYearly {
-                            Text(String(localized: "paywall.recommended"))
+                            Text(NSLocalizedString("paywall.recommended", comment: ""))
                                 .font(.caption2)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -372,7 +372,7 @@ struct SubscriptionCard: View {
                         }
                     }
                     
-                    Text(String(localized: "paywall.trial.prefix") + " · " + String(localized: "paywall.trial.after") + "\(product.displayPrice)" + (isYearly ? String(localized: "paywall.per.year") : String(localized: "paywall.per.month")))
+                    Text(NSLocalizedString("paywall.trial.prefix", comment: "") + " · " + NSLocalizedString("paywall.trial.after", comment: "") + "\(product.displayPrice)" + (isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: "")))
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                 }
@@ -385,7 +385,7 @@ struct SubscriptionCard: View {
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundColor(isSelected ? .cyan : .white.opacity(0.6))
-                    Text(isYearly ? String(localized: "paywall.per.year") : String(localized: "paywall.per.month"))
+                    Text(isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }

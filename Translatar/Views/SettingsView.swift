@@ -40,7 +40,7 @@ struct SettingsView: View {
                 }
                 .scrollContentBackground(.hidden)
             }
-            .navigationTitle(String(localized: "settings.title", defaultValue: String(localized: "settings.title")))
+            .navigationTitle(NSLocalizedString("settings.title", comment: ""))
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showPaywall) {
                 PaywallView()
@@ -79,11 +79,11 @@ struct SettingsView: View {
                         .foregroundColor(.white)
                     
                     if let expDate = subscriptionService.expirationDate {
-                        Text(String(localized: "settings.expiry", defaultValue: String(localized: "settings.expiry")) + "：\(expDate.formatted(date: .abbreviated, time: .omitted))")
+                        Text(NSLocalizedString("settings.expiry", comment: "") + "：\(expDate.formatted(date: .abbreviated, time: .omitted))")
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.4))
                     } else {
-                        Text(subscriptionService.currentSubscription == .free ? String(localized: "settings.freeLimit", defaultValue: String(localized: "settings.freeLimit")) : String(localized: "settings.allUnlocked", defaultValue: String(localized: "settings.allUnlocked")))
+                        Text(subscriptionService.currentSubscription == .free ? NSLocalizedString("settings.freeLimit", comment: "") : NSLocalizedString("settings.allUnlocked", comment: ""))
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.4))
                     }
@@ -95,7 +95,7 @@ struct SettingsView: View {
                     Button {
                         showPaywall = true
                     } label: {
-                        Text(String(localized: "settings.upgrade", defaultValue: String(localized: "settings.upgrade")))
+                        Text(NSLocalizedString("settings.upgrade", comment: ""))
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -125,7 +125,7 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(.cyan)
-                    Text(String(localized: "settings.restore", defaultValue: String(localized: "settings.restore")))
+                    Text(NSLocalizedString("settings.restore", comment: ""))
                         .foregroundColor(.white.opacity(0.7))
                 }
             }
@@ -137,7 +137,7 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "creditcard")
                             .foregroundColor(.cyan)
-                        Text(String(localized: "settings.manageSubscription", defaultValue: String(localized: "settings.manageSubscription")))
+                        Text(NSLocalizedString("settings.manageSubscription", comment: ""))
                             .foregroundColor(.white.opacity(0.7))
                         Spacer()
                         Image(systemName: "arrow.up.right")
@@ -148,7 +148,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.white.opacity(0.05))
             }
         } header: {
-            Text(String(localized: "settings.section.subscription", defaultValue: String(localized: "settings.section.subscription")))
+            Text(NSLocalizedString("settings.section.subscription", comment: ""))
                 .foregroundColor(.cyan)
         }
     }
@@ -158,7 +158,7 @@ struct SettingsView: View {
     private var apiKeySection: some View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
-                Text(String(localized: "settings.apiKey.title", defaultValue: String(localized: "settings.apiKey.title")))
+                Text(NSLocalizedString("settings.apiKey.title", comment: ""))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.6))
                 
@@ -184,7 +184,7 @@ struct SettingsView: View {
                             viewModel.saveAPIKey(tempAPIKey)
                         }
                     } label: {
-                        Text(String(localized: "settings.save", defaultValue: String(localized: "settings.save")))
+                        Text(NSLocalizedString("settings.save", comment: ""))
                             .font(.caption)
                             .foregroundColor(.cyan)
                     }
@@ -195,13 +195,13 @@ struct SettingsView: View {
                         .fill(Color.white.opacity(0.08))
                 )
                 
-                Text(String(localized: "settings.apiKey.note", defaultValue: String(localized: "settings.apiKey.note")))
+                Text(NSLocalizedString("settings.apiKey.note", comment: ""))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text(String(localized: "settings.section.account", defaultValue: String(localized: "settings.section.account")))
+            Text(NSLocalizedString("settings.section.account", comment: ""))
                 .foregroundColor(.cyan)
         }
     }
@@ -253,7 +253,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.white.opacity(0.05))
             }
         } header: {
-            Text(String(localized: "settings.section.translationMode", defaultValue: String(localized: "settings.section.translationMode")))
+            Text(NSLocalizedString("settings.section.translationMode", comment: ""))
                 .foregroundColor(.cyan)
         }
     }
@@ -268,10 +268,10 @@ struct SettingsView: View {
                     .frame(width: 30)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(String(localized: "settings.noiseSuppression", defaultValue: String(localized: "settings.noiseSuppression")))
+                    Text(NSLocalizedString("settings.noiseSuppression", comment: ""))
                         .font(.subheadline)
                         .foregroundColor(.white)
-                    Text(String(localized: "settings.noiseSuppression.desc", defaultValue: String(localized: "settings.noiseSuppression.desc")))
+                    Text(NSLocalizedString("settings.noiseSuppression.desc", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }
@@ -283,10 +283,10 @@ struct SettingsView: View {
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text(String(localized: "settings.section.audio", defaultValue: String(localized: "settings.section.audio")))
+            Text(NSLocalizedString("settings.section.audio", comment: ""))
                 .foregroundColor(.cyan)
         } footer: {
-            Text(String(localized: "settings.noiseSuppression.footer", defaultValue: String(localized: "settings.noiseSuppression.footer")))
+            Text(NSLocalizedString("settings.noiseSuppression.footer", comment: ""))
                 .foregroundColor(.white.opacity(0.3))
         }
     }
@@ -301,10 +301,10 @@ struct SettingsView: View {
                     .frame(width: 30)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(String(localized: "settings.autoOffline", defaultValue: String(localized: "settings.autoOffline")))
+                    Text(NSLocalizedString("settings.autoOffline", comment: ""))
                         .font(.subheadline)
                         .foregroundColor(.white)
-                    Text(String(localized: "settings.autoOffline.desc", defaultValue: String(localized: "settings.autoOffline.desc")))
+                    Text(NSLocalizedString("settings.autoOffline.desc", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }
@@ -321,21 +321,21 @@ struct SettingsView: View {
                     Image(systemName: "arrow.down.circle")
                         .foregroundColor(.orange)
                         .frame(width: 30)
-                    Text(String(localized: "settings.offlinePack", defaultValue: String(localized: "settings.offlinePack")))
+                    Text(NSLocalizedString("settings.offlinePack", comment: ""))
                         .font(.subheadline)
                         .foregroundColor(.white)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: "settings.offline.speech.hint", defaultValue: "• 语音识别：设置 → 通用 → 键盘 → 听写语言"))
-                    Text(String(localized: "settings.offline.translate.hint", defaultValue: "• 翻译引擎：设置 → 通用 → 翻译 → 下载语言（iOS 18+）"))
+                    Text(NSLocalizedString("settings.offline.speech.hint", value: "• 语音识别：设置 → 通用 → 键盘 → 听写语言", comment: ""))
+                    Text(NSLocalizedString("settings.offline.translate.hint", value: "• 翻译引擎：设置 → 通用 → 翻译 → 下载语言（iOS 18+）", comment: ""))
                 }
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.35))
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text(String(localized: "settings.section.offline", defaultValue: String(localized: "settings.section.offline")))
+            Text(NSLocalizedString("settings.section.offline", comment: ""))
                 .foregroundColor(.orange)
         }
     }
@@ -345,7 +345,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             HStack {
-                Text(String(localized: "settings.version", defaultValue: String(localized: "settings.version")))
+                Text(NSLocalizedString("settings.version", comment: ""))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("3.0.0")
@@ -354,7 +354,7 @@ struct SettingsView: View {
             .listRowBackground(Color.white.opacity(0.05))
             
             HStack {
-                Text(String(localized: "settings.onlineEngine", defaultValue: String(localized: "settings.onlineEngine")))
+                Text(NSLocalizedString("settings.onlineEngine", comment: ""))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("OpenAI Realtime API")
@@ -363,7 +363,7 @@ struct SettingsView: View {
             .listRowBackground(Color.white.opacity(0.05))
             
             HStack {
-                Text(String(localized: "settings.offlineEngine", defaultValue: String(localized: "settings.offlineEngine")))
+                Text(NSLocalizedString("settings.offlineEngine", comment: ""))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("Apple Speech + Translation")
@@ -374,7 +374,7 @@ struct SettingsView: View {
             // 隐私政策
             Link(destination: URL(string: "https://translatar.app/privacy")!) {
                 HStack {
-                    Text(String(localized: "settings.privacy", defaultValue: String(localized: "settings.privacy")))
+                    Text(NSLocalizedString("settings.privacy", comment: ""))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "arrow.up.right")
@@ -387,7 +387,7 @@ struct SettingsView: View {
             // 使用条款
             Link(destination: URL(string: "https://translatar.app/terms")!) {
                 HStack {
-                    Text(String(localized: "settings.terms", defaultValue: String(localized: "settings.terms")))
+                    Text(NSLocalizedString("settings.terms", comment: ""))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "arrow.up.right")
@@ -400,7 +400,7 @@ struct SettingsView: View {
             // 反馈
             Link(destination: URL(string: "mailto:support@translatar.app")!) {
                 HStack {
-                    Text(String(localized: "settings.feedback", defaultValue: String(localized: "settings.feedback")))
+                    Text(NSLocalizedString("settings.feedback", comment: ""))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "envelope")
@@ -410,7 +410,7 @@ struct SettingsView: View {
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text(String(localized: "settings.section.about", defaultValue: String(localized: "settings.section.about")))
+            Text(NSLocalizedString("settings.section.about", comment: ""))
                 .foregroundColor(.cyan)
         }
     }

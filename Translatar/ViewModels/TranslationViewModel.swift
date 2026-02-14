@@ -223,7 +223,7 @@ class TranslationViewModel: ObservableObject {
         
         // 在线模式：检查API密钥
         guard !apiKey.isEmpty else {
-            errorMessage = String(localized: "error.noApiKey")
+            errorMessage = NSLocalizedString("error.noApiKey", comment: "")
             showError = true
             showSettings = true
             return
@@ -263,7 +263,7 @@ class TranslationViewModel: ObservableObject {
             source: config.sourceLanguage,
             target: config.targetLanguage
         ) else {
-            errorMessage = String(localized: "error.offlineUnavailable")
+            errorMessage = NSLocalizedString("error.offlineUnavailable", comment: "")
             showError = true
             return
         }

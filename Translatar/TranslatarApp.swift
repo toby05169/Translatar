@@ -39,7 +39,7 @@ struct MainTabView: View {
             ContentView()
                 .tabItem {
                     Image(systemName: "waveform.and.mic")
-                    Text(String(localized: "tab.translate"))
+                    Text(NSLocalizedString("tab.translate", comment: ""))
                 }
                 .tag(0)
             
@@ -47,7 +47,7 @@ struct MainTabView: View {
             HistoryView()
                 .tabItem {
                     Image(systemName: "clock.arrow.circlepath")
-                    Text(String(localized: "tab.history"))
+                    Text(NSLocalizedString("tab.history", comment: ""))
                 }
                 .tag(1)
             
@@ -55,7 +55,7 @@ struct MainTabView: View {
             SettingsView()
                 .tabItem {
                     Image(systemName: "gearshape.fill")
-                    Text(String(localized: "tab.settings"))
+                    Text(NSLocalizedString("tab.settings", comment: ""))
                 }
                 .tag(2)
         }
