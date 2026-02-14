@@ -16,15 +16,15 @@ enum ConnectionState: Equatable {
     var displayText: String {
         switch self {
         case .disconnected:
-            return "未连接"
+            return String(localized: "status.disconnected")
         case .connecting:
-            return "正在连接..."
+            return String(localized: "status.connecting")
         case .connected:
-            return "已就绪，等待语音输入"
+            return String(localized: "status.connected")
         case .translating:
-            return "正在翻译..."
+            return String(localized: "status.translating")
         case .error(let message):
-            return "错误：\(message)"
+            return String(localized: "status.error \(message)")
         }
     }
     
@@ -47,15 +47,15 @@ enum TranslationMode: String, CaseIterable, Identifiable {
     
     var displayName: String {
         switch self {
-        case .conversation: return "对话模式"
-        case .immersive: return "沉浸模式"
+        case .conversation: return String(localized: "mode.conversation")
+        case .immersive: return String(localized: "mode.immersive")
         }
     }
     
     var description: String {
         switch self {
-        case .conversation: return "适合面对面交流，自动识别对话轮次"
-        case .immersive: return "持续监听环境音，实时翻译广播和对话"
+        case .conversation: return String(localized: "mode.conversation.desc")
+        case .immersive: return String(localized: "mode.immersive.desc")
         }
     }
     

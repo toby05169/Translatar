@@ -223,7 +223,7 @@ class TranslationViewModel: ObservableObject {
         
         // 在线模式：检查API密钥
         guard !apiKey.isEmpty else {
-            errorMessage = "请先在设置中配置您的OpenAI API密钥"
+            errorMessage = String(localized: "error.noApiKey")
             showError = true
             showSettings = true
             return
@@ -263,7 +263,7 @@ class TranslationViewModel: ObservableObject {
             source: config.sourceLanguage,
             target: config.targetLanguage
         ) else {
-            errorMessage = "离线翻译不可用：请检查设备是否已下载\(config.sourceLanguage.displayName)的语言包（设置 → 通用 → 键盘 → 听写语言）"
+            errorMessage = String(localized: "error.offlineUnavailable")
             showError = true
             return
         }

@@ -15,26 +15,26 @@ enum SubscriptionTier: String, CaseIterable {
     
     var displayName: String {
         switch self {
-        case .free: return "免费版"
-        case .monthly: return "月度会员"
-        case .yearly: return "年度会员"
+        case .free: return String(localized: "sub.free")
+        case .monthly: return String(localized: "sub.monthly")
+        case .yearly: return String(localized: "sub.yearly")
         }
     }
     
     var description: String {
         switch self {
-        case .free: return "每天5分钟免费翻译"
-        case .monthly: return "无限翻译 · 全部功能"
-        case .yearly: return "无限翻译 · 全部功能 · 省40%"
+        case .free: return String(localized: "sub.free.desc")
+        case .monthly: return String(localized: "sub.monthly.desc")
+        case .yearly: return String(localized: "sub.yearly.desc")
         }
     }
     
     var features: [String] {
         switch self {
         case .free:
-            return ["每天5分钟翻译额度", "对话模式", "10种语言", "双语字幕"]
+            return [String(localized: "sub.feature.quota"), String(localized: "sub.feature.conversation"), String(localized: "sub.feature.languages"), String(localized: "sub.feature.bilingual")]
         case .monthly, .yearly:
-            return ["无限翻译时长", "对话模式 + 沉浸模式", "AI智能降噪", "离线翻译", "翻译历史导出", "优先客服支持"]
+            return [String(localized: "sub.feature.unlimited"), String(localized: "sub.feature.allModes"), String(localized: "sub.feature.noise"), String(localized: "sub.feature.offline"), String(localized: "sub.feature.export"), String(localized: "sub.feature.support")]
         }
     }
 }
@@ -101,7 +101,7 @@ class SubscriptionService: ObservableObject {
             print("[订阅] 已加载 \(products.count) 个产品")
         } catch {
             print("[订阅] 加载产品失败: \(error)")
-            errorMessage = "加载订阅方案失败，请检查网络连接"
+            errorMessage = String(localized: "sub.error.load")
         }
         isLoading = false
     }
@@ -135,7 +135,7 @@ class SubscriptionService: ObservableObject {
                 
             case .pending:
                 print("[订阅] 购买待处理（等待审批）")
-                errorMessage = "购买正在处理中，请稍后查看"
+                errorMessage = String(localized: "sub.error.pending")
                 isLoading = false
                 return false
                 

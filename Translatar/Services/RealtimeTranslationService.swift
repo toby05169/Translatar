@@ -93,7 +93,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         
         // 从配置或环境变量获取API密钥
         guard let apiKey = getAPIKey() else {
-            connectionStateSubject.send(.error("未配置API密钥"))
+            connectionStateSubject.send(.error(String(localized: "error.noApiKey.short")))
             throw TranslationError.missingAPIKey
         }
         
@@ -407,13 +407,13 @@ enum TranslationError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .missingAPIKey:
-            return "未配置OpenAI API密钥，请在设置中配置"
+            return String(localized: "error.noApiKey")
         case .invalidURL:
-            return "API地址无效"
+            return String(localized: "error.invalidUrl")
         case .connectionFailed:
-            return "连接翻译服务失败"
+            return String(localized: "error.connectionFailed")
         case .encodingFailed:
-            return "数据编码失败"
+            return String(localized: "error.encodingFailed")
         }
     }
 }

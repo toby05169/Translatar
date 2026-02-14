@@ -1,0 +1,147 @@
+/* 
+  Localizable.strings (မြန်မာ - Burmese)
+  Translatar
+*/
+
+// === Tab bar ===
+"tab.translate" = "ဘာသာပြန်";
+"tab.history" = "မှတ်တမ်း";
+"tab.settings" = "ဆက်တင်";
+
+// === Translation Modes ===
+"mode.conversation" = "စကားပြောမုဒ်";
+"mode.immersive" = "နားထောင်မုဒ်";
+"mode.conversation.desc" = "မျက်နှာချင်းဆိုင် စကားပြောရန်၊ အလိုအလျောက် အလှည့်ကျ ရှာဖွေခြင်း";
+"mode.immersive.desc" = "ပတ်ဝန်းကျင် အသံကို ဆက်တိုက် နားထောင်ပြီး ဘာသာပြန်ခြင်း";
+
+// === Connection Status ===
+"status.disconnected" = "ချိတ်ဆက်မထားပါ";
+"status.connecting" = "ချိတ်ဆက်နေသည်...";
+"status.connected" = "အဆင်သင့်ဖြစ်ပြီ၊ အသံထည့်ရန် စောင့်နေသည်";
+"status.translating" = "ဘာသာပြန်နေသည်...";
+"status.error" = "အမှား: %@";
+
+// === Language Selector ===
+"lang.source" = "သူတို့ပြောသည်";
+"lang.target" = "ဘာသာပြန်ရန်";
+
+// === Status Bar ===
+"status.online" = "အွန်လိုင်း";
+"status.offline" = "အော့ဖ်လိုင်း";
+"status.noise.on" = "ဆူညံသံလျှော့ ဖွင့်";
+"status.noise.off" = "ဆူညံသံလျှော့ ပိတ်";
+"status.listening" = "ပတ်ဝန်းကျင် နားထောင်ခြင်း";
+"status.chatting" = "စကားပြော ဘာသာပြန်";
+"status.monitoring" = "နားထောင်နေသည်...";
+
+// === Translation Display ===
+"display.original" = "မူရင်း";
+"display.translated" = "ဘာသာပြန်";
+
+// === Control Button ===
+"button.stop" = "ရပ်";
+"button.start.listen" = "နားထောင်ရန်";
+"button.start.translate" = "ဘာသာပြန်ရန်";
+
+// === Translation History ===
+"history.recent" = "မကြာသေးမီ";
+"history.title" = "ဘာသာပြန် မှတ်တမ်း";
+"history.empty.immersive" = "နားထောင်ပြီးနောက် ဘာသာပြန်ချက်များ ဤနေရာတွင် ပေါ်လာမည်";
+"history.empty.conversation" = "ဘာသာပြန်ပြီးနောက် စကားပြောမှတ်တမ်း ဤနေရာတွင် ပေါ်လာမည်";
+"history.auto.save" = "စကားပြောမှတ်တမ်းများ အလိုအလျောက် သိမ်းဆည်းပါမည်";
+
+// === Free Quota ===
+"quota.title" = "ယနေ့ အခမဲ့ ပမာဏ";
+"quota.remaining" = "%@ ကျန်ရှိ";
+"quota.upgrade" = "PRO သို့ အဆင့်မြှင့်";
+
+// === Common ===
+"common.offline.badge" = "အော့ဖ်လိုင်း";
+"common.alert.title" = "အသိပေးချက်";
+"common.alert.ok" = "အိုကေ";
+"common.alert.unknown.error" = "မသိသော အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်";
+
+// === Settings ===
+"settings.title" = "ဆက်တင်";
+"settings.translation.mode" = "ဘာသာပြန် မုဒ်";
+
+// === Onboarding ===
+"onboarding.next" = "ရှေ့ဆက်";
+"onboarding.start" = "စတင်ရန်";
+"onboarding.subtitle" = "ဘာသာစကားသည် အတားအဆီး မဟုတ်တော့ပါ";
+
+// === Paywall ===
+"paywall.immersive" = "နားထောင်မုဒ် (လေဆိပ်ကြေညာချက် ဘာသာပြန်)";
+"paywall.conversation" = "စကားပြောမုဒ်";
+"paywall.start.trial" = "၇ ရက် အခမဲ့ စမ်းသုံးရန်";
+
+// === Subscription Features ===
+"subscription.free.features" = "နေ့စဉ် ၅ မိနစ် ဘာသာပြန်,စကားပြောမုဒ်,ဘာသာ ၁၀ ခု,နှစ်ဘာသာ စာတန်း";
+"subscription.pro.features" = "အကန့်အသတ်မဲ့ ဘာသာပြန်,စကားပြော + နားထောင်,AI ဆူညံသံလျှော့,အော့ဖ်လိုင်း ဘာသာပြန်,မှတ်တမ်း တင်ပို့,ဦးစားပေး ပံ့ပိုး";
+
+// === ဘာသာစကား အုပ်စု ===
+"group.eastAsia" = "အရှေ့အာရှ";
+"group.southeastAsia" = "အရှေ့တောင်အာရှ";
+"group.southAsia" = "တောင်အာရှ";
+"group.europeAmericas" = "ဥရောပနှင့် အမေရိက";
+"group.middleEastAfrica" = "အရှေ့အလယ်ပိုင်းနှင့် အာဖရိက";
+
+"lang.name.cantonese" = "ကွမ်တုံ";
+"lang.name.hokkien" = "ဟုတ်ကျန်";
+
+"settings.title" = "ဆက်တင်များ";
+"settings.expiry" = "သက်တမ်းကုန်ဆုံးချိန်";
+"settings.freeLimit" = "နေ့စဉ် ၅ မိနစ် အခမဲ့ ဘာသာပြန်";
+"settings.allUnlocked" = "အင်္ဂါရပ်အားလုံး ဖွင့်ပြီး";
+"settings.upgrade" = "အဆင့်မြှင့်";
+"settings.restore" = "ဝယ်ယူမှုများ ပြန်လည်ရယူ";
+"settings.manageSubscription" = "စာရင်းသွင်းမှု စီမံ";
+"settings.section.subscription" = "စာရင်းသွင်းမှု";
+"settings.section.translationMode" = "ဘာသာပြန်မုဒ်";
+"settings.section.audio" = "အသံဆက်တင်";
+"settings.section.offline" = "အော့ဖ်လိုင်း ဘာသာပြန်";
+"settings.section.about" = "အကြောင်း";
+"settings.section.account" = "အကောင့်";
+"settings.apiKey.title" = "OpenAI API သော့";
+"settings.save" = "သိမ်းဆည်း";
+"settings.apiKey.note" = "API သော့ကို သင့်စက်တွင်သာ သိမ်းဆည်းထားသည်။";
+"settings.noiseSuppression" = "AI ဆူညံသံ လျှော့ချ";
+"settings.noiseSuppression.desc" = "Apple Voice Processing နည်းပညာ";
+"settings.noiseSuppression.footer" = "ဆူညံသော ပတ်ဝန်းကျင်တွင် ဖွင့်ရန် အကြံပြုသည်။";
+"settings.autoOffline" = "အလိုအလျောက် အော့ဖ်လိုင်း ပြောင်း";
+"settings.autoOffline.desc" = "ချိတ်ဆက်မှု ပြတ်သွားသောအခါ အလိုအလျောက် ပြောင်း";
+"settings.offlinePack" = "အော့ဖ်လိုင်း ဘာသာစကား";
+"settings.version" = "ဗားရှင်း";
+"settings.onlineEngine" = "အွန်လိုင်း အင်ဂျင်";
+"settings.offlineEngine" = "အော့ဖ်လိုင်း အင်ဂျင်";
+"settings.privacy" = "ကိုယ်ရေးကိုယ်တာ မူဝါဒ";
+"settings.terms" = "အသုံးပြုမှု စည်းကမ်း";
+"settings.feedback" = "အကြံပြုချက်";
+
+"history.title" = "မှတ်တမ်း";
+"history.search" = "ဘာသာပြန်ရှာဖွေ";
+"history.empty.title" = "ဘာသာပြန်မှတ်တမ်း မရှိသေးပါ";
+"history.empty.subtitle" = "ဘာသာပြန်များကို ဤနေရာတွင် အလိုအလျောက် သိမ်းဆည်းပါမည်";
+"history.count %lld" = "မှတ်တမ်း %lld ခု";
+"history.copy" = "ဘာသာပြန်ကူးယူ";
+"history.share" = "မျှဝေ";
+"history.export.header" = "Translatar ဘာသာပြန်မှတ်တမ်း";
+"history.export.time" = "ထုတ်ယူချိန်";
+"history.original" = "မူရင်း";
+"history.translated" = "ဘာသာပြန်";
+"common.close" = "ပိတ်";
+
+"settings.offline.speech.hint" = "• အသံအသိအမှတ်ပြု: ဆက်တင် → အထွေထွေ → ကီးဘုတ် → အမိန့်ပေးစာရိုက်ဘာသာစကား";
+"settings.offline.translate.hint" = "• ဘာသာပြန်အင်ဂျင်: ဆက်တင် → အထွေထွေ → ဘာသာပြန် → ဘာသာစကားဒေါင်းလုဒ် (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.skip" = "ကျော်";
+"onboarding.next" = "ရှေ့ဆက်";
+"onboarding.start" = "စတင်";
+"paywall.title" = "အင်္ဂါရပ်အားလုံးဖွင့်";
+"paywall.restore" = "ဝယ်ယူမှုပြန်လည်ရယူ";
+"paywall.terms" = "အသုံးပြုမှုစည်းကမ်း";
+"paywall.privacy" = "ကိုယ်ရေးကိုယ်တာမူဝါဒ";
+"sub.free" = "အခမဲ့";
+"sub.monthly" = "လစဉ်";
+"sub.yearly" = "နှစ်စဉ်";

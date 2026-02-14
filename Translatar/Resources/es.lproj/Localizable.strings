@@ -1,0 +1,120 @@
+/* 
+  Localizable.strings (Español - Spanish)
+  Translatar
+*/
+
+"tab.translate" = "Traducir";
+"tab.history" = "Historial";
+"tab.settings" = "Ajustes";
+"mode.conversation" = "Modo conversación";
+"mode.immersive" = "Modo inmersivo";
+"mode.conversation.desc" = "Conversación cara a cara con detección automática de turnos";
+"mode.immersive.desc" = "Escucha continua para anuncios y sonido ambiental";
+"status.disconnected" = "Desconectado";
+"status.connecting" = "Conectando...";
+"status.connected" = "Listo, esperando voz";
+"status.translating" = "Traduciendo...";
+"status.error" = "Error: %@";
+"lang.source" = "Ellos hablan";
+"lang.target" = "Traducir a";
+"status.online" = "En línea";
+"status.offline" = "Sin conexión";
+"status.noise.on" = "Reducción ON";
+"status.noise.off" = "Reducción OFF";
+"status.listening" = "Escuchando";
+"status.chatting" = "Conversación";
+"status.monitoring" = "Escuchando...";
+"display.original" = "Original";
+"display.translated" = "Traducción";
+"button.stop" = "Detener";
+"button.start.listen" = "Escuchar";
+"button.start.translate" = "Traducir";
+"history.recent" = "Recientes";
+"history.title" = "Historial";
+"history.empty.immersive" = "Las traducciones aparecerán aquí después de comenzar a escuchar";
+"history.empty.conversation" = "Las conversaciones aparecerán aquí después de comenzar";
+"history.auto.save" = "Las conversaciones se guardarán automáticamente aquí";
+"quota.title" = "Cuota gratuita diaria";
+"quota.remaining" = "%@ restante";
+"quota.upgrade" = "Mejorar a PRO";
+"common.offline.badge" = "Sin conexión";
+"common.alert.title" = "Aviso";
+"common.alert.ok" = "Aceptar";
+"common.alert.unknown.error" = "Ocurrió un error desconocido";
+"settings.title" = "Ajustes";
+"settings.translation.mode" = "Modo de traducción";
+"onboarding.next" = "Siguiente";
+"onboarding.start" = "Comenzar";
+"onboarding.subtitle" = "El idioma ya no es una barrera";
+"paywall.immersive" = "Modo inmersivo (Anuncios de aeropuerto)";
+"paywall.conversation" = "Modo conversación";
+"paywall.start.trial" = "Prueba gratuita de 7 días";
+"subscription.free.features" = "5 min diarios,Modo conversación,10 idiomas,Subtítulos bilingües";
+"subscription.pro.features" = "Traducción ilimitada,Conversación + Inmersivo,Reducción de ruido IA,Traducción offline,Exportar historial,Soporte prioritario";
+
+// === Grupos de idiomas ===
+"group.eastAsia" = "Asia Oriental";
+"group.southeastAsia" = "Sudeste Asiático";
+"group.southAsia" = "Asia del Sur";
+"group.europeAmericas" = "Europa y América";
+"group.middleEastAfrica" = "Oriente Medio y África";
+
+"lang.name.cantonese" = "Cantonés";
+"lang.name.hokkien" = "Hokkien";
+
+"settings.title" = "Ajustes";
+"settings.expiry" = "Vence";
+"settings.freeLimit" = "5 min de traducción gratis al día";
+"settings.allUnlocked" = "Todas las funciones desbloqueadas";
+"settings.upgrade" = "Mejorar";
+"settings.restore" = "Restaurar compras";
+"settings.manageSubscription" = "Gestionar suscripción";
+"settings.section.subscription" = "Suscripción";
+"settings.section.translationMode" = "Modo de traducción";
+"settings.section.audio" = "Ajustes de audio";
+"settings.section.offline" = "Traducción sin conexión";
+"settings.section.about" = "Acerca de";
+"settings.section.account" = "Cuenta";
+"settings.apiKey.title" = "Clave API de OpenAI";
+"settings.save" = "Guardar";
+"settings.apiKey.note" = "La clave API solo se guarda en tu dispositivo.";
+"settings.noiseSuppression" = "Supresión de ruido IA";
+"settings.noiseSuppression.desc" = "Tecnología Apple Voice Processing";
+"settings.noiseSuppression.footer" = "Se recomienda activar en entornos ruidosos.";
+"settings.autoOffline" = "Cambio automático sin conexión";
+"settings.autoOffline.desc" = "Cambiar automáticamente al desconectarse";
+"settings.offlinePack" = "Paquetes de idiomas sin conexión";
+"settings.version" = "Versión";
+"settings.onlineEngine" = "Motor en línea";
+"settings.offlineEngine" = "Motor sin conexión";
+"settings.privacy" = "Política de privacidad";
+"settings.terms" = "Términos de servicio";
+"settings.feedback" = "Comentarios";
+
+"history.title" = "Historial";
+"history.search" = "Buscar traducciones";
+"history.empty.title" = "Sin traducciones aún";
+"history.empty.subtitle" = "Las traducciones se guardarán aquí automáticamente";
+"history.count %lld" = "%lld registros";
+"history.copy" = "Copiar traducción";
+"history.share" = "Compartir";
+"history.export.header" = "Historial de Translatar";
+"history.export.time" = "Hora de exportación";
+"history.original" = "Original";
+"history.translated" = "Traducción";
+"common.close" = "Cerrar";
+
+"settings.offline.speech.hint" = "• Reconocimiento de voz: Ajustes → General → Teclado → Idiomas de dictado";
+"settings.offline.translate.hint" = "• Motor de traducción: Ajustes → General → Traducir → Descargar idiomas (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.skip" = "Omitir";
+"onboarding.next" = "Siguiente";
+"onboarding.start" = "Comenzar";
+"paywall.title" = "Desbloquear todas las funciones";
+"paywall.restore" = "Restaurar compra";
+"paywall.terms" = "Términos de uso";
+"paywall.privacy" = "Política de privacidad";
+"sub.free" = "Gratis";
+"sub.monthly" = "Mensual";
+"sub.yearly" = "Anual";

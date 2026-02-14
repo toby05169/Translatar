@@ -1,0 +1,211 @@
+/* 
+  Localizable.strings (ไทย - Thai)
+  Translatar
+*/
+
+// === แถบแท็บ ===
+"tab.translate" = "แปล";
+"tab.history" = "ประวัติ";
+"tab.settings" = "ตั้งค่า";
+
+// === โหมดแปล ===
+"mode.conversation" = "โหมดสนทนา";
+"mode.immersive" = "โหมดดื่มด่ำ";
+"mode.conversation.desc" = "สนทนาแบบตัวต่อตัว ตรวจจับการสลับพูดอัตโนมัติ";
+"mode.immersive.desc" = "ฟังต่อเนื่อง แปลประกาศและเสียงรอบข้าง";
+
+// === สถานะการเชื่อมต่อ ===
+"status.disconnected" = "ไม่ได้เชื่อมต่อ";
+"status.connecting" = "กำลังเชื่อมต่อ...";
+"status.connected" = "พร้อมแล้ว รอเสียงพูด";
+"status.translating" = "กำลังแปล...";
+"status.error" = "ข้อผิดพลาด: %@";
+
+// === ตัวเลือกภาษา ===
+"lang.source" = "เขาพูด";
+"lang.target" = "แปลเป็น";
+
+// === แถบสถานะ ===
+"status.online" = "ออนไลน์";
+"status.offline" = "ออฟไลน์";
+"status.noise.on" = "ลดเสียงรบกวน เปิด";
+"status.noise.off" = "ลดเสียงรบกวน ปิด";
+"status.listening" = "ฟังสิ่งแวดล้อม";
+"status.chatting" = "โหมดสนทนา";
+"status.monitoring" = "กำลังฟัง...";
+
+// === แสดงผลการแปล ===
+"display.original" = "ต้นฉบับ";
+"display.translated" = "คำแปล";
+
+// === ปุ่มควบคุม ===
+"button.stop" = "หยุด";
+"button.start.listen" = "เริ่มฟัง";
+"button.start.translate" = "เริ่มแปล";
+
+// === ประวัติการแปล ===
+"history.recent" = "แปลล่าสุด";
+"history.title" = "ประวัติการแปล";
+"history.empty.immersive" = "คำแปลจะแสดงที่นี่หลังจากเริ่มฟัง";
+"history.empty.conversation" = "บันทึกสนทนาจะแสดงที่นี่หลังจากเริ่มแปล";
+"history.auto.save" = "บันทึกสนทนาจะถูกบันทึกอัตโนมัติที่นี่";
+
+// === โควต้าฟรี ===
+"quota.title" = "โควต้าฟรีวันนี้";
+"quota.remaining" = "เหลือ %@";
+"quota.upgrade" = "อัปเกรด PRO";
+
+// === ทั่วไป ===
+"common.offline.badge" = "ออฟไลน์";
+"common.alert.title" = "แจ้งเตือน";
+"common.alert.ok" = "ตกลง";
+"common.alert.unknown.error" = "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+
+// === ตั้งค่า ===
+"settings.title" = "ตั้งค่า";
+"settings.translation.mode" = "โหมดแปล";
+
+// === หน้าแนะนำ ===
+"onboarding.next" = "ถัดไป";
+"onboarding.start" = "เริ่มใช้งาน";
+"onboarding.subtitle" = "ภาษาไม่ใช่อุปสรรคอีกต่อไป";
+
+// === หน้าสมัครสมาชิก ===
+"paywall.immersive" = "โหมดดื่มด่ำ (แปลประกาศสนามบิน)";
+"paywall.conversation" = "โหมดสนทนา";
+"paywall.start.trial" = "เริ่มทดลองใช้ฟรี 7 วัน";
+
+// === คุณสมบัติสมาชิก ===
+"subscription.free.features" = "โควต้าแปลวันละ 5 นาที,โหมดสนทนา,10 ภาษา,คำบรรยายสองภาษา";
+"subscription.pro.features" = "แปลไม่จำกัด,สนทนา + ดื่มด่ำ,AI ลดเสียงรบกวน,แปลออฟไลน์,ส่งออกประวัติ,สนับสนุนลำดับแรก";
+
+// === กลุ่มภาษา ===
+"group.eastAsia" = "ภาษาเอเชียตะวันออก";
+"group.southeastAsia" = "ภาษาเอเชียตะวันออกเฉียงใต้";
+"group.southAsia" = "ภาษาเอเชียใต้";
+"group.europeAmericas" = "ภาษายุโรปและอเมริกา";
+"group.middleEastAfrica" = "ภาษาตะวันออกกลางและแอฟริกา";
+
+"lang.name.cantonese" = "ภาษากวางตุ้ง";
+"lang.name.hokkien" = "ภาษาฮกเกี้ยน";
+
+// === การตั้งค่า ===
+"settings.title" = "การตั้งค่า";
+"settings.expiry" = "หมดอายุ";
+"settings.freeLimit" = "แปลฟรี 5 นาทีต่อวัน";
+"settings.allUnlocked" = "ปลดล็อกทุกฟีเจอร์แล้ว";
+"settings.upgrade" = "อัปเกรด";
+"settings.restore" = "กู้คืนการซื้อ";
+"settings.manageSubscription" = "จัดการการสมัครสมาชิก";
+"settings.section.subscription" = "การสมัครสมาชิก";
+"settings.section.translationMode" = "โหมดแปล";
+"settings.section.audio" = "การตั้งค่าเสียง";
+"settings.section.offline" = "แปลออฟไลน์";
+"settings.section.about" = "เกี่ยวกับ";
+"settings.section.account" = "บัญชี";
+"settings.apiKey.title" = "คีย์ OpenAI API";
+"settings.save" = "บันทึก";
+"settings.apiKey.note" = "คีย์ API เก็บไว้ในอุปกรณ์ของคุณเท่านั้น";
+"settings.noiseSuppression" = "ตัดเสียงรบกวน AI";
+"settings.noiseSuppression.desc" = "เทคโนโลยี Apple Voice Processing";
+"settings.noiseSuppression.footer" = "แนะนำให้เปิดในสภาพแวดล้อมที่มีเสียงดัง";
+"settings.autoOffline" = "สลับออฟไลน์อัตโนมัติ";
+"settings.autoOffline.desc" = "สลับเป็นออฟไลน์เมื่อขาดการเชื่อมต่อ";
+"settings.offlinePack" = "แพ็คภาษาออฟไลน์";
+"settings.version" = "เวอร์ชัน";
+"settings.onlineEngine" = "เอนจินออนไลน์";
+"settings.offlineEngine" = "เอนจินออฟไลน์";
+"settings.privacy" = "นโยบายความเป็นส่วนตัว";
+"settings.terms" = "ข้อกำหนดการใช้งาน";
+"settings.feedback" = "ข้อเสนอแนะ";
+
+"history.title" = "ประวัติ";
+"history.search" = "ค้นหาการแปล";
+"history.empty.title" = "ยังไม่มีประวัติการแปล";
+"history.empty.subtitle" = "การแปลจะถูกบันทึกที่นี่โดยอัตโนมัติ";
+"history.count %lld" = "%lld รายการ";
+"history.copy" = "คัดลอกคำแปล";
+"history.share" = "แชร์";
+"history.export.header" = "ประวัติการแปล Translatar";
+"history.export.time" = "เวลาส่งออก";
+"history.original" = "ต้นฉบับ";
+"history.translated" = "คำแปล";
+"common.close" = "ปิด";
+
+"settings.offline.speech.hint" = "• การรู้จำเสียง: ตั้งค่า → ทั่วไป → คีย์บอร์ด → ภาษาเขียนตามคำบอก";
+"settings.offline.translate.hint" = "• เอนจินแปล: ตั้งค่า → ทั่วไป → แปลภาษา → ดาวน์โหลดภาษา (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.title1" = "ภาษาไม่ใช่อุปสรรคอีกต่อไป";
+"onboarding.desc1" = "เชื่อมต่อ AirPods เลือกภาษา แตะเบาๆ ตั้งแต่นี้ ภาษาต่างประเทศจะไหลเข้าหูคุณอย่างเป็นธรรมชาติ";
+"onboarding.title2" = "แปลภาษา AI แบบเรียลไทม์";
+"onboarding.subtitle2" = "ตอบสนองระดับมิลลิวินาที ลื่นไหลเป็นธรรมชาติ";
+"onboarding.desc2" = "ขับเคลื่อนด้วยโมเดลเสียง AI ที่ทันสมัยที่สุด ไม่ใช่แปลทีละคำ แต่เป็นการแสดงออกที่เป็นธรรมชาติ รองรับ 30+ ภาษา";
+"onboarding.title3" = "โหมดดื่มด่ำ";
+"onboarding.subtitle3" = "ไม่พลาดประกาศสนามบินอีกต่อไป";
+"onboarding.desc3" = "ที่สนามบิน สถานี เปิดโหมดดื่มด่ำเพื่อแปลเสียงรอบข้างโดยอัตโนมัติ เปลี่ยนเกต เที่ยวบินล่าช้า รู้ทันที";
+"onboarding.title4" = "ลดเสียงรบกวนอัจฉริยะ · ใช้ออฟไลน์ได้";
+"onboarding.subtitle4" = "แปลแม่นยำแม้ในสภาพแวดล้อมที่มีเสียงดัง";
+"onboarding.desc4" = "เทคโนโลยีลดเสียงรบกวน AI กรองเสียงรบกวนและจับเสียงพูดได้อย่างแม่นยำ แม้ไม่มีอินเทอร์เน็ต การแปลออฟไลน์ก็พร้อมให้บริการ";
+"onboarding.skip" = "ข้าม";
+"onboarding.next" = "ถัดไป";
+"onboarding.start" = "เริ่มใช้งาน";
+"paywall.title" = "ปลดล็อกฟีเจอร์ทั้งหมด";
+"paywall.subtitle" = "แปลไม่จำกัด · โหมดดื่มด่ำ · ลดเสียงรบกวน AI · ออฟไลน์";
+"paywall.feature.unlimited" = "เวลาแปลไม่จำกัด";
+"paywall.feature.immersive" = "โหมดดื่มด่ำ (ประกาศสนามบิน)";
+"paywall.feature.noise" = "ลดเสียงรบกวน AI อัจฉริยะ";
+"paywall.feature.offline" = "แปลออฟไลน์";
+"paywall.feature.conversation" = "โหมดสนทนา";
+"paywall.feature.bilingual" = "คำบรรยายสองภาษา";
+"paywall.trial.start" = "เริ่มทดลองใช้ฟรี 7 วัน";
+"paywall.restore" = "กู้คืนการซื้อ";
+"paywall.terms" = "เงื่อนไขการใช้งาน";
+"paywall.privacy" = "นโยบายความเป็นส่วนตัว";
+"paywall.success.title" = "สมัครสมาชิกสำเร็จ!";
+"paywall.success.subtitle" = "ปลดล็อกฟีเจอร์ทั้งหมดแล้ว";
+"paywall.recommended" = "แนะนำ";
+"paywall.yearly" = "ปี";
+"paywall.monthly" = "เดือน";
+"paywall.per.year" = "/ปี";
+"paywall.per.month" = "/เดือน";
+"paywall.terms.detail" = "การสมัครสมาชิกจะเรียกเก็บเงินผ่านบัญชี Apple ID ของคุณ ต่ออายุอัตโนมัติ 24 ชั่วโมงก่อนหมดอายุ คุณสามารถจัดการและยกเลิกการสมัครสมาชิกในการตั้งค่าบัญชี App Store";
+"sub.free" = "ฟรี";
+"sub.monthly" = "รายเดือน";
+"sub.yearly" = "รายปี";
+"sub.free.desc" = "แปลฟรี 5 นาทีต่อวัน";
+"sub.monthly.desc" = "แปลไม่จำกัด · ฟีเจอร์ทั้งหมด";
+"sub.yearly.desc" = "แปลไม่จำกัด · ฟีเจอร์ทั้งหมด · ประหยัด 40%";
+"sub.feature.quota" = "โควต้าแปล 5 นาทีต่อวัน";
+"sub.feature.conversation" = "โหมดสนทนา";
+"sub.feature.languages" = "30+ ภาษา";
+"sub.feature.bilingual" = "คำบรรยายสองภาษา";
+"sub.feature.unlimited" = "เวลาแปลไม่จำกัด";
+"sub.feature.allModes" = "โหมดสนทนา + โหมดดื่มด่ำ";
+"sub.feature.noise" = "ลดเสียงรบกวน AI อัจฉริยะ";
+"sub.feature.offline" = "แปลออฟไลน์";
+"sub.feature.export" = "ส่งออกประวัติการแปล";
+"sub.feature.support" = "สนับสนุนลูกค้าเร่งด่วน";
+"sub.error.load" = "โหลดแผนสมาชิกไม่สำเร็จ กรุณาตรวจสอบเครือข่าย";
+"sub.error.pending" = "กำลังดำเนินการซื้อ กรุณาตรวจสอบภายหลัง";
+"error.noApiKey" = "กรุณาตั้งค่า OpenAI API key ในการตั้งค่า";
+"error.noApiKey.short" = "ยังไม่ได้ตั้งค่า API key";
+"error.offlineUnavailable" = "แปลออฟไลน์ไม่พร้อมใช้งาน: กรุณาตรวจสอบว่าดาวน์โหลดชุดภาษาแล้ว";
+"error.invalidUrl" = "URL API ไม่ถูกต้อง";
+"error.connectionFailed" = "เชื่อมต่อบริการแปลไม่สำเร็จ";
+"error.encodingFailed" = "เข้ารหัสข้อมูลไม่สำเร็จ";
+"error.audio.format" = "ไม่สามารถสร้างรูปแบบเสียงเป้าหมาย";
+"error.audio.converter" = "ไม่สามารถสร้างตัวแปลงรูปแบบเสียง";
+"error.audio.engine" = "เริ่มเอนจินเสียงไม่สำเร็จ";
+"offline.status.standby" = "โหมดออฟไลน์พร้อม";
+"offline.status.preparing" = "กำลังเตรียมแปลออฟไลน์...";
+"offline.status.ready" = "โหมดออฟไลน์พร้อมใช้งาน";
+"offline.status.listening" = "กำลังฟัง (ออฟไลน์)...";
+"offline.status.translating" = "กำลังแปล (ออฟไลน์)...";
+"offline.status.playing" = "กำลังเล่นคำแปล...";
+"offline.error.permDenied" = "สิทธิ์การรู้จำเสียงถูกปฏิเสธ กรุณาเปิดในการตั้งค่า";
+"offline.error.notSupported" = "อุปกรณ์ไม่รองรับการรู้จำเสียง";
+"offline.error.permUndetermined" = "สิทธิ์การรู้จำเสียงยังไม่ได้กำหนด";
+"offline.error.permUnknown" = "สถานะสิทธิ์ไม่ทราบ";
+"offline.error.recognizerUnavailable" = "ตัวรู้จำเสียงไม่พร้อมใช้งาน กรุณาตรวจสอบว่าดาวน์โหลดชุดภาษาแล้ว";
+"offline.error.cannotCreateRequest" = "ไม่สามารถสร้างคำขอรู้จำ";

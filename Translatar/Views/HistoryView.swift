@@ -36,7 +36,7 @@ struct HistoryView: View {
                     historyListView
                 }
             }
-            .navigationTitle("翻译记录")
+            .navigationTitle(String(localized: "history.title", defaultValue: "翻译记录"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -59,14 +59,14 @@ struct HistoryView: View {
                             }
                         }
                         
-                        Button("关闭") {
+                        Button(String(localized: "common.close", defaultValue: "关闭")) {
                             dismiss()
                         }
                         .foregroundColor(.cyan)
                     }
                 }
             }
-            .searchable(text: $searchText, prompt: "搜索翻译记录")
+            .searchable(text: $searchText, prompt: String(localized: "history.search", defaultValue: "搜索翻译记录"))
         }
         .preferredColorScheme(.dark)
     }
@@ -79,11 +79,11 @@ struct HistoryView: View {
                 .font(.system(size: 48))
                 .foregroundColor(.white.opacity(0.15))
             
-            Text("暂无翻译记录")
+            Text(String(localized: "history.empty.title", defaultValue: "暂无翻译记录"))
                 .font(.title3)
                 .foregroundColor(.white.opacity(0.4))
             
-            Text("开始翻译后，对话记录将自动保存在这里")
+            Text(String(localized: "history.empty.subtitle", defaultValue: "开始翻译后，对话记录将自动保存在这里"))
                 .font(.subheadline)
                 .foregroundColor(.white.opacity(0.25))
                 .multilineTextAlignment(.center)
@@ -97,7 +97,7 @@ struct HistoryView: View {
             LazyVStack(spacing: 12) {
                 // 统计信息
                 HStack {
-                    Text("共 \(viewModel.translationHistory.count) 条记录")
+                    Text(String(localized: "history.count \(viewModel.translationHistory.count)", defaultValue: "共 \(viewModel.translationHistory.count) 条记录"))
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.4))
                     Spacer()
@@ -114,13 +114,13 @@ struct HistoryView: View {
                             Button {
                                 copyToClipboard(entry)
                             } label: {
-                                Label("复制翻译", systemImage: "doc.on.doc")
+                                Label(String(localized: "history.copy", defaultValue: "复制翻译"), systemImage: "doc.on.doc")
                             }
                             
                             Button {
                                 shareEntry(entry)
                             } label: {
-                                Label("分享", systemImage: "square.and.arrow.up")
+                                Label(String(localized: "history.share", defaultValue: "分享"), systemImage: "square.and.arrow.up")
                             }
                         }
                 }
@@ -143,8 +143,8 @@ struct HistoryView: View {
     }
     
     private func exportHistory() {
-        var exportText = "Translatar 翻译记录\n"
-        exportText += "导出时间：\(Date().formatted())\n"
+        var exportText = String(localized: "history.export.header", defaultValue: "Translatar 翻译记录") + "\n"
+        exportText += String(localized: "history.export.time", defaultValue: "导出时间") + "：\(Date().formatted())\n"
         exportText += String(repeating: "=", count: 40) + "\n\n"
         
         for entry in viewModel.translationHistory {
@@ -169,7 +169,7 @@ struct HistoryEntryCard: View {
                 HStack(spacing: 6) {
                     Text(entry.sourceLanguage.flag)
                         .font(.title3)
-                    Text(entry.sourceLanguage.chineseName)
+                    Text(entry.sourceLanguage.localizedName)
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                     
@@ -179,7 +179,7 @@ struct HistoryEntryCard: View {
                     
                     Text(entry.targetLanguage.flag)
                         .font(.title3)
-                    Text(entry.targetLanguage.chineseName)
+                    Text(entry.targetLanguage.localizedName)
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                 }
@@ -198,7 +198,7 @@ struct HistoryEntryCard: View {
             
             // 原文
             VStack(alignment: .leading, spacing: 4) {
-                Text("原文")
+                Text(String(localized: "history.original", defaultValue: "原文"))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
                 Text(entry.originalText)
@@ -208,7 +208,7 @@ struct HistoryEntryCard: View {
             
             // 翻译
             VStack(alignment: .leading, spacing: 4) {
-                Text("翻译")
+                Text(String(localized: "history.translated", defaultValue: "翻译"))
                     .font(.caption2)
                     .foregroundColor(.cyan.opacity(0.5))
                 Text(entry.translatedText)

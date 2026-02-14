@@ -24,29 +24,29 @@ struct OnboardingView: View {
         OnboardingPage(
             icon: "airpodspro",
             title: "戴上耳机",
-            subtitle: "语言不再是障碍",
-            description: "连接AirPods，选择语言，轻轻一点。从此，外语就像母语一样自然流入你的耳朵。",
+            subtitle: String(localized: "onboarding.title1"),
+            description: String(localized: "onboarding.desc1"),
             accentColor: .cyan
         ),
         OnboardingPage(
             icon: "waveform.badge.mic",
-            title: "AI实时翻译",
-            subtitle: "毫秒级响应，自然流畅",
-            description: "基于最先进的AI语音模型，不是逐字翻译，而是理解语境后的自然表达。支持10种语言互译。",
+            title: String(localized: "onboarding.title2"),
+            subtitle: String(localized: "onboarding.subtitle2"),
+            description: String(localized: "onboarding.desc2"),
             accentColor: .indigo
         ),
         OnboardingPage(
             icon: "ear.trianglebadge.exclamationmark",
-            title: "沉浸模式",
-            subtitle: "机场广播再也不会错过",
-            description: "在机场、车站等场景，开启沉浸模式，自动翻译周围所有语音。登机口变更、航班延误，第一时间知道。",
+            title: String(localized: "onboarding.title3"),
+            subtitle: String(localized: "onboarding.subtitle3"),
+            description: String(localized: "onboarding.desc3"),
             accentColor: .purple
         ),
         OnboardingPage(
             icon: "shield.checkered",
-            title: "智能降噪 · 离线可用",
-            subtitle: "嘈杂环境也能精准翻译",
-            description: "AI降噪技术过滤环境噪音，精准捕捉人声。即使没有网络，离线翻译也能为您保驾护航。",
+            title: String(localized: "onboarding.title4"),
+            subtitle: String(localized: "onboarding.subtitle4"),
+            description: String(localized: "onboarding.desc4"),
             accentColor: .orange
         )
     ]
@@ -62,7 +62,7 @@ struct OnboardingView: View {
                 HStack {
                     Spacer()
                     if currentPage < pages.count - 1 {
-                        Button("跳过") {
+                        Button(String(localized: "onboarding.skip")) {
                             completeOnboarding()
                         }
                         .font(.subheadline)
@@ -106,7 +106,7 @@ struct OnboardingView: View {
                     }
                 } label: {
                     HStack(spacing: 8) {
-                        Text(currentPage < pages.count - 1 ? "下一步" : "开始体验")
+                        Text(currentPage < pages.count - 1 ? String(localized: "onboarding.next") : String(localized: "onboarding.start"))
                             .font(.headline)
                             .fontWeight(.semibold)
                         

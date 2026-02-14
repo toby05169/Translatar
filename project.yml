@@ -14,6 +14,21 @@ options:
     iOS: "17.0"
   xcodeVersion: "16.0"
   generateEmptyDirectories: true
+  defaultConfig: Release
+
+localization:
+  developmentRegion: zh
+  knownRegions:
+    - zh
+    - en
+    - th
+    - ja
+    - vi
+    - my
+    - es
+    - pt-BR
+    - ko
+    - fr
 
 settings:
   base:

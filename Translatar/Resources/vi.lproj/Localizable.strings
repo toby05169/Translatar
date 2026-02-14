@@ -1,0 +1,211 @@
+/* 
+  Localizable.strings (Tiếng Việt - Vietnamese)
+  Translatar
+*/
+
+// === Thanh tab ===
+"tab.translate" = "Dịch";
+"tab.history" = "Lịch sử";
+"tab.settings" = "Cài đặt";
+
+// === Chế độ dịch ===
+"mode.conversation" = "Chế độ hội thoại";
+"mode.immersive" = "Chế độ lắng nghe";
+"mode.conversation.desc" = "Trò chuyện trực tiếp, tự động nhận diện lượt nói";
+"mode.immersive.desc" = "Lắng nghe liên tục, dịch thông báo và âm thanh xung quanh";
+
+// === Trạng thái kết nối ===
+"status.disconnected" = "Chưa kết nối";
+"status.connecting" = "Đang kết nối...";
+"status.connected" = "Sẵn sàng, chờ giọng nói";
+"status.translating" = "Đang dịch...";
+"status.error" = "Lỗi: %@";
+
+// === Chọn ngôn ngữ ===
+"lang.source" = "Họ nói";
+"lang.target" = "Dịch sang";
+
+// === Thanh trạng thái ===
+"status.online" = "Trực tuyến";
+"status.offline" = "Ngoại tuyến";
+"status.noise.on" = "Khử ồn Bật";
+"status.noise.off" = "Khử ồn Tắt";
+"status.listening" = "Nghe môi trường";
+"status.chatting" = "Dịch hội thoại";
+"status.monitoring" = "Đang lắng nghe...";
+
+// === Hiển thị bản dịch ===
+"display.original" = "Gốc";
+"display.translated" = "Bản dịch";
+
+// === Nút điều khiển ===
+"button.stop" = "Dừng";
+"button.start.listen" = "Bắt đầu nghe";
+"button.start.translate" = "Bắt đầu dịch";
+
+// === Lịch sử dịch ===
+"history.recent" = "Dịch gần đây";
+"history.title" = "Lịch sử dịch";
+"history.empty.immersive" = "Bản dịch sẽ hiển thị ở đây sau khi bắt đầu nghe";
+"history.empty.conversation" = "Hội thoại sẽ hiển thị ở đây sau khi bắt đầu dịch";
+"history.auto.save" = "Hội thoại sẽ được tự động lưu ở đây";
+
+// === Hạn mức miễn phí ===
+"quota.title" = "Hạn mức miễn phí hôm nay";
+"quota.remaining" = "Còn %@";
+"quota.upgrade" = "Nâng cấp PRO";
+
+// === Chung ===
+"common.offline.badge" = "Ngoại tuyến";
+"common.alert.title" = "Thông báo";
+"common.alert.ok" = "Đồng ý";
+"common.alert.unknown.error" = "Đã xảy ra lỗi không xác định";
+
+// === Cài đặt ===
+"settings.title" = "Cài đặt";
+"settings.translation.mode" = "Chế độ dịch";
+
+// === Giới thiệu ===
+"onboarding.next" = "Tiếp theo";
+"onboarding.start" = "Bắt đầu";
+"onboarding.subtitle" = "Ngôn ngữ không còn là rào cản";
+
+// === Paywall ===
+"paywall.immersive" = "Chế độ lắng nghe (Dịch thông báo sân bay)";
+"paywall.conversation" = "Chế độ hội thoại";
+"paywall.start.trial" = "Dùng thử miễn phí 7 ngày";
+
+// === Tính năng đăng ký ===
+"subscription.free.features" = "5 phút dịch miễn phí/ngày,Chế độ hội thoại,10 ngôn ngữ,Phụ đề song ngữ";
+"subscription.pro.features" = "Dịch không giới hạn,Hội thoại + Lắng nghe,AI khử ồn,Dịch ngoại tuyến,Xuất lịch sử,Hỗ trợ ưu tiên";
+
+// === Nhóm ngôn ngữ ===
+"group.eastAsia" = "Đông Á";
+"group.southeastAsia" = "Đông Nam Á";
+"group.southAsia" = "Nam Á";
+"group.europeAmericas" = "Châu Âu & Châu Mỹ";
+"group.middleEastAfrica" = "Trung Đông & Châu Phi";
+
+"lang.name.cantonese" = "Tiếng Quảng Đông";
+"lang.name.hokkien" = "Tiếng Mân Nam";
+
+// === Cài đặt ===
+"settings.title" = "Cài đặt";
+"settings.expiry" = "Hết hạn";
+"settings.freeLimit" = "Dịch miễn phí 5 phút mỗi ngày";
+"settings.allUnlocked" = "Đã mở khóa tất cả tính năng";
+"settings.upgrade" = "Nâng cấp";
+"settings.restore" = "Khôi phục mua hàng";
+"settings.manageSubscription" = "Quản lý đăng ký";
+"settings.section.subscription" = "Đăng ký";
+"settings.section.translationMode" = "Chế độ dịch";
+"settings.section.audio" = "Cài đặt âm thanh";
+"settings.section.offline" = "Dịch ngoại tuyến";
+"settings.section.about" = "Giới thiệu";
+"settings.section.account" = "Tài khoản";
+"settings.apiKey.title" = "Khóa OpenAI API";
+"settings.save" = "Lưu";
+"settings.apiKey.note" = "Khóa API chỉ được lưu trên thiết bị của bạn.";
+"settings.noiseSuppression" = "Khử tiếng ồn AI";
+"settings.noiseSuppression.desc" = "Công nghệ Apple Voice Processing";
+"settings.noiseSuppression.footer" = "Nên bật trong môi trường ồn ào.";
+"settings.autoOffline" = "Tự động chuyển ngoại tuyến";
+"settings.autoOffline.desc" = "Tự động chuyển khi mất kết nối";
+"settings.offlinePack" = "Gói ngôn ngữ ngoại tuyến";
+"settings.version" = "Phiên bản";
+"settings.onlineEngine" = "Công cụ trực tuyến";
+"settings.offlineEngine" = "Công cụ ngoại tuyến";
+"settings.privacy" = "Chính sách bảo mật";
+"settings.terms" = "Điều khoản sử dụng";
+"settings.feedback" = "Phản hồi";
+
+"history.title" = "Lịch sử";
+"history.search" = "Tìm kiếm bản dịch";
+"history.empty.title" = "Chưa có bản dịch nào";
+"history.empty.subtitle" = "Bản dịch sẽ được lưu tự động tại đây";
+"history.count %lld" = "%lld bản ghi";
+"history.copy" = "Sao chép bản dịch";
+"history.share" = "Chia sẻ";
+"history.export.header" = "Lịch sử dịch Translatar";
+"history.export.time" = "Thời gian xuất";
+"history.original" = "Bản gốc";
+"history.translated" = "Bản dịch";
+"common.close" = "Đóng";
+
+"settings.offline.speech.hint" = "• Nhận dạng giọng nói: Cài đặt → Cài đặt chung → Bàn phím → Ngôn ngữ đọc chính tả";
+"settings.offline.translate.hint" = "• Công cụ dịch: Cài đặt → Cài đặt chung → Dịch → Tải ngôn ngữ (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.title1" = "Ngôn ngữ không còn là rào cản";
+"onboarding.desc1" = "Kết nối AirPods, chọn ngôn ngữ, chạm nhẹ. Từ nay, ngoại ngữ sẽ tự nhiên chảy vào tai bạn.";
+"onboarding.title2" = "Dịch AI thời gian thực";
+"onboarding.subtitle2" = "Phản hồi mili giây, tự nhiên trôi chảy";
+"onboarding.desc2" = "Sử dụng mô hình giọng nói AI tiên tiến nhất. Không dịch từng từ mà hiểu ngữ cảnh. Hỗ trợ 30+ ngôn ngữ.";
+"onboarding.title3" = "Chế độ đắm chìm";
+"onboarding.subtitle3" = "Không bỏ lỡ thông báo sân bay";
+"onboarding.desc3" = "Tại sân bay, nhà ga — bật Chế độ đắm chìm để tự động dịch mọi âm thanh xung quanh.";
+"onboarding.title4" = "Giảm tiếng ồn thông minh · Hoạt động ngoại tuyến";
+"onboarding.subtitle4" = "Dịch chính xác ngay cả trong môi trường ồn ào";
+"onboarding.desc4" = "Công nghệ giảm tiếng ồn AI lọc tiếng ồn và bắt giọng nói chính xác. Ngay cả khi không có internet.";
+"onboarding.skip" = "Bỏ qua";
+"onboarding.next" = "Tiếp theo";
+"onboarding.start" = "Bắt đầu";
+"paywall.title" = "Mở khóa tất cả tính năng";
+"paywall.subtitle" = "Dịch không giới hạn · Chế độ đắm chìm · Giảm tiếng ồn AI · Ngoại tuyến";
+"paywall.feature.unlimited" = "Thời gian dịch không giới hạn";
+"paywall.feature.immersive" = "Chế độ đắm chìm (thông báo sân bay)";
+"paywall.feature.noise" = "Giảm tiếng ồn AI thông minh";
+"paywall.feature.offline" = "Dịch ngoại tuyến";
+"paywall.feature.conversation" = "Chế độ hội thoại";
+"paywall.feature.bilingual" = "Phụ đề song ngữ";
+"paywall.trial.start" = "Dùng thử miễn phí 7 ngày";
+"paywall.restore" = "Khôi phục mua hàng";
+"paywall.terms" = "Điều khoản sử dụng";
+"paywall.privacy" = "Chính sách bảo mật";
+"paywall.success.title" = "Đăng ký thành công!";
+"paywall.success.subtitle" = "Tất cả tính năng đã được mở khóa";
+"paywall.recommended" = "Đề xuất";
+"paywall.yearly" = "Năm";
+"paywall.monthly" = "Tháng";
+"paywall.per.year" = "/năm";
+"paywall.per.month" = "/tháng";
+"paywall.terms.detail" = "Đăng ký sẽ được tính phí qua tài khoản Apple ID. Tự động gia hạn 24 giờ trước khi hết hạn. Bạn có thể quản lý và hủy đăng ký trong cài đặt tài khoản App Store.";
+"sub.free" = "Miễn phí";
+"sub.monthly" = "Hàng tháng";
+"sub.yearly" = "Hàng năm";
+"sub.free.desc" = "Dịch miễn phí 5 phút mỗi ngày";
+"sub.monthly.desc" = "Dịch không giới hạn · Tất cả tính năng";
+"sub.yearly.desc" = "Dịch không giới hạn · Tất cả tính năng · Tiết kiệm 40%";
+"sub.feature.quota" = "Hạn mức dịch 5 phút/ngày";
+"sub.feature.conversation" = "Chế độ hội thoại";
+"sub.feature.languages" = "30+ ngôn ngữ";
+"sub.feature.bilingual" = "Phụ đề song ngữ";
+"sub.feature.unlimited" = "Thời gian dịch không giới hạn";
+"sub.feature.allModes" = "Hội thoại + Đắm chìm";
+"sub.feature.noise" = "Giảm tiếng ồn AI thông minh";
+"sub.feature.offline" = "Dịch ngoại tuyến";
+"sub.feature.export" = "Xuất lịch sử dịch";
+"sub.feature.support" = "Hỗ trợ ưu tiên";
+"sub.error.load" = "Không thể tải gói đăng ký. Vui lòng kiểm tra mạng.";
+"sub.error.pending" = "Đang xử lý mua hàng. Vui lòng kiểm tra sau.";
+"error.noApiKey" = "Vui lòng cấu hình API key OpenAI trong Cài đặt";
+"error.noApiKey.short" = "Chưa cấu hình API key";
+"error.offlineUnavailable" = "Dịch ngoại tuyến không khả dụng: Vui lòng kiểm tra gói ngôn ngữ";
+"error.invalidUrl" = "URL API không hợp lệ";
+"error.connectionFailed" = "Không thể kết nối dịch vụ dịch";
+"error.encodingFailed" = "Mã hóa dữ liệu thất bại";
+"error.audio.format" = "Không thể tạo định dạng âm thanh đích";
+"error.audio.converter" = "Không thể tạo bộ chuyển đổi định dạng âm thanh";
+"error.audio.engine" = "Khởi động engine âm thanh thất bại";
+"offline.status.standby" = "Chế độ ngoại tuyến chờ";
+"offline.status.preparing" = "Đang chuẩn bị dịch ngoại tuyến...";
+"offline.status.ready" = "Chế độ ngoại tuyến sẵn sàng";
+"offline.status.listening" = "Đang nghe (ngoại tuyến)...";
+"offline.status.translating" = "Đang dịch (ngoại tuyến)...";
+"offline.status.playing" = "Đang phát bản dịch...";
+"offline.error.permDenied" = "Quyền nhận dạng giọng nói bị từ chối. Vui lòng bật trong Cài đặt.";
+"offline.error.notSupported" = "Thiết bị không hỗ trợ nhận dạng giọng nói";
+"offline.error.permUndetermined" = "Quyền nhận dạng giọng nói chưa xác định";
+"offline.error.permUnknown" = "Trạng thái quyền không xác định";
+"offline.error.recognizerUnavailable" = "Bộ nhận dạng giọng nói không khả dụng. Vui lòng kiểm tra gói ngôn ngữ.";
+"offline.error.cannotCreateRequest" = "Không thể tạo yêu cầu nhận dạng";

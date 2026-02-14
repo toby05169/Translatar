@@ -172,9 +172,25 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Codable {
         }
     }
     
+    /// 本地化的语言名称（根据App当前语言显示对应文字）
+    var localizedName: String {
+        let locale = Locale.current
+        switch self {
+        case .cantonese:
+            return String(localized: "lang.name.cantonese", defaultValue: "粤语")
+        case .hokkien:
+            return String(localized: "lang.name.hokkien", defaultValue: "闽南语")
+        default:
+            if let name = locale.localizedString(forLanguageCode: self.rawValue) {
+                return name.prefix(1).uppercased() + name.dropFirst()
+            }
+            return chineseName
+        }
+    }
+    
     /// 国旗+文字的组合显示（用于UI中确保用户能识别语言）
     var flagWithName: String {
-        return "\(flag) \(chineseName)"
+        return "\(flag) \(localizedName)"
     }
     
     /// 用于OpenAI API的完整语言名称（英文）
@@ -235,13 +251,21 @@ enum SupportedLanguage: String, CaseIterable, Identifiable, Codable {
 
 /// 语言分组枚举
 enum LanguageGroup: String, CaseIterable {
-    case eastAsia = "东亚语言"
-    case southeastAsia = "东南亚语言"
-    case southAsia = "南亚语言"
-    case europeAmericas = "欧美语言"
-    case middleEastAfrica = "中东/非洲语言"
+    case eastAsia = "eastAsia"
+    case southeastAsia = "southeastAsia"
+    case southAsia = "southAsia"
+    case europeAmericas = "europeAmericas"
+    case middleEastAfrica = "middleEastAfrica"
     
-    var displayName: String { rawValue }
+    var displayName: String {
+        switch self {
+        case .eastAsia: return String(localized: "group.eastAsia", defaultValue: "东亚语言")
+        case .southeastAsia: return String(localized: "group.southeastAsia", defaultValue: "东南亚语言")
+        case .southAsia: return String(localized: "group.southAsia", defaultValue: "南亚语言")
+        case .europeAmericas: return String(localized: "group.europeAmericas", defaultValue: "欧美语言")
+        case .middleEastAfrica: return String(localized: "group.middleEastAfrica", defaultValue: "中东/非洲语言")
+        }
+    }
     
     /// 获取该分组下的所有语言
     var languages: [SupportedLanguage] {

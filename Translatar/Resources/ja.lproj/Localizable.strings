@@ -1,0 +1,211 @@
+/* 
+  Localizable.strings (日本語 - Japanese)
+  Translatar
+*/
+
+// === タブバー ===
+"tab.translate" = "翻訳";
+"tab.history" = "履歴";
+"tab.settings" = "設定";
+
+// === 翻訳モード ===
+"mode.conversation" = "会話モード";
+"mode.immersive" = "没入モード";
+"mode.conversation.desc" = "対面での会話に最適、自動ターン検出";
+"mode.immersive.desc" = "環境音を継続的にリスニングし、リアルタイム翻訳";
+
+// === 接続状態 ===
+"status.disconnected" = "未接続";
+"status.connecting" = "接続中...";
+"status.connected" = "準備完了、音声入力を待機中";
+"status.translating" = "翻訳中...";
+"status.error" = "エラー：%@";
+
+// === 言語セレクター ===
+"lang.source" = "相手の言語";
+"lang.target" = "翻訳先";
+
+// === ステータスバー ===
+"status.online" = "オンライン";
+"status.offline" = "オフライン";
+"status.noise.on" = "ノイズ除去 ON";
+"status.noise.off" = "ノイズ除去 OFF";
+"status.listening" = "環境リスニング";
+"status.chatting" = "会話翻訳";
+"status.monitoring" = "リスニング中...";
+
+// === 翻訳表示 ===
+"display.original" = "原文";
+"display.translated" = "翻訳";
+
+// === コントロールボタン ===
+"button.stop" = "停止";
+"button.start.listen" = "リスニング開始";
+"button.start.translate" = "翻訳開始";
+
+// === 翻訳履歴 ===
+"history.recent" = "最近の翻訳";
+"history.title" = "翻訳履歴";
+"history.empty.immersive" = "リスニング開始後、翻訳がここに表示されます";
+"history.empty.conversation" = "翻訳開始後、会話記録がここに表示されます";
+"history.auto.save" = "会話記録は自動的にここに保存されます";
+
+// === 無料枠 ===
+"quota.title" = "本日の無料枠";
+"quota.remaining" = "残り %@";
+"quota.upgrade" = "PRO にアップグレード";
+
+// === 共通 ===
+"common.offline.badge" = "オフライン";
+"common.alert.title" = "お知らせ";
+"common.alert.ok" = "OK";
+"common.alert.unknown.error" = "不明なエラーが発生しました";
+
+// === 設定 ===
+"settings.title" = "設定";
+"settings.translation.mode" = "翻訳モード";
+
+// === オンボーディング ===
+"onboarding.next" = "次へ";
+"onboarding.start" = "始めましょう";
+"onboarding.subtitle" = "言葉の壁はもうありません";
+
+// === ペイウォール ===
+"paywall.immersive" = "没入モード（空港アナウンス翻訳）";
+"paywall.conversation" = "会話モード";
+"paywall.start.trial" = "7日間無料トライアルを開始";
+
+// === サブスクリプション機能 ===
+"subscription.free.features" = "毎日5分の翻訳枠,会話モード,10言語,バイリンガル字幕";
+"subscription.pro.features" = "無制限翻訳,会話 + 没入モード,AIノイズ除去,オフライン翻訳,履歴エクスポート,優先サポート";
+
+// === 言語グループ ===
+"group.eastAsia" = "東アジア言語";
+"group.southeastAsia" = "東南アジア言語";
+"group.southAsia" = "南アジア言語";
+"group.europeAmericas" = "欧米言語";
+"group.middleEastAfrica" = "中東・アフリカ言語";
+
+"lang.name.cantonese" = "広東語";
+"lang.name.hokkien" = "閩南語";
+
+// === 設定 ===
+"settings.title" = "設定";
+"settings.expiry" = "有効期限";
+"settings.freeLimit" = "毎日5分間無料翻訳";
+"settings.allUnlocked" = "全機能がアンロック済み";
+"settings.upgrade" = "アップグレード";
+"settings.restore" = "購入を復元";
+"settings.manageSubscription" = "サブスクリプション管理";
+"settings.section.subscription" = "サブスクリプション";
+"settings.section.translationMode" = "翻訳モード";
+"settings.section.audio" = "オーディオ設定";
+"settings.section.offline" = "オフライン翻訳";
+"settings.section.about" = "アプリについて";
+"settings.section.account" = "アカウント";
+"settings.apiKey.title" = "OpenAI APIキー";
+"settings.save" = "保存";
+"settings.apiKey.note" = "APIキーはデバイスにのみ保存されます。";
+"settings.noiseSuppression" = "AIノイズ抑制";
+"settings.noiseSuppression.desc" = "Apple Voice Processing技術";
+"settings.noiseSuppression.footer" = "騒がしい環境ではオンにすることをお勧めします。";
+"settings.autoOffline" = "自動オフライン切替";
+"settings.autoOffline.desc" = "切断時に自動でオフラインに切替";
+"settings.offlinePack" = "オフライン言語パック";
+"settings.version" = "バージョン";
+"settings.onlineEngine" = "オンラインエンジン";
+"settings.offlineEngine" = "オフラインエンジン";
+"settings.privacy" = "プライバシーポリシー";
+"settings.terms" = "利用規約";
+"settings.feedback" = "フィードバック";
+
+"history.title" = "履歴";
+"history.search" = "翻訳を検索";
+"history.empty.title" = "翻訳履歴がありません";
+"history.empty.subtitle" = "翻訳は自動的にここに保存されます";
+"history.count %lld" = "%lld件の記録";
+"history.copy" = "翻訳をコピー";
+"history.share" = "共有";
+"history.export.header" = "Translatar 翻訳履歴";
+"history.export.time" = "エクスポート時刻";
+"history.original" = "原文";
+"history.translated" = "翻訳";
+"common.close" = "閉じる";
+
+"settings.offline.speech.hint" = "• 音声認識: 設定 → 一般 → キーボード → 音声入力言語";
+"settings.offline.translate.hint" = "• 翻訳エンジン: 設定 → 一般 → 翻訳 → 言語をダウンロード (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.title1" = "言語はもう障壁ではない";
+"onboarding.desc1" = "AirPodsを接続し、言語を選んでタップするだけ。外国語が母語のように自然に耳に流れ込みます。";
+"onboarding.title2" = "AIリアルタイム翻訳";
+"onboarding.subtitle2" = "ミリ秒の応答、自然で流暢";
+"onboarding.desc2" = "最先端のAI音声モデルを搭載。単語ごとの翻訳ではなく、文脈を理解した自然な表現。30以上の言語に対応。";
+"onboarding.title3" = "イマーシブモード";
+"onboarding.subtitle3" = "空港のアナウンスを見逃さない";
+"onboarding.desc3" = "空港や駅でイマーシブモードをオンにすると、周囲の音声を自動翻訳。ゲート変更やフライト遅延を即座に把握。";
+"onboarding.title4" = "スマートノイズリダクション・オフライン対応";
+"onboarding.subtitle4" = "騒がしい環境でも正確に翻訳";
+"onboarding.desc4" = "AIノイズリダクション技術で環境ノイズをフィルタリングし、人の声を正確にキャプチャ。インターネットがなくてもオフライン翻訳が利用可能。";
+"onboarding.skip" = "スキップ";
+"onboarding.next" = "次へ";
+"onboarding.start" = "始める";
+"paywall.title" = "全機能をアンロック";
+"paywall.subtitle" = "無制限翻訳・イマーシブモード・AIノイズリダクション・オフライン";
+"paywall.feature.unlimited" = "無制限の翻訳時間";
+"paywall.feature.immersive" = "イマーシブモード（空港アナウンス）";
+"paywall.feature.noise" = "AIスマートノイズリダクション";
+"paywall.feature.offline" = "オフライン翻訳";
+"paywall.feature.conversation" = "会話モード";
+"paywall.feature.bilingual" = "バイリンガル字幕";
+"paywall.trial.start" = "7日間無料トライアルを開始";
+"paywall.restore" = "購入を復元";
+"paywall.terms" = "利用規約";
+"paywall.privacy" = "プライバシーポリシー";
+"paywall.success.title" = "サブスクリプション成功！";
+"paywall.success.subtitle" = "全機能がアンロックされました";
+"paywall.recommended" = "おすすめ";
+"paywall.yearly" = "年";
+"paywall.monthly" = "月";
+"paywall.per.year" = "/年";
+"paywall.per.month" = "/月";
+"paywall.terms.detail" = "サブスクリプションはApple IDアカウントに請求されます。有効期限の24時間前に自動更新されます。App Storeのアカウント設定でサブスクリプションを管理・キャンセルできます。";
+"sub.free" = "無料版";
+"sub.monthly" = "月額プラン";
+"sub.yearly" = "年額プラン";
+"sub.free.desc" = "毎日5分間無料翻訳";
+"sub.monthly.desc" = "無制限翻訳・全機能";
+"sub.yearly.desc" = "無制限翻訳・全機能・40%お得";
+"sub.feature.quota" = "1日5分の翻訳枠";
+"sub.feature.conversation" = "会話モード";
+"sub.feature.languages" = "30以上の言語";
+"sub.feature.bilingual" = "バイリンガル字幕";
+"sub.feature.unlimited" = "無制限の翻訳時間";
+"sub.feature.allModes" = "会話モード + イマーシブモード";
+"sub.feature.noise" = "AIスマートノイズリダクション";
+"sub.feature.offline" = "オフライン翻訳";
+"sub.feature.export" = "翻訳履歴エクスポート";
+"sub.feature.support" = "優先サポート";
+"sub.error.load" = "サブスクリプションプランの読み込みに失敗しました。ネットワークを確認してください。";
+"sub.error.pending" = "購入処理中です。後ほどご確認ください。";
+"error.noApiKey" = "設定でOpenAI APIキーを設定してください";
+"error.noApiKey.short" = "APIキー未設定";
+"error.offlineUnavailable" = "オフライン翻訳が利用できません：言語パックがダウンロードされているか確認してください";
+"error.invalidUrl" = "無効なAPI URL";
+"error.connectionFailed" = "翻訳サービスへの接続に失敗";
+"error.encodingFailed" = "データエンコードに失敗";
+"error.audio.format" = "ターゲットオーディオフォーマットを作成できません";
+"error.audio.converter" = "オーディオフォーマットコンバーターを作成できません";
+"error.audio.engine" = "オーディオエンジンの起動に失敗";
+"offline.status.standby" = "オフラインモード待機中";
+"offline.status.preparing" = "オフライン翻訳を準備中...";
+"offline.status.ready" = "オフラインモード準備完了";
+"offline.status.listening" = "リスニング中（オフライン）...";
+"offline.status.translating" = "翻訳中（オフライン）...";
+"offline.status.playing" = "翻訳を再生中...";
+"offline.error.permDenied" = "音声認識の権限が拒否されました。設定で有効にしてください。";
+"offline.error.notSupported" = "デバイスは音声認識をサポートしていません";
+"offline.error.permUndetermined" = "音声認識の権限が未決定";
+"offline.error.permUnknown" = "不明な権限状態";
+"offline.error.recognizerUnavailable" = "音声認識が利用できません。言語パックがダウンロードされているか確認してください。";
+"offline.error.cannotCreateRequest" = "認識リクエストを作成できません";

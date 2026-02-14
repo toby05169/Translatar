@@ -1,0 +1,213 @@
+/* 
+  Localizable.strings (简体中文 - 默认语言)
+  Translatar
+*/
+
+// === Tab栏 ===
+"tab.translate" = "翻译";
+"tab.history" = "记录";
+"tab.settings" = "设置";
+
+// === 翻译模式 ===
+"mode.conversation" = "对话模式";
+"mode.immersive" = "沉浸模式";
+"mode.conversation.desc" = "适合面对面交流，自动识别对话轮次";
+"mode.immersive.desc" = "持续监听环境音，实时翻译广播和对话";
+
+// === 连接状态 ===
+"status.disconnected" = "未连接";
+"status.connecting" = "正在连接...";
+"status.connected" = "已就绪，等待语音输入";
+"status.translating" = "正在翻译...";
+"status.error" = "错误：%@";
+
+// === 语言选择器 ===
+"lang.source" = "对方说";
+"lang.target" = "翻译成";
+
+// === 状态栏 ===
+"status.online" = "在线";
+"status.offline" = "离线";
+"status.noise.on" = "降噪开";
+"status.noise.off" = "降噪关";
+"status.listening" = "环境监听";
+"status.chatting" = "对话翻译";
+"status.monitoring" = "持续监听中";
+
+// === 翻译显示 ===
+"display.original" = "原文";
+"display.translated" = "翻译";
+
+// === 控制按钮 ===
+"button.stop" = "停止";
+"button.start.listen" = "开始监听";
+"button.start.translate" = "开始翻译";
+
+// === 翻译历史 ===
+"history.recent" = "最近翻译";
+"history.title" = "翻译记录";
+"history.empty.immersive" = "开始监听后，环境音翻译将显示在这里";
+"history.empty.conversation" = "开始翻译后，对话记录将显示在这里";
+"history.auto.save" = "开始翻译后，对话记录将自动保存在这里";
+
+// === 免费额度 ===
+"quota.title" = "今日免费额度";
+"quota.remaining" = "剩余 %@";
+"quota.upgrade" = "升级 PRO";
+
+// === 通用 ===
+"common.offline.badge" = "离线";
+"common.alert.title" = "提示";
+"common.alert.ok" = "确定";
+"common.alert.unknown.error" = "发生未知错误";
+
+// === 设置页 ===
+"settings.title" = "设置";
+"settings.translation.mode" = "翻译模式";
+
+// === 引导页 ===
+"onboarding.next" = "下一步";
+"onboarding.start" = "开始体验";
+"onboarding.subtitle" = "语言不再是障碍";
+
+// === 付费墙 ===
+"paywall.immersive" = "沉浸模式（机场广播翻译）";
+"paywall.conversation" = "对话模式";
+"paywall.start.trial" = "开始7天免费试用";
+
+// === 订阅功能描述 ===
+"subscription.free.features" = "每天5分钟翻译额度,对话模式,10种语言,双语字幕";
+"subscription.pro.features" = "无限翻译时长,对话模式 + 沉浸模式,AI智能降噪,离线翻译,翻译历史导出,优先客服支持";
+
+// === 语言分组 ===
+"group.eastAsia" = "东亚语言";
+"group.southeastAsia" = "东南亚语言";
+"group.southAsia" = "南亚语言";
+"group.europeAmericas" = "欧美语言";
+"group.middleEastAfrica" = "中东/非洲语言";
+
+// === 方言名称 ===
+"lang.name.cantonese" = "粤语";
+"lang.name.hokkien" = "闽南语";
+
+// === 设置页面 ===
+"settings.title" = "设置";
+"settings.expiry" = "到期时间";
+"settings.freeLimit" = "每天5分钟免费翻译";
+"settings.allUnlocked" = "全部功能已解锁";
+"settings.upgrade" = "升级";
+"settings.restore" = "恢复购买";
+"settings.manageSubscription" = "管理订阅";
+"settings.section.subscription" = "订阅";
+"settings.section.translationMode" = "翻译模式";
+"settings.section.audio" = "音频设置";
+"settings.section.offline" = "离线翻译";
+"settings.section.about" = "关于";
+"settings.section.account" = "账号配置";
+"settings.apiKey.title" = "OpenAI API 密钥";
+"settings.save" = "保存";
+"settings.apiKey.note" = "API密钥仅保存在本地设备上，不会上传到任何服务器。";
+"settings.noiseSuppression" = "AI降噪";
+"settings.noiseSuppression.desc" = "Apple Voice Processing 降噪技术";
+"settings.noiseSuppression.footer" = "降噪功能使用Apple原生Voice Processing技术，在嘈杂环境中建议开启。";
+"settings.autoOffline" = "自动离线切换";
+"settings.autoOffline.desc" = "网络断开时自动切换到离线翻译";
+"settings.offlinePack" = "离线语言包";
+"settings.version" = "版本";
+"settings.onlineEngine" = "在线翻译引擎";
+"settings.offlineEngine" = "离线翻译引擎";
+"settings.privacy" = "隐私政策";
+"settings.terms" = "使用条款";
+"settings.feedback" = "意见反馈";
+
+// === 历史记录 ===
+"history.title" = "翻译记录";
+"history.search" = "搜索翻译记录";
+"history.empty.title" = "暂无翻译记录";
+"history.empty.subtitle" = "开始翻译后，对话记录将自动保存在这里";
+"history.count %lld" = "共 %lld 条记录";
+"history.copy" = "复制翻译";
+"history.share" = "分享";
+"history.export.header" = "Translatar 翻译记录";
+"history.export.time" = "导出时间";
+"history.original" = "原文";
+"history.translated" = "翻译";
+"common.close" = "关闭";
+
+"settings.offline.speech.hint" = "• 语音识别：设置 → 通用 → 键盘 → 听写语言";
+"settings.offline.translate.hint" = "• 翻译引擎：设置 → 通用 → 翻译 → 下载语言（iOS 18+）";
+
+// === 新增本地化字符串 ===
+"onboarding.title1" = "语言不再是障碍";
+"onboarding.desc1" = "连接AirPods，选择语言，轻轻一点。从此，外语就像母语一样自然流入你的耳朵。";
+"onboarding.title2" = "AI实时翻译";
+"onboarding.subtitle2" = "毫秒级响应，自然流畅";
+"onboarding.desc2" = "基于最先进的AI语音模型，不是逐字翻译，而是理解语境后的自然表达。支持30+种语言互译。";
+"onboarding.title3" = "沉浸模式";
+"onboarding.subtitle3" = "机场广播再也不会错过";
+"onboarding.desc3" = "在机场、车站等场景，开启沉浸模式，自动翻译周围所有语音。登机口变更、航班延误，第一时间知道。";
+"onboarding.title4" = "智能降噪 · 离线可用";
+"onboarding.subtitle4" = "嘈杂环境也能精准翻译";
+"onboarding.desc4" = "AI降噪技术过滤环境噪音，精准捕捉人声。即使没有网络，离线翻译也能为您保驾护航。";
+"onboarding.skip" = "跳过";
+"onboarding.next" = "下一步";
+"onboarding.start" = "开始体验";
+"paywall.title" = "解锁全部功能";
+"paywall.subtitle" = "无限翻译 · 沉浸模式 · AI降噪 · 离线翻译";
+"paywall.feature.unlimited" = "无限翻译时长";
+"paywall.feature.immersive" = "沉浸模式（机场广播翻译）";
+"paywall.feature.noise" = "AI智能降噪";
+"paywall.feature.offline" = "离线翻译";
+"paywall.feature.conversation" = "对话模式";
+"paywall.feature.bilingual" = "双语字幕";
+"paywall.trial.start" = "开始7天免费试用";
+"paywall.restore" = "恢复购买";
+"paywall.terms" = "使用条款";
+"paywall.privacy" = "隐私政策";
+"paywall.success.title" = "订阅成功！";
+"paywall.success.subtitle" = "所有功能已解锁";
+"paywall.recommended" = "推荐";
+"paywall.yearly" = "年";
+"paywall.monthly" = "月";
+"paywall.per.year" = "/年";
+"paywall.per.month" = "/月";
+"paywall.terms.detail" = "订阅将通过您的Apple ID账户收费。订阅会在到期前24小时内自动续订，届时将向您的账户收取续订费用。您可以在App Store账户设置中管理和取消订阅。";
+"sub.free" = "免费版";
+"sub.monthly" = "月度会员";
+"sub.yearly" = "年度会员";
+"sub.free.desc" = "每天5分钟免费翻译";
+"sub.monthly.desc" = "无限翻译 · 全部功能";
+"sub.yearly.desc" = "无限翻译 · 全部功能 · 省40%";
+"sub.feature.quota" = "每天5分钟翻译额度";
+"sub.feature.conversation" = "对话模式";
+"sub.feature.languages" = "30+种语言";
+"sub.feature.bilingual" = "双语字幕";
+"sub.feature.unlimited" = "无限翻译时长";
+"sub.feature.allModes" = "对话模式 + 沉浸模式";
+"sub.feature.noise" = "AI智能降噪";
+"sub.feature.offline" = "离线翻译";
+"sub.feature.export" = "翻译历史导出";
+"sub.feature.support" = "优先客服支持";
+"sub.error.load" = "加载订阅方案失败，请检查网络连接";
+"sub.error.pending" = "购买正在处理中，请稍后查看";
+"error.noApiKey" = "请先在设置中配置您的OpenAI API密钥";
+"error.noApiKey.short" = "未配置API密钥";
+"error.offlineUnavailable" = "离线翻译不可用：请检查设备是否已下载语言包";
+"error.invalidUrl" = "API地址无效";
+"error.connectionFailed" = "连接翻译服务失败";
+"error.encodingFailed" = "数据编码失败";
+"error.audio.format" = "无法创建目标音频格式";
+"error.audio.converter" = "无法创建音频格式转换器";
+"error.audio.engine" = "音频引擎启动失败";
+"offline.status.standby" = "离线模式待命";
+"offline.status.preparing" = "正在准备离线翻译...";
+"offline.status.ready" = "离线模式就绪";
+"offline.status.listening" = "正在监听（离线）...";
+"offline.status.translating" = "正在翻译（离线）...";
+"offline.status.playing" = "正在播放翻译...";
+"offline.error.permDenied" = "语音识别权限被拒绝，请在设置中开启";
+"offline.error.notSupported" = "设备不支持语音识别";
+"offline.error.permUndetermined" = "语音识别权限未确定";
+"offline.error.permUnknown" = "未知权限状态";
+"offline.error.recognizerUnavailable" = "语音识别器不可用，请检查语言包是否已下载";
+"offline.error.cannotCreateRequest" = "无法创建识别请求";

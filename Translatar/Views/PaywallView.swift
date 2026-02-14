@@ -93,12 +93,12 @@ struct PaywallView: View {
                     )
             }
             
-            Text("解锁全部功能")
+            Text(String(localized: "paywall.title"))
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
             
-            Text("无限翻译 · 沉浸模式 · AI降噪 · 离线翻译")
+            Text(String(localized: "paywall.subtitle"))
                 .font(.subheadline)
                 .foregroundColor(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
@@ -109,12 +109,12 @@ struct PaywallView: View {
     
     private var featureComparisonSection: some View {
         VStack(spacing: 12) {
-            FeatureRow(icon: "infinity", text: "无限翻译时长", isFree: false, isPro: true)
-            FeatureRow(icon: "ear.fill", text: "沉浸模式（机场广播翻译）", isFree: false, isPro: true)
-            FeatureRow(icon: "waveform.badge.minus", text: "AI智能降噪", isFree: false, isPro: true)
-            FeatureRow(icon: "wifi.slash", text: "离线翻译", isFree: false, isPro: true)
-            FeatureRow(icon: "person.2.fill", text: "对话模式", isFree: true, isPro: true)
-            FeatureRow(icon: "captions.bubble", text: "双语字幕", isFree: true, isPro: true)
+            FeatureRow(icon: "infinity", text: String(localized: "paywall.feature.unlimited"), isFree: false, isPro: true)
+            FeatureRow(icon: "ear.fill", text: String(localized: "paywall.feature.immersive"), isFree: false, isPro: true)
+            FeatureRow(icon: "waveform.badge.minus", text: String(localized: "paywall.feature.noise"), isFree: false, isPro: true)
+            FeatureRow(icon: "wifi.slash", text: String(localized: "paywall.feature.offline"), isFree: false, isPro: true)
+            FeatureRow(icon: "person.2.fill", text: String(localized: "paywall.feature.conversation"), isFree: true, isPro: true)
+            FeatureRow(icon: "captions.bubble", text: String(localized: "paywall.feature.bilingual"), isFree: true, isPro: true)
         }
         .padding(.horizontal, 24)
     }
@@ -163,7 +163,7 @@ struct PaywallView: View {
                         ProgressView()
                             .tint(.white)
                     } else {
-                        Text("开始7天免费试用")
+                        Text(String(localized: "paywall.trial.start"))
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
@@ -188,7 +188,7 @@ struct PaywallView: View {
             
             // 续订说明（App Store审核要求）
             if let product = selectedProduct {
-                Text("免费试用7天后，将以\(product.displayPrice)/\(product.id.contains("yearly") ? "年" : "月")自动续订。可随时在设置中取消。")
+                Text(String(localized: "paywall.trial.note.prefix") + "\(product.displayPrice)/" + (product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly"))自动续订。可随时在设置中取消。")
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.35))
                     .multilineTextAlignment(.center)
@@ -207,27 +207,27 @@ struct PaywallView: View {
                     await subscriptionService.restorePurchases()
                 }
             } label: {
-                Text("恢复购买")
+                Text(String(localized: "paywall.restore"))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.5))
             }
             
             // 条款链接（App Store审核要求）
             HStack(spacing: 16) {
-                Link("使用条款", destination: URL(string: "https://translatar.app/terms")!)
+                Link(String(localized: "paywall.terms"), destination: URL(string: "https://translatar.app/terms")!)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
                 
                 Text("·")
                     .foregroundColor(.white.opacity(0.2))
                 
-                Link("隐私政策", destination: URL(string: "https://translatar.app/privacy")!)
+                Link(String(localized: "paywall.privacy"), destination: URL(string: "https://translatar.app/privacy")!)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
             }
             
             // 订阅说明（App Store审核要求）
-            Text("订阅将通过您的Apple ID账户收费。订阅会在到期前24小时内自动续订，届时将向您的账户收取续订费用。您可以在App Store账户设置中管理和取消订阅。")
+            Text(String(localized: "paywall.terms.detail"))
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.2))
                 .multilineTextAlignment(.center)
@@ -247,12 +247,12 @@ struct PaywallView: View {
                     .font(.system(size: 64))
                     .foregroundColor(.green)
                 
-                Text("订阅成功！")
+                Text(String(localized: "paywall.success.title"))
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 
-                Text("所有功能已解锁")
+                Text(String(localized: "paywall.success.subtitle"))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.6))
             }
@@ -351,7 +351,7 @@ struct SubscriptionCard: View {
                             .foregroundColor(.white)
                         
                         if isYearly {
-                            Text("推荐")
+                            Text(String(localized: "paywall.recommended"))
                                 .font(.caption2)
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
@@ -383,7 +383,7 @@ struct SubscriptionCard: View {
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundColor(isSelected ? .cyan : .white.opacity(0.6))
-                    Text(isYearly ? "/年" : "/月")
+                    Text(isYearly ? String(localized: "paywall.per.year") : String(localized: "paywall.per.month"))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }

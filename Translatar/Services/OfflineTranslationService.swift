@@ -53,12 +53,12 @@ enum OfflineServiceState: Equatable {
     
     var displayText: String {
         switch self {
-        case .idle: return "离线模式待命"
-        case .preparing: return "正在准备离线翻译..."
-        case .ready: return "离线模式就绪"
-        case .listening: return "正在监听（离线）..."
-        case .translating: return "正在翻译（离线）..."
-        case .speaking: return "正在播放翻译..."
+        case .idle: return String(localized: "offline.status.standby")
+        case .preparing: return String(localized: "offline.status.preparing")
+        case .ready: return String(localized: "offline.status.ready")
+        case .listening: return String(localized: "offline.status.listening")
+        case .translating: return String(localized: "offline.status.translating")
+        case .speaking: return String(localized: "offline.status.playing")
         case .error(let msg): return "离线错误：\(msg)"
         case .unavailable(let msg): return "离线不可用：\(msg)"
         }
@@ -233,13 +233,13 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
                     self.stateSubject.send(.error("启动语音识别失败: \(error.localizedDescription)"))
                 }
             case .denied:
-                self.stateSubject.send(.error("语音识别权限被拒绝，请在设置中开启"))
+                self.stateSubject.send(.error(String(localized: "offline.error.permDenied")))
             case .restricted:
-                self.stateSubject.send(.error("设备不支持语音识别"))
+                self.stateSubject.send(.error(String(localized: "offline.error.notSupported")))
             case .notDetermined:
-                self.stateSubject.send(.error("语音识别权限未确定"))
+                self.stateSubject.send(.error(String(localized: "offline.error.permUndetermined")))
             @unknown default:
-                self.stateSubject.send(.error("未知权限状态"))
+                self.stateSubject.send(.error(String(localized: "offline.error.permUnknown")))
             }
         }
     }
@@ -255,14 +255,14 @@ class OfflineTranslationService: NSObject, OfflineTranslationServiceProtocol {
         speechRecognizer = SFSpeechRecognizer(locale: locale)
         
         guard let speechRecognizer = speechRecognizer, speechRecognizer.isAvailable else {
-            stateSubject.send(.unavailable("语音识别器不可用，请检查语言包是否已下载"))
+            stateSubject.send(.unavailable(String(localized: "offline.error.recognizerUnavailable")))
             return
         }
         
         // 创建识别请求
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         guard let recognitionRequest = recognitionRequest else {
-            throw NSError(domain: "OfflineTranslation", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法创建识别请求"])
+            throw NSError(domain: "OfflineTranslation", code: -1, userInfo: [NSLocalizedDescriptionKey: String(localized: "offline.error.cannotCreateRequest")])
         }
         
         // 配置为设备端识别（离线）

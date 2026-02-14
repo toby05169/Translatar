@@ -40,7 +40,7 @@ struct SettingsView: View {
                 }
                 .scrollContentBackground(.hidden)
             }
-            .navigationTitle("设置")
+            .navigationTitle(String(localized: "settings.title", defaultValue: String(localized: "settings.title")))
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showPaywall) {
                 PaywallView()
@@ -79,11 +79,11 @@ struct SettingsView: View {
                         .foregroundColor(.white)
                     
                     if let expDate = subscriptionService.expirationDate {
-                        Text("到期时间：\(expDate.formatted(date: .abbreviated, time: .omitted))")
+                        Text(String(localized: "settings.expiry", defaultValue: String(localized: "settings.expiry")) + "：\(expDate.formatted(date: .abbreviated, time: .omitted))")
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.4))
                     } else {
-                        Text(subscriptionService.currentSubscription == .free ? "每天5分钟免费翻译" : "全部功能已解锁")
+                        Text(subscriptionService.currentSubscription == .free ? String(localized: "settings.freeLimit", defaultValue: String(localized: "settings.freeLimit")) : String(localized: "settings.allUnlocked", defaultValue: String(localized: "settings.allUnlocked")))
                             .font(.caption)
                             .foregroundColor(.white.opacity(0.4))
                     }
@@ -95,7 +95,7 @@ struct SettingsView: View {
                     Button {
                         showPaywall = true
                     } label: {
-                        Text("升级")
+                        Text(String(localized: "settings.upgrade", defaultValue: String(localized: "settings.upgrade")))
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -125,7 +125,7 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "arrow.clockwise")
                         .foregroundColor(.cyan)
-                    Text("恢复购买")
+                    Text(String(localized: "settings.restore", defaultValue: String(localized: "settings.restore")))
                         .foregroundColor(.white.opacity(0.7))
                 }
             }
@@ -137,7 +137,7 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "creditcard")
                             .foregroundColor(.cyan)
-                        Text("管理订阅")
+                        Text(String(localized: "settings.manageSubscription", defaultValue: String(localized: "settings.manageSubscription")))
                             .foregroundColor(.white.opacity(0.7))
                         Spacer()
                         Image(systemName: "arrow.up.right")
@@ -148,7 +148,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.white.opacity(0.05))
             }
         } header: {
-            Text("订阅")
+            Text(String(localized: "settings.section.subscription", defaultValue: String(localized: "settings.section.subscription")))
                 .foregroundColor(.cyan)
         }
     }
@@ -158,7 +158,7 @@ struct SettingsView: View {
     private var apiKeySection: some View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
-                Text("OpenAI API 密钥")
+                Text(String(localized: "settings.apiKey.title", defaultValue: String(localized: "settings.apiKey.title")))
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.6))
                 
@@ -184,7 +184,7 @@ struct SettingsView: View {
                             viewModel.saveAPIKey(tempAPIKey)
                         }
                     } label: {
-                        Text("保存")
+                        Text(String(localized: "settings.save", defaultValue: String(localized: "settings.save")))
                             .font(.caption)
                             .foregroundColor(.cyan)
                     }
@@ -195,13 +195,13 @@ struct SettingsView: View {
                         .fill(Color.white.opacity(0.08))
                 )
                 
-                Text("API密钥仅保存在本地设备上，不会上传到任何服务器。")
+                Text(String(localized: "settings.apiKey.note", defaultValue: String(localized: "settings.apiKey.note")))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.3))
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text("账号配置")
+            Text(String(localized: "settings.section.account", defaultValue: String(localized: "settings.section.account")))
                 .foregroundColor(.cyan)
         }
     }
@@ -253,7 +253,7 @@ struct SettingsView: View {
                 .listRowBackground(Color.white.opacity(0.05))
             }
         } header: {
-            Text("翻译模式")
+            Text(String(localized: "settings.section.translationMode", defaultValue: String(localized: "settings.section.translationMode")))
                 .foregroundColor(.cyan)
         }
     }
@@ -268,10 +268,10 @@ struct SettingsView: View {
                     .frame(width: 30)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("AI降噪")
+                    Text(String(localized: "settings.noiseSuppression", defaultValue: String(localized: "settings.noiseSuppression")))
                         .font(.subheadline)
                         .foregroundColor(.white)
-                    Text("Apple Voice Processing 降噪技术")
+                    Text(String(localized: "settings.noiseSuppression.desc", defaultValue: String(localized: "settings.noiseSuppression.desc")))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }
@@ -283,10 +283,10 @@ struct SettingsView: View {
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text("音频设置")
+            Text(String(localized: "settings.section.audio", defaultValue: String(localized: "settings.section.audio")))
                 .foregroundColor(.cyan)
         } footer: {
-            Text("降噪功能使用Apple原生Voice Processing技术，在嘈杂环境中建议开启。")
+            Text(String(localized: "settings.noiseSuppression.footer", defaultValue: String(localized: "settings.noiseSuppression.footer")))
                 .foregroundColor(.white.opacity(0.3))
         }
     }
@@ -301,10 +301,10 @@ struct SettingsView: View {
                     .frame(width: 30)
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("自动离线切换")
+                    Text(String(localized: "settings.autoOffline", defaultValue: String(localized: "settings.autoOffline")))
                         .font(.subheadline)
                         .foregroundColor(.white)
-                    Text("网络断开时自动切换到离线翻译")
+                    Text(String(localized: "settings.autoOffline.desc", defaultValue: String(localized: "settings.autoOffline.desc")))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }
@@ -321,21 +321,21 @@ struct SettingsView: View {
                     Image(systemName: "arrow.down.circle")
                         .foregroundColor(.orange)
                         .frame(width: 30)
-                    Text("离线语言包")
+                    Text(String(localized: "settings.offlinePack", defaultValue: String(localized: "settings.offlinePack")))
                         .font(.subheadline)
                         .foregroundColor(.white)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("• 语音识别：设置 → 通用 → 键盘 → 听写语言")
-                    Text("• 翻译引擎：设置 → 通用 → 翻译 → 下载语言（iOS 18+）")
+                    Text(String(localized: "settings.offline.speech.hint", defaultValue: "• 语音识别：设置 → 通用 → 键盘 → 听写语言"))
+                    Text(String(localized: "settings.offline.translate.hint", defaultValue: "• 翻译引擎：设置 → 通用 → 翻译 → 下载语言（iOS 18+）"))
                 }
                 .font(.caption2)
                 .foregroundColor(.white.opacity(0.35))
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text("离线翻译")
+            Text(String(localized: "settings.section.offline", defaultValue: String(localized: "settings.section.offline")))
                 .foregroundColor(.orange)
         }
     }
@@ -345,7 +345,7 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             HStack {
-                Text("版本")
+                Text(String(localized: "settings.version", defaultValue: String(localized: "settings.version")))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("3.0.0")
@@ -354,7 +354,7 @@ struct SettingsView: View {
             .listRowBackground(Color.white.opacity(0.05))
             
             HStack {
-                Text("在线翻译引擎")
+                Text(String(localized: "settings.onlineEngine", defaultValue: String(localized: "settings.onlineEngine")))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("OpenAI Realtime API")
@@ -363,7 +363,7 @@ struct SettingsView: View {
             .listRowBackground(Color.white.opacity(0.05))
             
             HStack {
-                Text("离线翻译引擎")
+                Text(String(localized: "settings.offlineEngine", defaultValue: String(localized: "settings.offlineEngine")))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
                 Text("Apple Speech + Translation")
@@ -374,7 +374,7 @@ struct SettingsView: View {
             // 隐私政策
             Link(destination: URL(string: "https://translatar.app/privacy")!) {
                 HStack {
-                    Text("隐私政策")
+                    Text(String(localized: "settings.privacy", defaultValue: String(localized: "settings.privacy")))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "arrow.up.right")
@@ -387,7 +387,7 @@ struct SettingsView: View {
             // 使用条款
             Link(destination: URL(string: "https://translatar.app/terms")!) {
                 HStack {
-                    Text("使用条款")
+                    Text(String(localized: "settings.terms", defaultValue: String(localized: "settings.terms")))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "arrow.up.right")
@@ -400,7 +400,7 @@ struct SettingsView: View {
             // 反馈
             Link(destination: URL(string: "mailto:support@translatar.app")!) {
                 HStack {
-                    Text("意见反馈")
+                    Text(String(localized: "settings.feedback", defaultValue: String(localized: "settings.feedback")))
                         .foregroundColor(.white.opacity(0.6))
                     Spacer()
                     Image(systemName: "envelope")
@@ -410,7 +410,7 @@ struct SettingsView: View {
             }
             .listRowBackground(Color.white.opacity(0.05))
         } header: {
-            Text("关于")
+            Text(String(localized: "settings.section.about", defaultValue: String(localized: "settings.section.about")))
                 .foregroundColor(.cyan)
         }
     }

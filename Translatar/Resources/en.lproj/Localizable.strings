@@ -1,0 +1,212 @@
+/* 
+  Localizable.strings (English)
+  Translatar
+*/
+
+// === Tab Bar ===
+"tab.translate" = "Translate";
+"tab.history" = "History";
+"tab.settings" = "Settings";
+
+// === Translation Modes ===
+"mode.conversation" = "Conversation";
+"mode.immersive" = "Immersive";
+"mode.conversation.desc" = "Face-to-face chat with auto turn detection";
+"mode.immersive.desc" = "Continuous listening for broadcasts and ambient speech";
+
+// === Connection Status ===
+"status.disconnected" = "Disconnected";
+"status.connecting" = "Connecting...";
+"status.connected" = "Ready, waiting for speech";
+"status.translating" = "Translating...";
+"status.error" = "Error: %@";
+
+// === Language Selector ===
+"lang.source" = "They speak";
+"lang.target" = "Translate to";
+
+// === Status Bar ===
+"status.online" = "Online";
+"status.offline" = "Offline";
+"status.noise.on" = "Denoise On";
+"status.noise.off" = "Denoise Off";
+"status.listening" = "Listening";
+"status.chatting" = "Chat Mode";
+"status.monitoring" = "Listening...";
+
+// === Translation Display ===
+"display.original" = "Original";
+"display.translated" = "Translation";
+
+// === Control Button ===
+"button.stop" = "Stop";
+"button.start.listen" = "Listen";
+"button.start.translate" = "Translate";
+
+// === Translation History ===
+"history.recent" = "Recent";
+"history.title" = "History";
+"history.empty.immersive" = "Translations will appear here after you start listening";
+"history.empty.conversation" = "Conversation records will appear here after you start";
+"history.auto.save" = "Conversations will be auto-saved here";
+
+// === Free Quota ===
+"quota.title" = "Daily Free Quota";
+"quota.remaining" = "%@ left";
+"quota.upgrade" = "Upgrade PRO";
+
+// === Common ===
+"common.offline.badge" = "Offline";
+"common.alert.title" = "Notice";
+"common.alert.ok" = "OK";
+"common.alert.unknown.error" = "An unknown error occurred";
+
+// === Settings ===
+"settings.title" = "Settings";
+"settings.translation.mode" = "Translation Mode";
+
+// === Onboarding ===
+"onboarding.next" = "Next";
+"onboarding.start" = "Get Started";
+"onboarding.subtitle" = "Language is no longer a barrier";
+
+// === Paywall ===
+"paywall.immersive" = "Immersive Mode (Airport Broadcasts)";
+"paywall.conversation" = "Conversation Mode";
+"paywall.start.trial" = "Start 7-Day Free Trial";
+
+// === Subscription Features ===
+"subscription.free.features" = "5 min daily quota,Conversation mode,10 languages,Bilingual subtitles";
+"subscription.pro.features" = "Unlimited translation,Conversation + Immersive,AI noise reduction,Offline translation,Export history,Priority support";
+
+// === Language Groups ===
+"group.eastAsia" = "East Asian";
+"group.southeastAsia" = "Southeast Asian";
+"group.southAsia" = "South Asian";
+"group.europeAmericas" = "European & Americas";
+"group.middleEastAfrica" = "Middle East & Africa";
+
+// === Dialect Names ===
+"lang.name.cantonese" = "Cantonese";
+"lang.name.hokkien" = "Hokkien";
+
+// === Settings ===
+"settings.title" = "Settings";
+"settings.expiry" = "Expires";
+"settings.freeLimit" = "5 min free translation daily";
+"settings.allUnlocked" = "All features unlocked";
+"settings.upgrade" = "Upgrade";
+"settings.restore" = "Restore Purchases";
+"settings.manageSubscription" = "Manage Subscription";
+"settings.section.subscription" = "Subscription";
+"settings.section.translationMode" = "Translation Mode";
+"settings.section.audio" = "Audio Settings";
+"settings.section.offline" = "Offline Translation";
+"settings.section.about" = "About";
+"settings.section.account" = "Account";
+"settings.apiKey.title" = "OpenAI API Key";
+"settings.save" = "Save";
+"settings.apiKey.note" = "API key is stored locally on your device only.";
+"settings.noiseSuppression" = "AI Noise Suppression";
+"settings.noiseSuppression.desc" = "Apple Voice Processing technology";
+"settings.noiseSuppression.footer" = "Recommended in noisy environments. Uses Apple native Voice Processing.";
+"settings.autoOffline" = "Auto Offline Switch";
+"settings.autoOffline.desc" = "Auto switch to offline when disconnected";
+"settings.offlinePack" = "Offline Language Packs";
+"settings.version" = "Version";
+"settings.onlineEngine" = "Online Engine";
+"settings.offlineEngine" = "Offline Engine";
+"settings.privacy" = "Privacy Policy";
+"settings.terms" = "Terms of Service";
+"settings.feedback" = "Feedback";
+
+"history.title" = "History";
+"history.search" = "Search translations";
+"history.empty.title" = "No translations yet";
+"history.empty.subtitle" = "Translations will be saved here automatically";
+"history.count %lld" = "%lld records";
+"history.copy" = "Copy Translation";
+"history.share" = "Share";
+"history.export.header" = "Translatar History";
+"history.export.time" = "Export time";
+"history.original" = "Original";
+"history.translated" = "Translation";
+"common.close" = "Close";
+
+"settings.offline.speech.hint" = "• Speech: Settings → General → Keyboard → Dictation Languages";
+"settings.offline.translate.hint" = "• Translation: Settings → General → Translation → Download Languages (iOS 18+)";
+
+// === 新增本地化字符串 ===
+"onboarding.title1" = "Language Is No Longer a Barrier";
+"onboarding.desc1" = "Connect your AirPods, choose a language, and tap. From now on, foreign languages flow into your ears as naturally as your mother tongue.";
+"onboarding.title2" = "AI Real-time Translation";
+"onboarding.subtitle2" = "Millisecond response, naturally fluent";
+"onboarding.desc2" = "Powered by the most advanced AI voice models. Not word-by-word translation, but natural expression after understanding context. Supports 30+ languages.";
+"onboarding.title3" = "Immersive Mode";
+"onboarding.subtitle3" = "Never miss an airport announcement";
+"onboarding.desc3" = "At airports, stations, and more — turn on Immersive Mode to auto-translate all surrounding speech. Gate changes, flight delays — know instantly.";
+"onboarding.title4" = "Smart Noise Reduction · Works Offline";
+"onboarding.subtitle4" = "Accurate translation even in noisy environments";
+"onboarding.desc4" = "AI noise reduction filters ambient noise and captures voices precisely. Even without internet, offline translation has you covered.";
+"onboarding.skip" = "Skip";
+"onboarding.next" = "Next";
+"onboarding.start" = "Get Started";
+"paywall.title" = "Unlock All Features";
+"paywall.subtitle" = "Unlimited Translation · Immersive Mode · AI Noise Reduction · Offline";
+"paywall.feature.unlimited" = "Unlimited translation time";
+"paywall.feature.immersive" = "Immersive Mode (airport announcements)";
+"paywall.feature.noise" = "AI Smart Noise Reduction";
+"paywall.feature.offline" = "Offline Translation";
+"paywall.feature.conversation" = "Conversation Mode";
+"paywall.feature.bilingual" = "Bilingual Subtitles";
+"paywall.trial.start" = "Start 7-Day Free Trial";
+"paywall.restore" = "Restore Purchase";
+"paywall.terms" = "Terms of Use";
+"paywall.privacy" = "Privacy Policy";
+"paywall.success.title" = "Subscription Successful!";
+"paywall.success.subtitle" = "All features unlocked";
+"paywall.recommended" = "Recommended";
+"paywall.yearly" = "Year";
+"paywall.monthly" = "Month";
+"paywall.per.year" = "/year";
+"paywall.per.month" = "/month";
+"paywall.terms.detail" = "Subscription will be charged to your Apple ID account. It auto-renews 24 hours before expiration. You can manage and cancel subscriptions in App Store account settings.";
+"sub.free" = "Free";
+"sub.monthly" = "Monthly";
+"sub.yearly" = "Yearly";
+"sub.free.desc" = "5 minutes free translation daily";
+"sub.monthly.desc" = "Unlimited translation · All features";
+"sub.yearly.desc" = "Unlimited translation · All features · Save 40%";
+"sub.feature.quota" = "5 min daily translation";
+"sub.feature.conversation" = "Conversation Mode";
+"sub.feature.languages" = "30+ Languages";
+"sub.feature.bilingual" = "Bilingual Subtitles";
+"sub.feature.unlimited" = "Unlimited translation time";
+"sub.feature.allModes" = "Conversation + Immersive Mode";
+"sub.feature.noise" = "AI Smart Noise Reduction";
+"sub.feature.offline" = "Offline Translation";
+"sub.feature.export" = "Translation History Export";
+"sub.feature.support" = "Priority Support";
+"sub.error.load" = "Failed to load subscription plans. Please check your network.";
+"sub.error.pending" = "Purchase is being processed. Please check later.";
+"error.noApiKey" = "Please configure your OpenAI API key in Settings";
+"error.noApiKey.short" = "API key not configured";
+"error.offlineUnavailable" = "Offline translation unavailable: Please check if language pack is downloaded";
+"error.invalidUrl" = "Invalid API URL";
+"error.connectionFailed" = "Failed to connect to translation service";
+"error.encodingFailed" = "Data encoding failed";
+"error.audio.format" = "Cannot create target audio format";
+"error.audio.converter" = "Cannot create audio format converter";
+"error.audio.engine" = "Audio engine failed to start";
+"offline.status.standby" = "Offline mode standby";
+"offline.status.preparing" = "Preparing offline translation...";
+"offline.status.ready" = "Offline mode ready";
+"offline.status.listening" = "Listening (offline)...";
+"offline.status.translating" = "Translating (offline)...";
+"offline.status.playing" = "Playing translation...";
+"offline.error.permDenied" = "Speech recognition permission denied. Please enable in Settings.";
+"offline.error.notSupported" = "Device does not support speech recognition";
+"offline.error.permUndetermined" = "Speech recognition permission not determined";
+"offline.error.permUnknown" = "Unknown permission status";
+"offline.error.recognizerUnavailable" = "Speech recognizer unavailable. Please check if language pack is downloaded.";
+"offline.error.cannotCreateRequest" = "Cannot create recognition request";
