@@ -188,7 +188,9 @@ struct PaywallView: View {
             
             // 续订说明（App Store审核要求）
             if let product = selectedProduct {
-                Text(String(localized: "paywall.trial.note.prefix") + "\(product.displayPrice)/" + (product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly")) + String(localized: "paywall.autorenew.suffix"))
+                let periodText = product.id.contains("yearly") ? String(localized: "paywall.yearly") : String(localized: "paywall.monthly")
+                let noteText = String(localized: "paywall.trial.note.prefix") + product.displayPrice + "/" + periodText + String(localized: "paywall.autorenew.suffix")
+                Text(noteText)
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.35))
                     .multilineTextAlignment(.center)

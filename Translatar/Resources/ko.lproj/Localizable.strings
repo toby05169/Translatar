@@ -124,3 +124,6 @@
 "paywall.autorenew.suffix" = " 자동 갱신됩니다. 설정에서 언제든 취소 가능.";
 "paywall.trial.prefix" = "7일 무료 체험";
 "paywall.trial.after" = "이후 ";
+
+"history.count" = "총";
+"history.count.suffix" = "개 기록";

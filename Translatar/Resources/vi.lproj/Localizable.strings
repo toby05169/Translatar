@@ -215,3 +215,6 @@
 "paywall.autorenew.suffix" = " tự động gia hạn. Hủy bất cứ lúc nào trong Cài đặt.";
 "paywall.trial.prefix" = "Dùng thử miễn phí 7 ngày";
 "paywall.trial.after" = "sau đó ";
+
+"history.count" = "Tổng cộng";
+"history.count.suffix" = "bản ghi";

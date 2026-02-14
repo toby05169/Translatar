@@ -216,3 +216,6 @@
 "paywall.autorenew.suffix" = " auto-renews. Cancel anytime in Settings.";
 "paywall.trial.prefix" = "7-day free trial";
 "paywall.trial.after" = "then ";
+
+"history.count" = "Total";
+"history.count.suffix" = "records";

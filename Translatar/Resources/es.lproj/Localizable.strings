@@ -124,3 +124,6 @@
 "paywall.autorenew.suffix" = " se renueva automáticamente. Cancela en cualquier momento.";
 "paywall.trial.prefix" = "Prueba gratuita de 7 días";
 "paywall.trial.after" = "luego ";
+
+"history.count" = "Total";
+"history.count.suffix" = "registros";

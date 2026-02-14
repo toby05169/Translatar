@@ -215,3 +215,6 @@
 "paywall.autorenew.suffix" = "で自動更新されます。設定からいつでもキャンセル可能。";
 "paywall.trial.prefix" = "7日間無料トライアル";
 "paywall.trial.after" = "その後";
+
+"history.count" = "全";
+"history.count.suffix" = "件の記録";

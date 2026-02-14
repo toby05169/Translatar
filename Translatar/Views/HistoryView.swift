@@ -97,7 +97,7 @@ struct HistoryView: View {
             LazyVStack(spacing: 12) {
                 // 统计信息
                 HStack {
-                    Text(String(localized: "history.count \(viewModel.translationHistory.count)", defaultValue: "共 \(viewModel.translationHistory.count) 条记录"))
+                    Text(String(localized: "history.count", defaultValue: "共") + " \(viewModel.translationHistory.count) " + String(localized: "history.count.suffix", defaultValue: "条记录"))
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.4))
                     Spacer()

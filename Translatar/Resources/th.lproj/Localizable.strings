@@ -215,3 +215,6 @@
 "paywall.autorenew.suffix" = "ต่ออายุอัตโนมัติ ยกเลิกได้ตลอดเวลาในการตั้งค่า";
 "paywall.trial.prefix" = "ทดลองใช้ฟรี 7 วัน";
 "paywall.trial.after" = "จากนั้น";
+
+"history.count" = "ทั้งหมด";
+"history.count.suffix" = "รายการ";
