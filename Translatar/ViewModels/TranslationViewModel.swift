@@ -57,6 +57,17 @@ class TranslationViewModel: ObservableObject {
     /// 是否自动切换离线模式（网络断开时自动切换）
     @Published var autoOfflineSwitch: Bool = true
     
+    /// 是否为PRO用户（用于决定使用gpt-realtime还是gpt-realtime-mini）
+    /// 由外部通过SubscriptionService设置
+    var isPro: Bool = false
+    
+    // ---- 户外模式状态 ----
+    
+    /// 户外模式：是否正在按住说话
+    @Published var isOutdoorRecording: Bool = false
+    /// 户外模式：当前说话者
+    @Published var currentOutdoorSpeaker: OutdoorSpeaker = .me
+    
     // MARK: - 服务层
     
     /// 音频捕获服务
@@ -88,7 +99,7 @@ class TranslationViewModel: ObservableObject {
         self.networkMonitor = NetworkMonitor()
         
         // 从UserDefaults恢复设置
-        self.apiKey = UserDefaults.standard.string(forKey: "openai_api_key") ?? ""
+        self.apiKey = UserDefaults.standard.string(forKey: "gemini_api_key") ?? UserDefaults.standard.string(forKey: "openai_api_key") ?? ""
         self.isNoiseSuppressionEnabled = UserDefaults.standard.object(forKey: "noise_suppression") as? Bool ?? true
         self.autoOfflineSwitch = UserDefaults.standard.object(forKey: "auto_offline_switch") as? Bool ?? true
         
@@ -101,6 +112,7 @@ class TranslationViewModel: ObservableObject {
         // 设置数据绑定
         setupBindings()
         setupNetworkMonitoring()
+        setupLanguageChangeMonitoring()
     }
     
     /// 设置服务层与UI层之间的数据绑定
@@ -230,15 +242,19 @@ class TranslationViewModel: ObservableObject {
         }
         
         // 保存API密钥
-        UserDefaults.standard.set(apiKey, forKey: "openai_api_key")
+        UserDefaults.standard.set(apiKey, forKey: "gemini_api_key")
         
         // 重置状态
         resetState()
         
+        // 户外模式启用双通道输出
+        audioPlaybackService.isDualOutputEnabled = (translationMode == .outdoor)
+        
         Task {
             do {
-                // 连接翻译服务（传入当前模式）
-                try await translationService.connect(config: config, mode: translationMode)
+                // 连接翻译服务（传入当前模式和PRO状态）
+                // PRO用户使用gpt-realtime（最高质量），免费用户使用gpt-realtime-mini（更低延迟和成本）
+                try await translationService.connect(config: config, mode: translationMode, isPro: isPro)
                 
                 // 启动音频捕获（传入模式和降噪设置）
                 try audioCaptureService.startCapture(
@@ -299,6 +315,8 @@ class TranslationViewModel: ObservableObject {
         connectionState = .disconnected
         audioLevel = 0.0
         isOfflineMode = false
+        isOutdoorRecording = false
+        audioPlaybackService.isDualOutputEnabled = false
         print("[ViewModel] 翻译已停止")
     }
     
@@ -367,6 +385,8 @@ class TranslationViewModel: ObservableObject {
     
     /// 交换源语言和目标语言
     func swapLanguages() {
+        // 临时禁用自动重连，避免和下面的监听器重复触发
+        isLanguageChangeReconnecting = true
         let temp = config.sourceLanguage
         config.sourceLanguage = config.targetLanguage
         config.targetLanguage = temp
@@ -374,9 +394,85 @@ class TranslationViewModel: ObservableObject {
         if connectionState.isActive {
             stopTranslation()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.isLanguageChangeReconnecting = false
                 self?.startTranslation()
             }
+        } else {
+            isLanguageChangeReconnecting = false
         }
+    }
+    
+    // MARK: - 语言切换自动重连
+    
+    /// 防止重复触发重连的标志
+    private var isLanguageChangeReconnecting = false
+    /// 上一次的语言配置（用于检测变化）
+    private var previousConfig: TranslationConfig?
+    
+    /// 监听语言配置变化，录音中切换语言时自动重连
+    private func setupLanguageChangeMonitoring() {
+        previousConfig = config
+        
+        $config
+            .dropFirst() // 跳过初始值
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main) // 防抖
+            .sink { [weak self] newConfig in
+                guard let self = self else { return }
+                guard !self.isLanguageChangeReconnecting else { return }
+                
+                // 检查语言是否真的变了
+                if let prev = self.previousConfig,
+                   prev.sourceLanguage == newConfig.sourceLanguage,
+                   prev.targetLanguage == newConfig.targetLanguage {
+                    return
+                }
+                
+                self.previousConfig = newConfig
+                print("[ViewModel] 语言已切换: \(newConfig.sourceLanguage.displayName) ↔ \(newConfig.targetLanguage.displayName)")
+                
+                // 如果翻译正在运行，自动重连
+                if self.connectionState.isActive {
+                    print("[ViewModel] 翻译运行中，自动重连以应用新语言...")
+                    self.isLanguageChangeReconnecting = true
+                    self.stopTranslation()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                        self?.isLanguageChangeReconnecting = false
+                        self?.startTranslation()
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - 户外模式控制
+    
+    /// 户外模式：按下按钮开始说话
+    /// - Parameter speaker: 当前说话者（.me = 用户自己，.other = 对方）
+    func outdoorStartSpeaking(speaker: OutdoorSpeaker) {
+        guard translationMode == .outdoor, connectionState.isActive else { return }
+        currentOutdoorSpeaker = speaker
+        isOutdoorRecording = true
+        
+        // 清空上一次的翻译结果
+        currentTranslatedText = ""
+        currentTranscript = ""
+        accumulatedTranslatedText = ""
+        
+        // 通知翻译服务开始手动录音
+        translationService.startManualRecording()
+        
+        print("[ViewModel] 户外模式：\(speaker == .me ? "用户" : "对方")开始说话")
+    }
+    
+    /// 户外模式：松开按钮停止说话
+    func outdoorStopSpeaking() {
+        guard translationMode == .outdoor else { return }
+        isOutdoorRecording = false
+        
+        // 通知翻译服务停止手动录音
+        translationService.stopManualRecording()
+        
+        print("[ViewModel] 户外模式：停止说话")
     }
     
     /// 清空翻译历史
@@ -389,7 +485,7 @@ class TranslationViewModel: ObservableObject {
     /// 保存API密钥
     func saveAPIKey(_ key: String) {
         apiKey = key
-        UserDefaults.standard.set(key, forKey: "openai_api_key")
+        UserDefaults.standard.set(key, forKey: "gemini_api_key")
     }
     
     // MARK: - 辅助方法

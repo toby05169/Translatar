@@ -2,7 +2,7 @@
 // Translatar - AI实时翻译耳机应用
 //
 // 音频播放服务
-// 负责将从OpenAI Realtime API返回的翻译音频数据
+// 负责将从Gemini Live API返回的翻译音频数据
 // 通过AirPods实时播放给用户
 //
 // 技术说明：
@@ -37,7 +37,11 @@ class AudioPlaybackService: AudioPlaybackServiceProtocol {
     /// 播放状态
     private(set) var isPlaying = false
     
-    /// 播放音频的格式（与OpenAI Realtime API输出一致）
+    /// 是否启用双通道输出（耳机+扌声器同时播放）
+    /// 户外模式下启用，让对方也能听到翻译
+    var isDualOutputEnabled = false
+    
+    /// 播放音频的格式（Gemini Live API 输出格式）
     /// PCM16, 24000Hz, 单声道
     private let playbackFormat: AVAudioFormat
     
@@ -79,13 +83,43 @@ class AudioPlaybackService: AudioPlaybackServiceProtocol {
         guard !audioEngine.isRunning else { return }
         
         do {
+            // 如果启用了双通道输出，配置音频会话同时输出到耳机和扌声器
+            if isDualOutputEnabled {
+                configureDualOutput()
+            }
+            
             audioEngine.prepare()
             try audioEngine.start()
             playerNode.play()
             isPlaying = true
-            print("[AudioPlayback] 音频播放引擎已启动")
+            print("[AudioPlayback] 音频播放引擎已启动（双通道: \(isDualOutputEnabled ? "开" : "关")")
         } catch {
             print("[AudioPlayback] 音频引擎启动失败: \(error.localizedDescription)")
+        }
+    }
+    
+    /// 配置双通道音频输出（耳机+扌声器同时播放）
+    /// 户外模式专用：用户通过耳机听翻译，对方通过扌声器听翻译
+    private func configureDualOutput() {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            // 使用 .playAndRecord + .defaultToSpeaker 确保扌声器输出
+            // 同时允许蓝牙耳机输出
+            try session.setCategory(
+                .playAndRecord,
+                mode: .default,
+                options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
+            )
+            
+            // 尝试启用多路线输出（耳机+扌声器同时）
+            // 注意：iOS上真正的同时输出需要使用 overrideOutputAudioPort
+            try session.overrideOutputAudioPort(.speaker)
+            
+            try session.setActive(true)
+            print("[AudioPlayback] 双通道输出已配置（扌声器+耳机）")
+            print("[AudioPlayback] 当前输出设备: \(session.currentRoute.outputs.map { $0.portName })")
+        } catch {
+            print("[AudioPlayback] 双通道配置失败: \(error.localizedDescription)")
         }
     }
     

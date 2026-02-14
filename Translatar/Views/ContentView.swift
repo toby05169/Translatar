@@ -36,26 +36,73 @@ struct ContentView: View {
                         .padding(.horizontal, 20)
                     }
                     
-                    // 顶部语言选择区域
-                    LanguageSelectorView()
-                        .padding(.top, 12)
-                    
-                    // 状态栏（降噪、离线、网络）
-                    StatusBarView()
-                        .padding(.top, 8)
-                    
-                    // 实时翻译显示区域
-                    TranslationDisplayView()
-                        .padding(.top, 12)
-                    
-                    Spacer()
-                    
-                    // 中央控制按钮
-                    TranslationControlButton()
-                        .padding(.bottom, 16)
-                    
-                    // 翻译历史预览
-                    TranslationHistoryPreview()
+                    if viewModel.translationMode == .outdoor {
+                        // === 户外模式布局 ===
+                        
+                        // 语言选择器（紧凑版）
+                        LanguageSelectorView()
+                            .padding(.top, 8)
+                        
+                        // 开始/停止按钮（户外模式需要先连接）
+                        if !viewModel.connectionState.isActive {
+                            TranslationControlButton()
+                                .padding(.vertical, 12)
+                        } else {
+                            // 小型停止按钮
+                            HStack {
+                                Spacer()
+                                Button {
+                                    viewModel.toggleTranslation()
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "stop.fill")
+                                            .font(.caption)
+                                        Text(NSLocalizedString("button.stop", comment: ""))
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                    }
+                                    .foregroundColor(.red)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                                    .background(
+                                        Capsule().fill(Color.red.opacity(0.15))
+                                    )
+                                }
+                                Spacer()
+                            }
+                            .padding(.top, 4)
+                        }
+                        
+                        // 按住说话界面（占据剩余空间）
+                        OutdoorModeView()
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal, 8)
+                            .padding(.bottom, 8)
+                        
+                    } else {
+                        // === 对话/沉浸模式布局（原有逻辑） ===
+                        
+                        // 顶部语言选择区域
+                        LanguageSelectorView()
+                            .padding(.top, 12)
+                        
+                        // 状态栏（降噪、离线、网络）
+                        StatusBarView()
+                            .padding(.top, 8)
+                        
+                        // 实时翻译显示区域
+                        TranslationDisplayView()
+                            .padding(.top, 12)
+                        
+                        Spacer()
+                        
+                        // 中央控制按钮
+                        TranslationControlButton()
+                            .padding(.bottom, 16)
+                        
+                        // 翻译历史预览
+                        TranslationHistoryPreview()
+                    }
                 }
             }
             .navigationTitle("")
@@ -153,7 +200,16 @@ struct ContentView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
-            }
+            case .outdoor:
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(hex: "0F0F1A"),
+                        Color(hex: "1A0F2E"),
+                        Color(hex: "0F1A2E")
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
         }
     }
 }
@@ -201,7 +257,7 @@ struct FreeQuotaBanner: View {
                 Text(NSLocalizedString("quota.title", comment: ""))
                     .font(.caption2)
                     .foregroundColor(.white.opacity(0.4))
-                Text(NSLocalizedString("quota.remaining \(remainingMinutes)", comment: ""))
+                Text(String(format: NSLocalizedString("quota.remaining", comment: ""), remainingMinutes))
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundColor(remainingSeconds < 60 ? .red : .white.opacity(0.7))
@@ -266,7 +322,9 @@ struct ModeSwitcherView: View {
                     .background(
                         Capsule()
                             .fill(viewModel.translationMode == mode
-                                  ? (mode == .immersive ? Color.indigo.opacity(0.5) : Color.cyan.opacity(0.3))
+                                  ? (mode == .immersive ? Color.indigo.opacity(0.5)
+                                     : mode == .outdoor ? Color.purple.opacity(0.4)
+                                     : Color.cyan.opacity(0.3))
                                   : Color.clear)
                     )
                 }
@@ -307,8 +365,12 @@ struct StatusBarView: View {
                 icon: viewModel.translationMode.iconName,
                 text: viewModel.translationMode == .immersive
                     ? NSLocalizedString("status.listening", comment: "")
+                    : viewModel.translationMode == .outdoor
+                    ? NSLocalizedString("status.outdoor", comment: "")
                     : NSLocalizedString("status.chatting", comment: ""),
-                color: viewModel.translationMode == .immersive ? .indigo : .cyan
+                color: viewModel.translationMode == .immersive ? .indigo
+                    : viewModel.translationMode == .outdoor ? .purple
+                    : .cyan
             )
             
             Spacer()
@@ -504,7 +566,8 @@ struct TranslationDisplayView: View {
             if viewModel.connectionState.isActive {
                 AudioWaveView(
                     level: viewModel.audioLevel,
-                    accentColor: viewModel.translationMode == .immersive ? .indigo : .cyan
+                    accentColor: viewModel.translationMode == .immersive ? .indigo
+                        : viewModel.translationMode == .outdoor ? .purple : .cyan
                 )
                 .frame(height: 40)
                 .padding(.horizontal, 24)
@@ -585,6 +648,8 @@ struct TranslationControlButton: View {
                     NotificationCenter.default.post(name: .showPaywall, object: nil)
                     return
                 }
+                // 同步PRO状态到ViewModel，用于选择翻译模型
+                viewModel.isPro = subscriptionService.currentSubscription != .free
                 viewModel.toggleTranslation()
             } label: {
                 ZStack {
@@ -630,36 +695,53 @@ struct TranslationControlButton: View {
     
     private var buttonIcon: String {
         if viewModel.connectionState.isActive { return "stop.fill" }
-        return viewModel.translationMode == .immersive ? "ear.fill" : "mic.fill"
+        switch viewModel.translationMode {
+        case .immersive: return "ear.fill"
+        case .outdoor: return "figure.walk"
+        case .conversation: return "mic.fill"
+        }
     }
     
     private var buttonText: String {
         if viewModel.connectionState.isActive {
             return NSLocalizedString("button.stop", comment: "")
         }
-        return viewModel.translationMode == .immersive
-            ? NSLocalizedString("button.start.listen", comment: "")
-            : NSLocalizedString("button.start.translate", comment: "")
+        switch viewModel.translationMode {
+        case .immersive: return NSLocalizedString("button.start.listen", comment: "")
+        case .outdoor: return NSLocalizedString("button.start.outdoor", comment: "")
+        case .conversation: return NSLocalizedString("button.start.translate", comment: "")
+        }
     }
     
     private var pulseColor: Color {
-        viewModel.translationMode == .immersive ? .indigo : .cyan
+        switch viewModel.translationMode {
+        case .immersive: return .indigo
+        case .outdoor: return .purple
+        case .conversation: return .cyan
+        }
     }
     
     private var buttonGradient: LinearGradient {
         if viewModel.connectionState.isActive {
             return LinearGradient(colors: [.red.opacity(0.8), .red], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
-        if viewModel.translationMode == .immersive {
+        switch viewModel.translationMode {
+        case .immersive:
             return LinearGradient(colors: [.indigo.opacity(0.8), .indigo], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .outdoor:
+            return LinearGradient(colors: [.purple.opacity(0.8), .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .conversation:
+            return LinearGradient(colors: [.cyan.opacity(0.8), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
         }
-        return LinearGradient(colors: [.cyan.opacity(0.8), .cyan], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
     
     private var buttonShadowColor: Color {
         if viewModel.connectionState.isActive { return .red.opacity(0.4) }
-        if viewModel.translationMode == .immersive { return .indigo.opacity(0.4) }
-        return .cyan.opacity(0.4)
+        switch viewModel.translationMode {
+        case .immersive: return .indigo.opacity(0.4)
+        case .outdoor: return .purple.opacity(0.4)
+        case .conversation: return .cyan.opacity(0.4)
+        }
     }
 }
 
@@ -685,11 +767,15 @@ struct TranslationHistoryPreview: View {
                         VStack(spacing: 8) {
                             Image(systemName: viewModel.translationMode == .immersive
                                   ? "antenna.radiowaves.left.and.right"
+                                  : viewModel.translationMode == .outdoor
+                                  ? "hand.tap.fill"
                                   : "bubble.left.and.bubble.right")
                                 .font(.title2)
                                 .foregroundColor(.white.opacity(0.15))
                             Text(viewModel.translationMode == .immersive
                                  ? NSLocalizedString("history.empty.immersive", comment: "")
+                                 : viewModel.translationMode == .outdoor
+                                 ? NSLocalizedString("history.empty.outdoor", comment: "")
                                  : NSLocalizedString("history.empty.conversation", comment: ""))
                                 .font(.subheadline)
                                 .foregroundColor(.white.opacity(0.3))

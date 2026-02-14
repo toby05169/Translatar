@@ -24,7 +24,8 @@ enum ConnectionState: Equatable {
         case .translating:
             return NSLocalizedString("status.translating", comment: "")
         case .error(let message):
-            return NSLocalizedString("status.error \(message)", comment: "")
+            let format = NSLocalizedString("status.error", comment: "")
+            return String(format: format, message)
         }
     }
     
@@ -42,6 +43,7 @@ enum ConnectionState: Equatable {
 enum TranslationMode: String, CaseIterable, Identifiable {
     case conversation = "conversation"  // 对话模式：你一句我一句
     case immersive = "immersive"        // 沉浸模式：持续监听环境音
+    case outdoor = "outdoor"            // 户外模式：按住说话，适合嘈杂环境
     
     var id: String { rawValue }
     
@@ -49,6 +51,7 @@ enum TranslationMode: String, CaseIterable, Identifiable {
         switch self {
         case .conversation: return NSLocalizedString("mode.conversation", comment: "")
         case .immersive: return NSLocalizedString("mode.immersive", comment: "")
+        case .outdoor: return NSLocalizedString("mode.outdoor", comment: "")
         }
     }
     
@@ -56,6 +59,7 @@ enum TranslationMode: String, CaseIterable, Identifiable {
         switch self {
         case .conversation: return NSLocalizedString("mode.conversation.desc", comment: "")
         case .immersive: return NSLocalizedString("mode.immersive.desc", comment: "")
+        case .outdoor: return NSLocalizedString("mode.outdoor.desc", comment: "")
         }
     }
     
@@ -63,6 +67,7 @@ enum TranslationMode: String, CaseIterable, Identifiable {
         switch self {
         case .conversation: return "person.2.fill"
         case .immersive: return "ear.fill"
+        case .outdoor: return "figure.walk"
         }
     }
 }
@@ -82,4 +87,10 @@ struct TranslationEntry: Identifiable {
 struct AudioLevel {
     let level: Float    // 0.0 ~ 1.0
     let timestamp: Date
+}
+
+/// 户外模式中按住说话的说话者标识
+enum OutdoorSpeaker {
+    case me       // 用户自己（语言A）
+    case other    // 对方（语言B）
 }

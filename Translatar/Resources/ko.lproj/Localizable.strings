@@ -95,7 +95,6 @@
 "history.search" = "번역 검색";
 "history.empty.title" = "번역 기록이 없습니다";
 "history.empty.subtitle" = "번역이 자동으로 여기에 저장됩니다";
-"history.count %lld" = "%lld개 기록";
 "history.copy" = "번역 복사";
 "history.share" = "공유";
 "history.export.header" = "Translatar 번역 기록";

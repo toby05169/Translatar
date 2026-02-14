@@ -123,7 +123,6 @@
 "history.search" = "ค้นหาการแปล";
 "history.empty.title" = "ยังไม่มีประวัติการแปล";
 "history.empty.subtitle" = "การแปลจะถูกบันทึกที่นี่โดยอัตโนมัติ";
-"history.count %lld" = "%lld รายการ";
 "history.copy" = "คัดลอกคำแปล";
 "history.share" = "แชร์";
 "history.export.header" = "ประวัติการแปล Translatar";

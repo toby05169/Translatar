@@ -123,7 +123,6 @@
 "history.search" = "Tìm kiếm bản dịch";
 "history.empty.title" = "Chưa có bản dịch nào";
 "history.empty.subtitle" = "Bản dịch sẽ được lưu tự động tại đây";
-"history.count %lld" = "%lld bản ghi";
 "history.copy" = "Sao chép bản dịch";
 "history.share" = "Chia sẻ";
 "history.export.header" = "Lịch sử dịch Translatar";

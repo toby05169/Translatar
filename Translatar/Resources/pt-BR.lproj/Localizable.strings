@@ -95,7 +95,6 @@
 "history.search" = "Pesquisar traduções";
 "history.empty.title" = "Nenhuma tradução ainda";
 "history.empty.subtitle" = "As traduções serão salvas aqui automaticamente";
-"history.count %lld" = "%lld registros";
 "history.copy" = "Copiar tradução";
 "history.share" = "Compartilhar";
 "history.export.header" = "Histórico do Translatar";

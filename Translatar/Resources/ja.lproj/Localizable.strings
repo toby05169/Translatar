@@ -123,7 +123,6 @@
 "history.search" = "翻訳を検索";
 "history.empty.title" = "翻訳履歴がありません";
 "history.empty.subtitle" = "翻訳は自動的にここに保存されます";
-"history.count %lld" = "%lld件の記録";
 "history.copy" = "翻訳をコピー";
 "history.share" = "共有";
 "history.export.header" = "Translatar 翻訳履歴";

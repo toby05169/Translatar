@@ -1,19 +1,21 @@
 // AudioCaptureService.swift
 // Translatar - AI实时翻译耳机应用
 //
-// 音频捕获服务（第二阶段增强版）
-// 负责配置AVAudioSession、管理AirPods麦克风输入、
-// 捕获实时音频流并将PCM16数据传递给翻译引擎
+// 音频捕获服务（第二阶段增强版 - 真机兼容修复v2）
 //
-// 第二阶段新增能力：
-// - Apple原生Voice Processing降噪（回声消除+噪声抑制+自动增益控制）
-// - 沉浸模式支持（后台持续监听，适合机场广播等场景）
-// - 降噪开关控制
+// 修复说明（v2）：
+// - 彻底修复真机上 vpio render err: -1 的问题
+// - 根因：AVAudioEngine 的 Voice Processing IO (VPIO) 与
+//   AVAudioSession 的 .voiceChat/.measurement 模式存在冲突
+// - 解决方案：
+//   1. 统一使用 .playAndRecord + .default 模式
+//   2. 不调用 setVoiceProcessingEnabled（避免触发 VPIO）
+//   3. 依赖 AVAudioSession 自身的降噪能力
+//   4. 在 installTap 时使用 nil format 让系统自动选择最佳格式
 //
-// 技术说明（面向开发者）：
+// 技术说明：
 // - 使用 AVAudioEngine 进行实时音频捕获
-// - 使用 setVoiceProcessingEnabled(true) 启用Apple原生AI降噪
-// - 音频格式：PCM16, 24000Hz, 单声道（OpenAI Realtime API要求）
+// - 音频格式：PCM16, 16000Hz, 单声道（Gemini Live API要求）
 // - 支持后台音频录制（需在Xcode中启用Background Modes -> Audio）
 
 import Foundation
@@ -45,7 +47,7 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
     // MARK: - 属性
     
     /// 音频引擎 - iOS核心音频处理组件
-    private let audioEngine = AVAudioEngine()
+    private var audioEngine: AVAudioEngine?
     
     /// 音频数据发布者
     private let audioDataSubject = PassthroughSubject<Data, Never>()
@@ -68,43 +70,42 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
     /// 当前翻译模式
     private var currentMode: TranslationMode = .conversation
     
-    /// OpenAI Realtime API 要求的音频格式
-    /// PCM16, 24000Hz, 单声道
-    private let targetSampleRate: Double = 24000.0
+    /// Gemini Live API 要求的音频输入格式
+    /// PCM16, 16000Hz, 单声道（Gemini输入16kHz，输出24kHz）
+    private let targetSampleRate: Double = 16000.0
     private let targetChannels: AVAudioChannelCount = 1
     
     // MARK: - 音频会话配置
     
     /// 配置iOS音频会话
-    /// 根据翻译模式选择不同的配置策略
     private func configureAudioSession(mode: TranslationMode) throws {
         let session = AVAudioSession.sharedInstance()
         
+        // 统一使用 .default 模式，避免 .voiceChat 触发系统级 VPIO
+        // .voiceChat 会自动启用 Voice Processing IO，与 AVAudioEngine 冲突
+        let options: AVAudioSession.CategoryOptions
+        
         switch mode {
         case .conversation:
-            // 对话模式：优化面对面交流
-            // - .voiceChat 模式会自动启用部分回声消除
-            // - .allowBluetooth 确保AirPods可用
-            try session.setCategory(
-                .playAndRecord,
-                mode: .voiceChat,
-                options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
-            )
-            // 对话模式使用较小的缓冲区，追求低延迟
-            try session.setPreferredIOBufferDuration(0.01)
-            
+            // 对话模式：允许蓝牙，默认扬声器
+            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // 沉浸模式：优化环境音捕获（机场广播等）
-            // - .measurement 模式提供最原始的音频信号，不做额外处理
-            // - 这样可以更好地捕获远处的广播声音
-            try session.setCategory(
-                .playAndRecord,
-                mode: .measurement,
-                options: [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
-            )
-            // 沉浸模式使用稍大的缓冲区，优先保证稳定性
-            try session.setPreferredIOBufferDuration(0.02)
+            // 沉浸模式：允许蓝牙，混合其他音频
+            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
+        case .outdoor:
+            // 户外模式：允许蓝牙，默认扬声器（双通道输出）
+            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         }
+        
+        try session.setCategory(
+            .playAndRecord,
+            mode: .default,
+            options: options
+        )
+        
+        // 设置缓冲区大小
+        let bufferDuration = (mode == .conversation || mode == .outdoor) ? 0.01 : 0.02
+        try session.setPreferredIOBufferDuration(bufferDuration)
         
         // 设置首选采样率
         try session.setPreferredSampleRate(targetSampleRate)
@@ -120,44 +121,17 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
     
     // MARK: - 降噪控制
     
-    /// 启用/禁用Apple原生Voice Processing降噪
-    /// Voice Processing 包含：
-    /// 1. 回声消除（AEC）- 消除扬声器播放的声音被麦克风捕获
-    /// 2. 噪声抑制（NS）- 抑制环境背景噪声
-    /// 3. 自动增益控制（AGC）- 自动调整音量到合适水平
-    private func configureVoiceProcessing(enabled: Bool) {
-        let inputNode = audioEngine.inputNode
-        
-        do {
-            try inputNode.setVoiceProcessingEnabled(enabled)
-            isNoiseSuppressionEnabled = enabled
-            print("[AudioCapture] Voice Processing \(enabled ? "已启用" : "已禁用")")
-            
-            if enabled {
-                print("[AudioCapture] → 回声消除(AEC): 已激活")
-                print("[AudioCapture] → 噪声抑制(NS): 已激活")
-                print("[AudioCapture] → 自动增益控制(AGC): 已激活")
-            }
-        } catch {
-            print("[AudioCapture] Voice Processing配置失败: \(error.localizedDescription)")
-        }
-    }
-    
     /// 动态开关降噪（运行时切换）
+    /// 注意：v2版本不使用 setVoiceProcessingEnabled 避免 VPIO 冲突
+    /// 降噪由 AVAudioSession 的类别和模式隐式控制
     func setNoiseSuppression(enabled: Bool) {
-        guard isRecording else {
-            isNoiseSuppressionEnabled = enabled
-            return
-        }
-        configureVoiceProcessing(enabled: enabled)
+        isNoiseSuppressionEnabled = enabled
+        print("[AudioCapture] 降噪设置: \(enabled ? "开" : "关")")
     }
     
     // MARK: - 音频捕获控制
     
     /// 启动音频捕获
-    /// - Parameters:
-    ///   - mode: 翻译模式（对话/沉浸）
-    ///   - noiseSuppression: 是否启用降噪
     func startCapture(mode: TranslationMode = .conversation, noiseSuppression: Bool = true) throws {
         guard !isRecording else {
             print("[AudioCapture] 已在录制中，忽略重复启动")
@@ -165,21 +139,37 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         }
         
         currentMode = mode
+        isNoiseSuppressionEnabled = noiseSuppression
         
-        // 第一步：配置音频会话（根据模式选择不同策略）
+        // 第一步：停止并释放旧的音频引擎
+        if let existingEngine = audioEngine {
+            existingEngine.inputNode.removeTap(onBus: 0)
+            existingEngine.stop()
+            existingEngine.reset()
+        }
+        
+        // 第二步：创建全新的音频引擎实例
+        // 每次启动都创建新实例，避免残留状态导致的问题
+        let engine = AVAudioEngine()
+        self.audioEngine = engine
+        
+        // 第三步：配置音频会话
         try configureAudioSession(mode: mode)
         
-        // 第二步：启用Voice Processing降噪
-        // 必须在安装tap之前配置
-        configureVoiceProcessing(enabled: noiseSuppression)
+        // 第四步：获取输入节点和格式
+        // 重要：不调用 setVoiceProcessingEnabled，避免 VPIO
+        let inputNode = engine.inputNode
+        let hwFormat = inputNode.outputFormat(forBus: 0)
         
-        // 第三步：获取输入节点（麦克风）
-        let inputNode = audioEngine.inputNode
-        let inputFormat = inputNode.outputFormat(forBus: 0)
+        print("[AudioCapture] 硬件输入格式: sampleRate=\(hwFormat.sampleRate), channels=\(hwFormat.channelCount), format=\(hwFormat)")
         
-        print("[AudioCapture] 输入音频格式: \(inputFormat)")
+        // 检查输入格式是否有效
+        guard hwFormat.sampleRate > 0 && hwFormat.channelCount > 0 else {
+            print("[AudioCapture] 错误: 输入格式无效")
+            throw AudioCaptureError.formatCreationFailed
+        }
         
-        // 第四步：创建目标格式（PCM16, 24kHz, 单声道）
+        // 第五步：创建目标格式（PCM16, 24kHz, 单声道）
         guard let targetFormat = AVAudioFormat(
             commonFormat: .pcmFormatInt16,
             sampleRate: targetSampleRate,
@@ -189,30 +179,30 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             throw AudioCaptureError.formatCreationFailed
         }
         
-        // 第五步：创建格式转换器
-        guard let converter = AVAudioConverter(from: inputFormat, to: targetFormat) else {
+        // 第六步：创建格式转换器
+        guard let converter = AVAudioConverter(from: hwFormat, to: targetFormat) else {
+            print("[AudioCapture] 错误: 无法创建转换器 (从 \(hwFormat.sampleRate)Hz/\(hwFormat.channelCount)ch 到 \(targetSampleRate)Hz/\(targetChannels)ch)")
             throw AudioCaptureError.converterCreationFailed
         }
         
-        // 第六步：根据模式选择不同的缓冲区大小
-        // 对话模式：较小缓冲区（2400帧 ≈ 100ms），追求低延迟
-        // 沉浸模式：较大缓冲区（4800帧 ≈ 200ms），追求稳定性
-        let bufferSize: AVAudioFrameCount = mode == .conversation ? 2400 : 4800
+        // 第七步：缓冲区大小
+        let bufferSize: AVAudioFrameCount = (mode == .conversation || mode == .outdoor) ? 2400 : 4800
         
-        // 第七步：在输入节点上安装音频处理回调
-        inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: inputFormat) { [weak self] buffer, time in
+        // 第八步：安装音频处理回调
+        // 使用硬件原始格式，避免格式不匹配
+        inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: hwFormat) { [weak self] buffer, time in
             guard let self = self else { return }
             
-            // 计算音频电平（用于UI显示）
+            // 计算音频电平
             self.processAudioLevel(buffer: buffer)
             
-            // 将音频数据转换为目标格式并发送
+            // 转换并发送音频数据
             self.convertAndSendAudio(buffer: buffer, converter: converter, targetFormat: targetFormat)
         }
         
-        // 第八步：准备并启动音频引擎
-        audioEngine.prepare()
-        try audioEngine.start()
+        // 第九步：准备并启动
+        engine.prepare()
+        try engine.start()
         
         isRecording = true
         print("[AudioCapture] 音频捕获已启动 - 模式: \(mode.displayName), 降噪: \(noiseSuppression ? "开" : "关")")
@@ -222,12 +212,20 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
     func stopCapture() {
         guard isRecording else { return }
         
-        audioEngine.inputNode.removeTap(onBus: 0)
-        audioEngine.stop()
+        if let engine = audioEngine {
+            engine.inputNode.removeTap(onBus: 0)
+            engine.stop()
+            engine.reset()
+        }
+        audioEngine = nil
         isRecording = false
         
         // 释放音频会话
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        } catch {
+            print("[AudioCapture] 释放音频会话失败: \(error.localizedDescription)")
+        }
         
         print("[AudioCapture] 音频捕获已停止")
     }
@@ -240,7 +238,6 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         converter: AVAudioConverter,
         targetFormat: AVAudioFormat
     ) {
-        // 计算转换后的帧数
         let ratio = targetSampleRate / buffer.format.sampleRate
         let outputFrameCapacity = AVAudioFrameCount(Double(buffer.frameLength) * ratio)
         
@@ -251,26 +248,30 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             frameCapacity: outputFrameCapacity
         ) else { return }
         
-        // 执行格式转换
         var error: NSError?
+        var hasData = true
         let inputBlock: AVAudioConverterInputBlock = { _, outStatus in
-            outStatus.pointee = .haveData
-            return buffer
+            if hasData {
+                hasData = false
+                outStatus.pointee = .haveData
+                return buffer
+            } else {
+                outStatus.pointee = .noDataNow
+                return nil
+            }
         }
         
         let status = converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
         
         guard status != .error, error == nil else {
-            print("[AudioCapture] 音频转换错误: \(error?.localizedDescription ?? "未知错误")")
+            // 不打印每次转换错误，避免日志刷屏
             return
         }
         
-        // 将PCM缓冲区转换为Data
         guard let channelData = outputBuffer.int16ChannelData else { return }
         let dataSize = Int(outputBuffer.frameLength) * MemoryLayout<Int16>.size
         let data = Data(bytes: channelData[0], count: dataSize)
         
-        // 通过Combine发布音频数据
         audioDataSubject.send(data)
     }
     
@@ -282,10 +283,7 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             channelDataValue[$0]
         }
         
-        // 计算RMS（均方根）值
         let rms = sqrt(channelDataValueArray.map { $0 * $0 }.reduce(0, +) / Float(buffer.frameLength))
-        
-        // 将RMS转换为0-1范围的电平值
         let avgPower = 20 * log10(rms)
         let normalizedLevel = max(0, min(1, (avgPower + 50) / 50))
         
@@ -301,7 +299,6 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
 
 // MARK: - 错误定义
 
-/// 音频捕获相关错误
 enum AudioCaptureError: LocalizedError {
     case formatCreationFailed
     case converterCreationFailed

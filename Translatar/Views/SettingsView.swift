@@ -164,12 +164,12 @@ struct SettingsView: View {
                 
                 HStack {
                     if showAPIKey {
-                        TextField("sk-...", text: $tempAPIKey)
+                        TextField("AIza...", text: $tempAPIKey)
                             .textContentType(.password)
                             .autocorrectionDisabled()
                             .textInputAutocapitalization(.never)
                     } else {
-                        SecureField("sk-...", text: $tempAPIKey)
+                        SecureField("AIza...", text: $tempAPIKey)
                             .textContentType(.password)
                             .autocorrectionDisabled()
                     }

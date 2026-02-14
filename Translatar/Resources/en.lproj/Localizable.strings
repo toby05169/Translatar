@@ -11,8 +11,10 @@
 // === Translation Modes ===
 "mode.conversation" = "Conversation";
 "mode.immersive" = "Immersive";
+"mode.outdoor" = "Outdoor";
 "mode.conversation.desc" = "Face-to-face chat with auto turn detection";
 "mode.immersive.desc" = "Continuous listening for broadcasts and ambient speech";
+"mode.outdoor.desc" = "Push-to-talk for noisy environments like buses and streets";
 
 // === Connection Status ===
 "status.disconnected" = "Disconnected";
@@ -22,8 +24,8 @@
 "status.error" = "Error: %@";
 
 // === Language Selector ===
-"lang.source" = "They speak";
-"lang.target" = "Translate to";
+"lang.source" = "Language A";
+"lang.target" = "Language B";
 
 // === Status Bar ===
 "status.online" = "Online";
@@ -124,7 +126,8 @@
 "history.search" = "Search translations";
 "history.empty.title" = "No translations yet";
 "history.empty.subtitle" = "Translations will be saved here automatically";
-"history.count %lld" = "%lld records";
+"history.count" = "Total";
+"history.count.suffix" = "records";
 "history.copy" = "Copy Translation";
 "history.share" = "Share";
 "history.export.header" = "Translatar History";
@@ -217,5 +220,14 @@
 "paywall.trial.prefix" = "7-day free trial";
 "paywall.trial.after" = "then ";
 
-"history.count" = "Total";
-"history.count.suffix" = "records";
+// === Outdoor Mode ===
+"outdoor.hold.to.speak" = "Hold to Speak";
+"outdoor.recording" = "Recording...";
+"outdoor.hint" = "Hold the top or bottom area\nto start speaking";
+"outdoor.not.connected" = "Tap Start to begin translation";
+"outdoor.dual.output" = "Dual Output";
+"outdoor.speaker.me" = "I Speak";
+"outdoor.speaker.other" = "They Speak";
+"button.start.outdoor" = "Start";
+"history.empty.outdoor" = "Translation records will appear here after you speak";
+"status.outdoor" = "Outdoor Mode";

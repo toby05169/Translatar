@@ -122,7 +122,6 @@
 "history.search" = "ဘာသာပြန်ရှာဖွေ";
 "history.empty.title" = "ဘာသာပြန်မှတ်တမ်း မရှိသေးပါ";
 "history.empty.subtitle" = "ဘာသာပြန်များကို ဤနေရာတွင် အလိုအလျောက် သိမ်းဆည်းပါမည်";
-"history.count %lld" = "မှတ်တမ်း %lld ခု";
 "history.copy" = "ဘာသာပြန်ကူးယူ";
 "history.share" = "မျှဝေ";
 "history.export.header" = "Translatar ဘာသာပြန်မှတ်တမ်း";

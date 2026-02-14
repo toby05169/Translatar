@@ -11,8 +11,10 @@
 // === 翻译模式 ===
 "mode.conversation" = "对话模式";
 "mode.immersive" = "沉浸模式";
+"mode.outdoor" = "户外模式";
 "mode.conversation.desc" = "适合面对面交流，自动识别对话轮次";
 "mode.immersive.desc" = "持续监听环境音，实时翻译广播和对话";
+"mode.outdoor.desc" = "按住说话，适合公交、街道等嘈杂环境";
 
 // === 连接状态 ===
 "status.disconnected" = "未连接";
@@ -22,8 +24,8 @@
 "status.error" = "错误：%@";
 
 // === 语言选择器 ===
-"lang.source" = "对方说";
-"lang.target" = "翻译成";
+"lang.source" = "语言 A";
+"lang.target" = "语言 B";
 
 // === 状态栏 ===
 "status.online" = "在线";
@@ -125,7 +127,8 @@
 "history.search" = "搜索翻译记录";
 "history.empty.title" = "暂无翻译记录";
 "history.empty.subtitle" = "开始翻译后，对话记录将自动保存在这里";
-"history.count %lld" = "共 %lld 条记录";
+"history.count" = "共";
+"history.count.suffix" = "条记录";
 "history.copy" = "复制翻译";
 "history.share" = "分享";
 "history.export.header" = "Translatar 翻译记录";
@@ -218,5 +221,14 @@
 "paywall.trial.prefix" = "7天免费试用";
 "paywall.trial.after" = "之后";
 
-"history.count" = "共";
-"history.count.suffix" = "条记录";
+// === 户外模式 ===
+"outdoor.hold.to.speak" = "按住说话";
+"outdoor.recording" = "正在录音...";
+"outdoor.hint" = "按住上方或下方区域\n开始说话";
+"outdoor.not.connected" = "请先点击开始翻译";
+"outdoor.dual.output" = "双通道输出";
+"outdoor.speaker.me" = "我说";
+"outdoor.speaker.other" = "对方说";
+"button.start.outdoor" = "开始翻译";
+"history.empty.outdoor" = "按住说话后，翻译记录将显示在这里";
+"status.outdoor" = "户外模式";

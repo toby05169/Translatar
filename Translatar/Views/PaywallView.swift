@@ -329,6 +329,17 @@ struct SubscriptionCard: View {
     let isYearly: Bool
     let onTap: () -> Void
     
+    private var trialDescription: String {
+        let prefix = NSLocalizedString("paywall.trial.prefix", comment: "")
+        let after = NSLocalizedString("paywall.trial.after", comment: "")
+        let period = isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: "")
+        return prefix + " \u{00B7} " + after + product.displayPrice + period
+    }
+    
+    private var periodText: String {
+        isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: "")
+    }
+    
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 16) {
@@ -372,7 +383,8 @@ struct SubscriptionCard: View {
                         }
                     }
                     
-                    Text(NSLocalizedString("paywall.trial.prefix", comment: "") + " · " + NSLocalizedString("paywall.trial.after", comment: "") + "\(product.displayPrice)" + (isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: "")))
+                    let trialText = trialDescription
+                    Text(trialText)
                         .font(.caption)
                         .foregroundColor(.white.opacity(0.5))
                 }
@@ -385,7 +397,7 @@ struct SubscriptionCard: View {
                         .font(.title3)
                         .fontWeight(.bold)
                         .foregroundColor(isSelected ? .cyan : .white.opacity(0.6))
-                    Text(isYearly ? NSLocalizedString("paywall.per.year", comment: "") : NSLocalizedString("paywall.per.month", comment: ""))
+                    Text(periodText)
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.4))
                 }
