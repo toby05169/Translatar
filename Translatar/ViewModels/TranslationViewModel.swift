@@ -262,7 +262,11 @@ class TranslationViewModel: ObservableObject {
                     noiseSuppression: isNoiseSuppressionEnabled
                 )
                 
-                print("[ViewModel] 在线翻译已启动: \(config.sourceLanguage.displayName) → \(config.targetLanguage.displayName), 模式: \(translationMode.displayName)")
+                if translationMode == .immersive {
+                    print("[ViewModel] 沉浸模式已启动（单向同声传译）: \(config.sourceLanguage.displayName) → \(config.targetLanguage.displayName)")
+                } else {
+                    print("[ViewModel] 在线翻译已启动: \(config.sourceLanguage.displayName) ↔ \(config.targetLanguage.displayName), 模式: \(translationMode.displayName)")
+                }
                 
             } catch {
                 errorMessage = error.localizedDescription

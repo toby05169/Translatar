@@ -13,7 +13,7 @@
 "mode.immersive" = "Immersive";
 "mode.outdoor" = "Outdoor";
 "mode.conversation.desc" = "Face-to-face chat with auto turn detection";
-"mode.immersive.desc" = "Continuous listening for broadcasts and ambient speech";
+"mode.immersive.desc" = "One-way interpreter: listens to ambient speech and translates in real time";
 "mode.outdoor.desc" = "Push-to-talk for noisy environments like buses and streets";
 
 // === Connection Status ===
@@ -231,3 +231,11 @@
 "button.start.outdoor" = "Start";
 "history.empty.outdoor" = "Translation records will appear here after you speak";
 "status.outdoor" = "Outdoor Mode";
+
+// === Immersive Mode (One-way Simultaneous Interpretation) ===
+"immersive.listening" = "Listening";
+"immersive.translating.to" = "Translate to";
+"immersive.status.listening" = "Listening to ambient audio...";
+"immersive.earphone.hint" = "Translation via earphones";
+"immersive.waiting" = "Listening for speech...\nTranslation will start automatically";
+"button.start.immersive" = "Start Listening";

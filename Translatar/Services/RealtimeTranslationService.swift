@@ -189,11 +189,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
+            // 沉浸模式：持续监听，高灵敏度检测语音开始，较长静音容忍度避免频繁打断
             return [
                 "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
-                "endOfSpeechSensitivity": "END_SENSITIVITY_HIGH",
-                "prefixPaddingMs": 200,
-                "silenceDurationMs": 800
+                "endOfSpeechSensitivity": "END_SENSITIVITY_LOW",
+                "prefixPaddingMs": 300,
+                "silenceDurationMs": 1500
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
@@ -267,7 +268,18 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         case .immersive:
             modePrompt = """
             
-            MODE: Ambient audio. Translate speech fragments between \(langA) and \(langB). Ignore non-speech sounds.
+            MODE: ONE-WAY SIMULTANEOUS INTERPRETATION (Immersive Listening)
+            
+            CRITICAL OVERRIDE FOR THIS MODE:
+            - This is a ONE-WAY translation mode. You ONLY translate FROM \(langA) TO \(langB).
+            - The user is passively listening through earphones. They are NOT speaking.
+            - You are receiving a continuous ambient audio stream from the phone's microphone.
+            - Your job is to act as a real-time simultaneous interpreter: translate \(langA) speech into \(langB) as it happens.
+            - Translate continuously and naturally, like a UN interpreter — do NOT wait for complete sentences if the meaning is already clear.
+            - Ignore all non-speech sounds (background noise, music, announcements chimes, etc.).
+            - If you hear \(langB) speech, STAY COMPLETELY SILENT — the user already understands it.
+            - NEVER translate back from \(langB) to \(langA) in this mode.
+            - If there is a long silence or only background noise, stay silent and wait.
             """
         case .outdoor:
             modePrompt = """

@@ -13,7 +13,7 @@
 "mode.immersive" = "沉浸模式";
 "mode.outdoor" = "户外模式";
 "mode.conversation.desc" = "适合面对面交流，自动识别对话轮次";
-"mode.immersive.desc" = "持续监听环境音，实时翻译广播和对话";
+"mode.immersive.desc" = "单向同声传译，持续监听环境外语并实时翻译";
 "mode.outdoor.desc" = "按住说话，适合公交、街道等嘈杂环境";
 
 // === 连接状态 ===
@@ -232,3 +232,11 @@
 "button.start.outdoor" = "开始翻译";
 "history.empty.outdoor" = "按住说话后，翻译记录将显示在这里";
 "status.outdoor" = "户外模式";
+
+// === 沉浸模式（单向同声传译） ===
+"immersive.listening" = "监听";
+"immersive.translating.to" = "翻译为";
+"immersive.status.listening" = "正在监听环境音...";
+"immersive.earphone.hint" = "通过耳机收听翻译";
+"immersive.waiting" = "正在监听环境中的语音...\n检测到语音后将自动翻译";
+"button.start.immersive" = "开始监听";

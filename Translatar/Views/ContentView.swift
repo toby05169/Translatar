@@ -79,8 +79,32 @@ struct ContentView: View {
                             .padding(.horizontal, 8)
                             .padding(.bottom, 8)
                         
+                    } else if viewModel.translationMode == .immersive {
+                        // === 沉浸模式布局（单向同声传译） ===
+                        
+                        // 语言方向显示（单向箭头）
+                        ImmersiveLanguageBar()
+                            .padding(.top, 12)
+                        
+                        // 状态栏
+                        StatusBarView()
+                            .padding(.top, 8)
+                        
+                        // 沉浸模式专用显示区域（突出翻译结果）
+                        ImmersiveDisplayView()
+                            .padding(.top, 12)
+                        
+                        Spacer()
+                        
+                        // 中央控制按钮
+                        TranslationControlButton()
+                            .padding(.bottom, 16)
+                        
+                        // 翻译历史预览
+                        TranslationHistoryPreview()
+                        
                     } else {
-                        // === 对话/沉浸模式布局（原有逻辑） ===
+                        // === 对话模式布局 ===
                         
                         // 顶部语言选择区域
                         LanguageSelectorView()
@@ -707,7 +731,7 @@ struct TranslationControlButton: View {
             return NSLocalizedString("button.stop", comment: "")
         }
         switch viewModel.translationMode {
-        case .immersive: return NSLocalizedString("button.start.listen", comment: "")
+        case .immersive: return NSLocalizedString("button.start.immersive", comment: "")
         case .outdoor: return NSLocalizedString("button.start.outdoor", comment: "")
         case .conversation: return NSLocalizedString("button.start.translate", comment: "")
         }
@@ -832,6 +856,160 @@ struct TranslationEntryCard: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color.white.opacity(0.06))
         )
+    }
+}
+
+// MARK: - 沉浸模式语言方向栏（单向）
+
+struct ImmersiveLanguageBar: View {
+    @EnvironmentObject var viewModel: TranslationViewModel
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // 源语言（监听的语言）
+            VStack(spacing: 2) {
+                Text(NSLocalizedString("immersive.listening", comment: ""))
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.4))
+                LanguagePickerButton(
+                    label: "",
+                    language: $viewModel.config.sourceLanguage
+                )
+            }
+            
+            // 单向箭头
+            VStack(spacing: 2) {
+                Text("")
+                    .font(.caption2)
+                Image(systemName: "arrow.right")
+                    .font(.title3)
+                    .foregroundColor(.indigo)
+                    .padding(8)
+                    .background(
+                        Circle()
+                            .fill(Color.indigo.opacity(0.15))
+                    )
+            }
+            
+            // 目标语言（用户听到的语言）
+            VStack(spacing: 2) {
+                Text(NSLocalizedString("immersive.translating.to", comment: ""))
+                    .font(.caption2)
+                    .foregroundColor(.white.opacity(0.4))
+                LanguagePickerButton(
+                    label: "",
+                    language: $viewModel.config.targetLanguage
+                )
+            }
+        }
+        .padding(.horizontal, 20)
+    }
+}
+
+// MARK: - 沉浸模式专用显示区域
+
+struct ImmersiveDisplayView: View {
+    @EnvironmentObject var viewModel: TranslationViewModel
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            // 监听状态指示器
+            HStack {
+                if viewModel.connectionState.isActive {
+                    // 正在监听动画
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(Color.indigo)
+                            .frame(width: 8, height: 8)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.indigo.opacity(0.4), lineWidth: 2)
+                                    .scaleEffect(1.5)
+                                    .opacity(viewModel.audioLevel > 0.05 ? 1 : 0)
+                                    .animation(.easeInOut(duration: 0.3), value: viewModel.audioLevel)
+                            )
+                        Text(NSLocalizedString("immersive.status.listening", comment: ""))
+                            .font(.caption)
+                            .foregroundColor(.indigo.opacity(0.8))
+                    }
+                    
+                    Spacer()
+                    
+                    // 耳机提示
+                    HStack(spacing: 4) {
+                        Image(systemName: "airpodspro")
+                            .font(.caption2)
+                        Text(NSLocalizedString("immersive.earphone.hint", comment: ""))
+                            .font(.caption2)
+                    }
+                    .foregroundColor(.white.opacity(0.35))
+                } else {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 8, height: 8)
+                    Text(viewModel.connectionState.displayText)
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.6))
+                    Spacer()
+                }
+            }
+            .padding(.horizontal, 24)
+            
+            // 翻译结果显示（突出显示，这是沉浸模式的核心）
+            if !viewModel.currentTranslatedText.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    // 原文（小字号，辅助信息）
+                    if !viewModel.currentTranscript.isEmpty {
+                        Text(viewModel.currentTranscript)
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.35))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    
+                    // 翻译结果（大字号，核心内容）
+                    Text(viewModel.currentTranslatedText)
+                        .font(.title2)
+                        .fontWeight(.medium)
+                        .foregroundColor(.indigo)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(16)
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.indigo.opacity(0.08))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color.indigo.opacity(0.15), lineWidth: 1)
+                        )
+                )
+                .padding(.horizontal, 20)
+                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+            } else if viewModel.connectionState.isActive {
+                // 空状态提示
+                VStack(spacing: 12) {
+                    Image(systemName: "ear.and.waveform")
+                        .font(.system(size: 36))
+                        .foregroundColor(.indigo.opacity(0.2))
+                    Text(NSLocalizedString("immersive.waiting", comment: ""))
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.25))
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.top, 40)
+            }
+            
+            // 音频波形动画
+            if viewModel.connectionState.isActive {
+                AudioWaveView(
+                    level: viewModel.audioLevel,
+                    accentColor: .indigo
+                )
+                .frame(height: 30)
+                .padding(.horizontal, 24)
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: viewModel.currentTranslatedText)
+        .animation(.easeInOut(duration: 0.3), value: viewModel.currentTranscript)
     }
 }
 
