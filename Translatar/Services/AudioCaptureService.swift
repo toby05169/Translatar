@@ -85,18 +85,6 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         case .conversation:
             // 对话模式：允许蓝牙（AirPods麦克风+AirPods播放）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
-        case .immersive:
-            // v4 核心修复：同声传译模式
-            //
-            // 只用 .allowBluetoothA2DP，不用 .allowBluetooth，不用 .defaultToSpeaker
-            // 原理（参考 Rob Napier, StackOverflow 302k声望）：
-            //   - .allowBluetooth 会启用HFP协议，导致AirPods麦克风变成输入源
-            //   - .allowBluetoothA2DP 只允许A2DP输出（高质量立体声）
-            //   - 不启用HFP = AirPods不作为麦克风 = 输入自动回退到iPhone内置麦克风
-            //   - .defaultToSpeaker 会把输出路由到内置扬声器，覆盖A2DP输出！
-            //   - 所以不能加 .defaultToSpeaker，否则AirPods没有声音
-            //   - 效果：iPhone内置麦克风收音 + AirPods A2DP高质量播放
-            options = [.allowBluetoothA2DP]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
@@ -108,12 +96,6 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             options: options
         )
         
-        // v3.2: 同声传译模式不需要手动指定麦克风
-        // 因为没有启用.allowBluetooth，输入自动回退到iPhone内置麦克风
-        // 保留forceBuiltInMicrophone作为双保险（以防某些iOS版本行为不一致）
-        if mode == .immersive {
-            try forceBuiltInMicrophone(session: session)
-        }
         
         // 设置缓冲区大小（最小缓冲区，最大化实时性）
         let bufferDuration = 0.01
@@ -258,9 +240,7 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         isRecording = true
         print("[AudioCapture] 音频捕获已启动 - 模式: \(mode.displayName), 降噪: \(noiseSuppression ? "开" : "关")")
         
-        if mode == .immersive {
-            print("[AudioCapture] 同声传译模式: 使用iPhone内置麦克风拾取环境声音")
-        }
+
     }
     
     /// 停止音频捕获
