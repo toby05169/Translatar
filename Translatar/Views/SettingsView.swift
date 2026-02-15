@@ -357,7 +357,7 @@ struct SettingsView: View {
                 Text(NSLocalizedString("settings.onlineEngine", comment: ""))
                     .foregroundColor(.white.opacity(0.6))
                 Spacer()
-                Text("OpenAI Realtime API")
+                Text("Gemini Realtime API")
                     .foregroundColor(.white.opacity(0.3))
             }
             .listRowBackground(Color.white.opacity(0.05))

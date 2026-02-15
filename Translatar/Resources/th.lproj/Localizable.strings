@@ -103,7 +103,7 @@
 "settings.section.offline" = "แปลออฟไลน์";
 "settings.section.about" = "เกี่ยวกับ";
 "settings.section.account" = "บัญชี";
-"settings.apiKey.title" = "คีย์ OpenAI API";
+"settings.apiKey.title" = "API";
 "settings.save" = "บันทึก";
 "settings.apiKey.note" = "คีย์ API เก็บไว้ในอุปกรณ์ของคุณเท่านั้น";
 "settings.noiseSuppression" = "ตัดเสียงรบกวน AI";
@@ -187,7 +187,7 @@
 "sub.feature.support" = "สนับสนุนลูกค้าเร่งด่วน";
 "sub.error.load" = "โหลดแผนสมาชิกไม่สำเร็จ กรุณาตรวจสอบเครือข่าย";
 "sub.error.pending" = "กำลังดำเนินการซื้อ กรุณาตรวจสอบภายหลัง";
-"error.noApiKey" = "กรุณาตั้งค่า OpenAI API key ในการตั้งค่า";
+"error.noApiKey" = "กรุณาตั้งค่า Gemini API key ในการตั้งค่า";
 "error.noApiKey.short" = "ยังไม่ได้ตั้งค่า API key";
 "error.offlineUnavailable" = "แปลออฟไลน์ไม่พร้อมใช้งาน: กรุณาตรวจสอบว่าดาวน์โหลดชุดภาษาแล้ว";
 "error.invalidUrl" = "URL API ไม่ถูกต้อง";

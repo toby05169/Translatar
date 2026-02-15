@@ -106,7 +106,7 @@
 "settings.section.offline" = "离线翻译";
 "settings.section.about" = "关于";
 "settings.section.account" = "账号配置";
-"settings.apiKey.title" = "OpenAI API 密钥";
+"settings.apiKey.title" = "API";
 "settings.save" = "保存";
 "settings.apiKey.note" = "API密钥仅保存在本地设备上，不会上传到任何服务器。";
 "settings.noiseSuppression" = "AI降噪";
@@ -193,7 +193,7 @@
 "sub.feature.support" = "优先客服支持";
 "sub.error.load" = "加载订阅方案失败，请检查网络连接";
 "sub.error.pending" = "购买正在处理中，请稍后查看";
-"error.noApiKey" = "请先在设置中配置您的OpenAI API密钥";
+"error.noApiKey" = "请先在设置中配置您的Gemini API密钥";
 "error.noApiKey.short" = "未配置API密钥";
 "error.offlineUnavailable" = "离线翻译不可用：请检查设备是否已下载语言包";
 "error.invalidUrl" = "API地址无效";

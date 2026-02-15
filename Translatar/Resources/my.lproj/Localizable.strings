@@ -102,7 +102,7 @@
 "settings.section.offline" = "အော့ဖ်လိုင်း ဘာသာပြန်";
 "settings.section.about" = "အကြောင်း";
 "settings.section.account" = "အကောင့်";
-"settings.apiKey.title" = "OpenAI API သော့";
+"settings.apiKey.title" = "API";
 "settings.save" = "သိမ်းဆည်း";
 "settings.apiKey.note" = "API သော့ကို သင့်စက်တွင်သာ သိမ်းဆည်းထားသည်။";
 "settings.noiseSuppression" = "AI ဆူညံသံ လျှော့ချ";

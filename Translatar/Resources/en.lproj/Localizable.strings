@@ -106,7 +106,7 @@
 "settings.section.offline" = "Offline Translation";
 "settings.section.about" = "About";
 "settings.section.account" = "Account";
-"settings.apiKey.title" = "OpenAI API Key";
+"settings.apiKey.title" = "API";
 "settings.save" = "Save";
 "settings.apiKey.note" = "API key is stored locally on your device only.";
 "settings.noiseSuppression" = "AI Noise Suppression";
@@ -192,7 +192,7 @@
 "sub.feature.support" = "Priority Support";
 "sub.error.load" = "Failed to load subscription plans. Please check your network.";
 "sub.error.pending" = "Purchase is being processed. Please check later.";
-"error.noApiKey" = "Please configure your OpenAI API key in Settings";
+"error.noApiKey" = "Please configure your Gemini API key in Settings";
 "error.noApiKey.short" = "API key not configured";
 "error.offlineUnavailable" = "Offline translation unavailable: Please check if language pack is downloaded";
 "error.invalidUrl" = "Invalid API URL";

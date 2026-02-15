@@ -75,7 +75,7 @@
 "settings.section.offline" = "오프라인 번역";
 "settings.section.about" = "정보";
 "settings.section.account" = "계정";
-"settings.apiKey.title" = "OpenAI API 키";
+"settings.apiKey.title" = "API";
 "settings.save" = "저장";
 "settings.apiKey.note" = "API 키는 기기에만 저장됩니다.";
 "settings.noiseSuppression" = "AI 소음 억제";

@@ -103,7 +103,7 @@
 "settings.section.offline" = "オフライン翻訳";
 "settings.section.about" = "アプリについて";
 "settings.section.account" = "アカウント";
-"settings.apiKey.title" = "OpenAI APIキー";
+"settings.apiKey.title" = "API";
 "settings.save" = "保存";
 "settings.apiKey.note" = "APIキーはデバイスにのみ保存されます。";
 "settings.noiseSuppression" = "AIノイズ抑制";
@@ -187,7 +187,7 @@
 "sub.feature.support" = "優先サポート";
 "sub.error.load" = "サブスクリプションプランの読み込みに失敗しました。ネットワークを確認してください。";
 "sub.error.pending" = "購入処理中です。後ほどご確認ください。";
-"error.noApiKey" = "設定でOpenAI APIキーを設定してください";
+"error.noApiKey" = "設定でGemini APIキーを設定してください";
 "error.noApiKey.short" = "APIキー未設定";
 "error.offlineUnavailable" = "オフライン翻訳が利用できません：言語パックがダウンロードされているか確認してください";
 "error.invalidUrl" = "無効なAPI URL";

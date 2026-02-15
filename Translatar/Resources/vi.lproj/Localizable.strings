@@ -103,7 +103,7 @@
 "settings.section.offline" = "Dịch ngoại tuyến";
 "settings.section.about" = "Giới thiệu";
 "settings.section.account" = "Tài khoản";
-"settings.apiKey.title" = "Khóa OpenAI API";
+"settings.apiKey.title" = "API";
 "settings.save" = "Lưu";
 "settings.apiKey.note" = "Khóa API chỉ được lưu trên thiết bị của bạn.";
 "settings.noiseSuppression" = "Khử tiếng ồn AI";
@@ -187,7 +187,7 @@
 "sub.feature.support" = "Hỗ trợ ưu tiên";
 "sub.error.load" = "Không thể tải gói đăng ký. Vui lòng kiểm tra mạng.";
 "sub.error.pending" = "Đang xử lý mua hàng. Vui lòng kiểm tra sau.";
-"error.noApiKey" = "Vui lòng cấu hình API key OpenAI trong Cài đặt";
+"error.noApiKey" = "Vui lòng cấu hình API key Gemini trong Cài đặt";
 "error.noApiKey.short" = "Chưa cấu hình API key";
 "error.offlineUnavailable" = "Dịch ngoại tuyến không khả dụng: Vui lòng kiểm tra gói ngôn ngữ";
 "error.invalidUrl" = "URL API không hợp lệ";

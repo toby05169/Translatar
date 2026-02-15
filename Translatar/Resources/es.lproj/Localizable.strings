@@ -75,7 +75,7 @@
 "settings.section.offline" = "Traducción sin conexión";
 "settings.section.about" = "Acerca de";
 "settings.section.account" = "Cuenta";
-"settings.apiKey.title" = "Clave API de OpenAI";
+"settings.apiKey.title" = "API";
 "settings.save" = "Guardar";
 "settings.apiKey.note" = "La clave API solo se guarda en tu dispositivo.";
 "settings.noiseSuppression" = "Supresión de ruido IA";
