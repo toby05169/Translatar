@@ -103,8 +103,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     /// 同声传译分段间隔（秒）
     private let immersiveSegmentInterval: TimeInterval = 8.0
     
-    /// 同声传译等待turnComplete的continuation（v11.3新增）
-    private var turnCompleteContinuation: CheckedContinuation<Bool, Never>?
+
     
     // MARK: - 自动重连
     
@@ -540,10 +539,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     func disconnect() {
         // v11.3: 停止定时分段器并清理等待
         stopImmersiveSegmentTimer()
-        if let cont = turnCompleteContinuation {
-            turnCompleteContinuation = nil
-            cont.resume(returning: false)
-        }
+
         
         // 同声传译模式断开前发送 activityEnd
         if currentMode == .immersive && immersiveActivityStarted {
@@ -775,10 +771,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         if let turnComplete = content["turnComplete"] as? Bool, turnComplete {
             print("[GeminiAPI] 回合结束")
             
-            // v11.3: 通知定时分段器turnComplete已收到
-            if currentMode == .immersive {
-                notifyTurnComplete()
-            }
+            // v12: turnComplete已收到（自动VAD模式下无需额外处理）
             
             if !accumulatedInputTranscript.isEmpty {
                 transcriptSubject.send(accumulatedInputTranscript)
