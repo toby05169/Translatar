@@ -163,12 +163,11 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         isConnected = true
         connectionStateSubject.send(.connected)
         
-        // v11: 同声传译模式发送activityStart并启动定时分段
+        // v12: 同声传译模式启动定时分段兜底（自动VAD会自动处理正常停顿）
         if mode == .immersive {
-            await sendImmersiveActivityStart()
             startImmersiveSegmentTimer()
             print("[GeminiAPI] 已连接 - 同声传译模式: \(config.sourceLanguage.englishName) → \(config.targetLanguage.englishName)")
-            print("[GeminiAPI] 定时分段模式: 每\(immersiveSegmentInterval)秒触发一次翻译")
+            print("[GeminiAPI] 混合模式: 自动VAD(高灵敏) + 定时分段兜底(每\(immersiveSegmentInterval)秒)")
         } else {
             print("[GeminiAPI] 已连接 - \(config.sourceLanguage.englishName) ↔ \(config.targetLanguage.englishName) (双向互译)")
         }
@@ -215,7 +214,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     // MARK: - 同声传译定时分段（v11新增）
     
-    /// 启动定时分段器：每隔N秒发送activityEnd触发翻译，等turnComplete后再activityStart
+    /// 启动定时分段兜底：如果自动VAD长时间未触发，通过发送静音帧强制触发VAD结束检测
     private func startImmersiveSegmentTimer() {
         immersiveSegmentTimer?.cancel()
         immersiveSegmentTimer = Task { [weak self] in
@@ -223,57 +222,46 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             
             while !Task.isCancelled && self.isConnected && self.currentMode == .immersive {
                 do {
-                    // 等待分段间隔（积累音频）
+                    // 等待分段间隔
                     try await Task.sleep(nanoseconds: UInt64(self.immersiveSegmentInterval * 1_000_000_000))
                     guard !Task.isCancelled, self.isConnected else { break }
                     
-                    // 发送 activityEnd 触发翻译
-                    print("[GeminiAPI] 定时分段: 发送 activityEnd")
-                    await self.sendImmersiveActivityEnd()
-                    
-                    // 等待 turnComplete 信号（最多等待10秒）
-                    print("[GeminiAPI] 定时分段: 等待 turnComplete...")
-                    let gotTurnComplete = await self.waitForTurnComplete(timeout: 10.0)
-                    guard !Task.isCancelled, self.isConnected else { break }
-                    
-                    if gotTurnComplete {
-                        print("[GeminiAPI] 定时分段: turnComplete 已收到，开始下一段")
-                    } else {
-                        print("[GeminiAPI] 定时分段: turnComplete 超时，强制开始下一段")
-                    }
-                    
-                    // 发送 activityStart 开始下一段
-                    await self.sendImmersiveActivityStart()
+                    // 发送一小段静音音频（400ms），触发VAD的静音检测，迫使Gemini开始翻译
+                    print("[GeminiAPI] 定时兜底: 发送静音帧触发VAD")
+                    await self.sendSilenceFrame()
                     
                 } catch {
                     break
                 }
             }
-            print("[GeminiAPI] 定时分段器已停止")
+            print("[GeminiAPI] 定时分段兜底已停止")
         }
     }
     
-    /// 等待turnComplete信号，超时返回false
-    private func waitForTurnComplete(timeout: TimeInterval) async -> Bool {
-        return await withCheckedContinuation { continuation in
-            self.turnCompleteContinuation = continuation
-            
-            // 超时保护
-            Task {
-                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-                if let cont = self.turnCompleteContinuation {
-                    self.turnCompleteContinuation = nil
-                    cont.resume(returning: false)
-                }
-            }
-        }
-    }
-    
-    /// 通知turnComplete已收到（从handleServerContent中调用）
-    private func notifyTurnComplete() {
-        if let cont = turnCompleteContinuation {
-            turnCompleteContinuation = nil
-            cont.resume(returning: true)
+    /// 发送静音音频帧，触发VAD的静音检测
+    private func sendSilenceFrame() async {
+        // 创建400ms的静音PCM数据（16kHz, 16-bit, mono）
+        let sampleRate = 16000
+        let durationMs = 400
+        let numSamples = sampleRate * durationMs / 1000
+        let silenceData = Data(count: numSamples * 2) // 16-bit = 2 bytes per sample
+        let base64Audio = silenceData.base64EncodedString()
+        
+        let audioMessage: [String: Any] = [
+            "realtimeInput": [
+                "mediaChunks": [
+                    [
+                        "mimeType": "audio/pcm;rate=16000",
+                        "data": base64Audio
+                    ]
+                ]
+            ]
+        ]
+        
+        do {
+            try await sendJSON(audioMessage)
+        } catch {
+            print("[GeminiAPI] 静音帧发送失败: \(error)")
         }
     }
     
@@ -335,7 +323,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         
         try await sendJSON(setupMessage)
         print("[GeminiAPI] setup 已发送（含上下文压缩和会话恢复）")
-        print("[GeminiAPI] VAD模式: \(mode == .immersive ? "禁用（手动活动控制）" : "自动")")
+        print("[GeminiAPI] VAD模式: \(mode == .immersive ? "自动(高灵敏)+兜底" : "自动")")
         print("[GeminiAPI] === 提示词 ===")
         print(translationPrompt)
         print("[GeminiAPI] === 提示词结束 ===")
@@ -354,10 +342,14 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
-            // v11: 同声传译禁用自动VAD，由客户端定时分段控制
-            // 每隔N秒发送activityEnd触发翻译，然后立即activityStart开始下一段
+            // v12: 同声传译用自动VAD（高灵敏度）+ 定时分段兜底
+            // 自动VAD让Gemini在自然句间停顿时快速触发翻译
+            // 定时分段作为兜底，防止持续说话时永远不触发
             return [
-                "disabled": true
+                "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
+                "endOfSpeechSensitivity": "END_SENSITIVITY_HIGH",
+                "prefixPaddingMs": 50,
+                "silenceDurationMs": 300
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
