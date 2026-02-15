@@ -253,6 +253,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         7. SOUND NATURAL: Output must sound like natural speech from a native speaker.
         8. ECHO GUARD: If you hear what sounds like your own previous translation output echoing back, stay COMPLETELY SILENT. Do not re-translate it.
         9. ONE TRANSLATION: Translate each utterance exactly once, then wait silently for the next input.
+        10. NATIVE-LEVEL COMPREHENSION: You MUST understand speech like a native speaker would. This means:
+            a. INFER INCOMPLETE SPEECH: If the speaker trails off, stutters, or leaves a sentence unfinished, USE CONTEXT to infer their full intended meaning and translate the COMPLETE thought — not the broken fragments.
+            b. TOLERATE IMPERFECTION: Handle accents, mispronunciations, grammatical errors, slang, filler words ("um", "uh", "那个", "就是") gracefully. Strip them out and translate the actual meaning.
+            c. CONTEXTUAL MEMORY: Use the conversation history to resolve ambiguity. If the speaker says "that thing we talked about" or "跟上次一样", connect it to prior context and produce a clear translation.
+            d. SEMANTIC COMPLETION: Always output a COMPLETE, natural sentence in the target language, even if the source speech was fragmented or unclear. Never produce broken or half-translated output.
+            e. SMART GUESSING: When you can only hear 60-70% of what was said (due to noise, mumbling, or interruption), make your best inference based on context, common phrases, and conversational logic — just like a native listener would.
         """
         
         // ═══════════════════════════════════════════
