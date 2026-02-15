@@ -1,22 +1,19 @@
 // AudioCaptureService.swift
 // Translatar - AI实时翻译耳机应用
 //
-// 音频捕获服务（第二阶段增强版 - 真机兼容修复v2）
+// 音频捕获服务（v3 - 同声传译麦克风修复）
 //
-// 修复说明（v2）：
-// - 彻底修复真机上 vpio render err: -1 的问题
-// - 根因：AVAudioEngine 的 Voice Processing IO (VPIO) 与
-//   AVAudioSession 的 .voiceChat/.measurement 模式存在冲突
-// - 解决方案：
-//   1. 统一使用 .playAndRecord + .default 模式
-//   2. 不调用 setVoiceProcessingEnabled（避免触发 VPIO）
-//   3. 依赖 AVAudioSession 自身的降噪能力
-//   4. 在 installTap 时使用 nil format 让系统自动选择最佳格式
+// v3 修复说明（2026-02-15）：
+// 【问题：电脑播放手机收不到】
+// - AirPods连接后，iOS默认将麦克风输入切换到AirPods麦克风
+// - AirPods麦克风离电脑扬声器太远，无法有效拾取电脑播放的音频
+// - 修复：同声传译模式下强制使用iPhone内置麦克风（底部麦克风）
+//   输入：iPhone底部麦克风（拾取环境声音/电脑播放）
+//   输出：AirPods（用户通过耳机听翻译结果）
 //
-// 技术说明：
-// - 使用 AVAudioEngine 进行实时音频捕获
-// - 音频格式：PCM16, 16000Hz, 单声道（Gemini Live API要求）
-// - 支持后台音频录制（需在Xcode中启用Background Modes -> Audio）
+// v2 保留功能：
+// - 避免 VPIO 冲突（不调用 setVoiceProcessingEnabled）
+// - 统一使用 .playAndRecord + .default 模式
 
 import Foundation
 import AVFoundation
@@ -78,20 +75,23 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
     // MARK: - 音频会话配置
     
     /// 配置iOS音频会话
+    /// v3: 同声传译模式强制使用iPhone内置麦克风
     private func configureAudioSession(mode: TranslationMode) throws {
         let session = AVAudioSession.sharedInstance()
         
-        // 统一使用 .default 模式，避免 .voiceChat 触发系统级 VPIO
-        // .voiceChat 会自动启用 Voice Processing IO，与 AVAudioEngine 冲突
         let options: AVAudioSession.CategoryOptions
         
         switch mode {
         case .conversation:
-            // 对话模式：允许蓝牙，默认扬声器
+            // 对话模式：允许蓝牙（AirPods麦克风+AirPods播放）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // 同声传译模式：允许蓝牙，混合音频确保收音和播放同时进行
-            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
+            // v3 核心修复：同声传译模式
+            // 不使用 .allowBluetooth —— 这会阻止iOS将麦克风路由到AirPods
+            // 只使用 .allowBluetoothA2DP —— 允许AirPods作为输出设备（A2DP仅输出）
+            // 效果：输入=iPhone内置麦克风，输出=AirPods
+            // .mixWithOthers 确保收音和播放同时进行
+            options = [.allowBluetoothA2DP, .mixWithOthers]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
@@ -103,8 +103,13 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             options: options
         )
         
-        // 设置缓冲区大小（同声传译模式使用更小缓冲区提升实时性）
-        let bufferDuration = 0.01 // 所有模式统一使用最小缓冲区，最大化实时性
+        // v3: 同声传译模式额外步骤 - 强制选择内置麦克风
+        if mode == .immersive {
+            try forceBuiltInMicrophone(session: session)
+        }
+        
+        // 设置缓冲区大小（最小缓冲区，最大化实时性）
+        let bufferDuration = 0.01
         try session.setPreferredIOBufferDuration(bufferDuration)
         
         // 设置首选采样率
@@ -114,16 +119,57 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         try session.setActive(true, options: .notifyOthersOnDeactivation)
         
         print("[AudioCapture] 音频会话配置完成 - 模式: \(mode.displayName)")
-        print("[AudioCapture] 当前输入设备: \(session.currentRoute.inputs.map { $0.portName })")
-        print("[AudioCapture] 当前输出设备: \(session.currentRoute.outputs.map { $0.portName })")
+        print("[AudioCapture] 当前输入设备: \(session.currentRoute.inputs.map { "\($0.portName) (\($0.portType.rawValue))" })")
+        print("[AudioCapture] 当前输出设备: \(session.currentRoute.outputs.map { "\($0.portName) (\($0.portType.rawValue))" })")
         print("[AudioCapture] 实际采样率: \(session.sampleRate)")
+    }
+    
+    /// v3: 强制选择iPhone内置麦克风
+    /// 遍历可用输入设备，找到内置麦克风并设为首选输入
+    private func forceBuiltInMicrophone(session: AVAudioSession) throws {
+        guard let availableInputs = session.availableInputs else {
+            print("[AudioCapture] 警告: 无法获取可用输入设备列表")
+            return
+        }
+        
+        print("[AudioCapture] 可用输入设备:")
+        for input in availableInputs {
+            print("[AudioCapture]   - \(input.portName) (\(input.portType.rawValue))")
+        }
+        
+        // 查找内置麦克风
+        if let builtInMic = availableInputs.first(where: { $0.portType == .builtInMic }) {
+            try session.setPreferredInput(builtInMic)
+            print("[AudioCapture] ✅ 已强制选择内置麦克风: \(builtInMic.portName)")
+            
+            // 尝试选择底部麦克风数据源（如果可用）
+            // iPhone有多个内置麦克风（底部、前置、后置），底部麦克风最适合拾取外部声音
+            if let dataSources = builtInMic.dataSources {
+                print("[AudioCapture] 内置麦克风数据源:")
+                for source in dataSources {
+                    print("[AudioCapture]   - \(source.dataSourceName) (方向: \(source.orientation?.rawValue ?? "无"), 位置: \(source.location?.rawValue ?? "无"))")
+                }
+                
+                // 优先选择底部麦克风
+                if let bottomMic = dataSources.first(where: { $0.location == .lower }) {
+                    try builtInMic.setPreferredDataSource(bottomMic)
+                    print("[AudioCapture] ✅ 已选择底部麦克风: \(bottomMic.dataSourceName)")
+                }
+                // 如果没有底部，尝试前置麦克风
+                else if let frontMic = dataSources.first(where: { $0.orientation == .front }) {
+                    try builtInMic.setPreferredDataSource(frontMic)
+                    print("[AudioCapture] ✅ 已选择前置麦克风: \(frontMic.dataSourceName)")
+                }
+            }
+        } else {
+            print("[AudioCapture] ⚠️ 未找到内置麦克风，将使用默认输入设备")
+            // 如果没有内置麦克风（比如iPad外接键盘），回退到默认
+        }
     }
     
     // MARK: - 降噪控制
     
     /// 动态开关降噪（运行时切换）
-    /// 注意：v2版本不使用 setVoiceProcessingEnabled 避免 VPIO 冲突
-    /// 降噪由 AVAudioSession 的类别和模式隐式控制
     func setNoiseSuppression(enabled: Bool) {
         isNoiseSuppressionEnabled = enabled
         print("[AudioCapture] 降噪设置: \(enabled ? "开" : "关")")
@@ -149,15 +195,13 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         }
         
         // 第二步：创建全新的音频引擎实例
-        // 每次启动都创建新实例，避免残留状态导致的问题
         let engine = AVAudioEngine()
         self.audioEngine = engine
         
-        // 第三步：配置音频会话
+        // 第三步：配置音频会话（v3: 同声传译会强制内置麦克风）
         try configureAudioSession(mode: mode)
         
         // 第四步：获取输入节点和格式
-        // 重要：不调用 setVoiceProcessingEnabled，避免 VPIO
         let inputNode = engine.inputNode
         let hwFormat = inputNode.outputFormat(forBus: 0)
         
@@ -169,7 +213,7 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             throw AudioCaptureError.formatCreationFailed
         }
         
-        // 第五步：创建目标格式（PCM16, 24kHz, 单声道）
+        // 第五步：创建目标格式（PCM16, 16kHz, 单声道）
         guard let targetFormat = AVAudioFormat(
             commonFormat: .pcmFormatInt16,
             sampleRate: targetSampleRate,
@@ -186,10 +230,10 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         }
         
         // 第七步：缓冲区大小
+        // 同声传译使用稍大的缓冲区（4800帧=300ms@16kHz），减少发送频率
         let bufferSize: AVAudioFrameCount = (mode == .conversation || mode == .outdoor) ? 2400 : 4800
         
         // 第八步：安装音频处理回调
-        // 使用硬件原始格式，避免格式不匹配
         inputNode.installTap(onBus: 0, bufferSize: bufferSize, format: hwFormat) { [weak self] buffer, time in
             guard let self = self else { return }
             
@@ -206,6 +250,10 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         
         isRecording = true
         print("[AudioCapture] 音频捕获已启动 - 模式: \(mode.displayName), 降噪: \(noiseSuppression ? "开" : "关")")
+        
+        if mode == .immersive {
+            print("[AudioCapture] 同声传译模式: 使用iPhone内置麦克风拾取环境声音")
+        }
     }
     
     /// 停止音频捕获
@@ -264,7 +312,6 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
         let status = converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
         
         guard status != .error, error == nil else {
-            // 不打印每次转换错误，避免日志刷屏
             return
         }
         

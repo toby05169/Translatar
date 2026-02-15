@@ -1,14 +1,24 @@
 // RealtimeTranslationService.swift
 // Translatar - AI实时翻译耳机应用
 //
-// Gemini Live API 翻译服务（v8 - 双向互译 + 语言修复）
+// Gemini Live API 翻译服务（v10 - 同声传译核心修复）
 //
-// v8 修复说明（2026-02-14）：
-// 1. 双向互译：不再区分"源语言→目标语言"单向翻译，
-//    改为"语言A ↔ 语言B"双向互译。说A翻译成B，说B翻译成A。
-//    利用 Gemini 的自动语言检测能力实现。
-// 2. 语言修复：确保提示词正确使用用户选择的语言对。
-// 3. 保留 v7 的回声循环防护机制。
+// v10 修复说明（2026-02-15）：
+// 【问题1：不停顿不翻译】
+// - 同声传译模式禁用自动VAD（automaticActivityDetection.disabled = true）
+// - 连接成功后立即发送 activityStart，保持持续活动状态
+// - 模型会在积累足够语义后自动翻译，不需要等待静音
+// - 提示词强调"translate in small chunks immediately"
+//
+// 【问题2：回声防护优化】
+// - 同声传译模式完全禁用回声防护（不暂停麦克风）
+// - 依赖提示词让模型忽略回声
+//
+// v9 保留功能：
+// - 上下文窗口压缩（无限时长会话）
+// - 会话恢复机制（10分钟连接重置）
+// - 双向互译（对话模式）
+// - 回声循环防护（仅对话模式和户外模式）
 
 import Foundation
 import Combine
@@ -72,18 +82,29 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     /// 累积的输出转录文本
     private var accumulatedOutputTranscript = ""
     
-    // MARK: - 回声循环防护（v7）
+    // MARK: - 回声循环防护（仅对话/户外模式生效）
     
     /// 是否正在播放模型输出的音频（此时暂停发送麦克风数据）
+    /// v10: 同声传译模式下此标志不生效
     private var isModelOutputting = false
     
     /// 恢复音频发送的延迟任务
     private var resumeAudioTask: Task<Void, Never>?
     
+    // MARK: - 会话恢复（v9新增）
+    
+    /// 上一次的会话恢复句柄（用于重连时恢复会话）
+    private var sessionResumptionHandle: String?
+    
+    // MARK: - 同声传译活动状态（v10新增）
+    
+    /// 同声传译模式下是否已发送 activityStart
+    private var immersiveActivityStarted = false
+    
     // MARK: - 自动重连
     
     private var reconnectCount = 0
-    private let maxReconnectAttempts = 3
+    private let maxReconnectAttempts = 5
     private var reconnectTask: Task<Void, Never>?
     
     // MARK: - 连接管理
@@ -95,7 +116,9 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         isSetupComplete = false
         isDisconnecting = false
         isModelOutputting = false
+        immersiveActivityStarted = false
         reconnectCount = 0
+        sessionResumptionHandle = nil
         
         try await establishConnection(config: config, mode: mode)
     }
@@ -134,54 +157,120 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         
         isConnected = true
         connectionStateSubject.send(.connected)
-        print("[GeminiAPI] 已连接 - \(config.sourceLanguage.englishName) ↔ \(config.targetLanguage.englishName) (双向互译)")
+        
+        // v10: 同声传译模式连接成功后立即发送 activityStart
+        if mode == .immersive {
+            await sendImmersiveActivityStart()
+            print("[GeminiAPI] 已连接 - 同声传译模式: \(config.sourceLanguage.englishName) → \(config.targetLanguage.englishName)")
+            print("[GeminiAPI] 已发送 activityStart，持续活动模式已启动")
+        } else {
+            print("[GeminiAPI] 已连接 - \(config.sourceLanguage.englishName) ↔ \(config.targetLanguage.englishName) (双向互译)")
+        }
     }
     
-    // MARK: - Setup 消息
+    // MARK: - 同声传译活动控制（v10新增）
+    
+    /// 同声传译模式：发送 activityStart 信号
+    /// 告诉 Gemini 用户开始说话，进入持续活动状态
+    private func sendImmersiveActivityStart() async {
+        guard currentMode == .immersive, !immersiveActivityStarted else { return }
+        
+        let startMessage: [String: Any] = [
+            "realtimeInput": [
+                "activityStart": [String: Any]()
+            ]
+        ]
+        do {
+            try await sendJSON(startMessage)
+            immersiveActivityStarted = true
+            print("[GeminiAPI] 同声传译: activityStart 已发送")
+        } catch {
+            print("[GeminiAPI] 同声传译: activityStart 发送失败: \(error)")
+        }
+    }
+    
+    /// 同声传译模式：发送 activityEnd 信号（仅在断开连接时调用）
+    private func sendImmersiveActivityEnd() async {
+        guard currentMode == .immersive, immersiveActivityStarted else { return }
+        
+        let endMessage: [String: Any] = [
+            "realtimeInput": [
+                "activityEnd": [String: Any]()
+            ]
+        ]
+        do {
+            try await sendJSON(endMessage)
+            immersiveActivityStarted = false
+            print("[GeminiAPI] 同声传译: activityEnd 已发送")
+        } catch {
+            print("[GeminiAPI] 同声传译: activityEnd 发送失败: \(error)")
+        }
+    }
+    
+    // MARK: - Setup 消息（v10: 同声传译禁用自动VAD）
     
     private func sendSetupMessage(config: TranslationConfig, mode: TranslationMode) async throws {
         let translationPrompt = buildTranslationPrompt(config: config, mode: mode)
         let vadConfig = buildVADConfig(mode: mode)
         
-        let setupMessage: [String: Any] = [
-            "setup": [
-                "model": geminiModel,
-                "generationConfig": [
-                    "responseModalities": ["AUDIO"],
-                    "thinkingConfig": [
-                        "thinkingBudget": 0
-                    ],
-                    "speechConfig": [
-                        "voiceConfig": [
-                            "prebuiltVoiceConfig": [
-                                "voiceName": "Kore"
-                            ]
+        var setupContent: [String: Any] = [
+            "model": geminiModel,
+            "generationConfig": [
+                "responseModalities": ["AUDIO"],
+                "thinkingConfig": [
+                    "thinkingBudget": 0
+                ],
+                "speechConfig": [
+                    "voiceConfig": [
+                        "prebuiltVoiceConfig": [
+                            "voiceName": "Kore"
                         ]
                     ]
-                ] as [String: Any],
-                "systemInstruction": [
-                    "parts": [
-                        ["text": translationPrompt]
-                    ]
-                ],
-                "realtimeInputConfig": [
-                    "automaticActivityDetection": vadConfig
-                ],
-                "inputAudioTranscription": [String: Any](),
-                "outputAudioTranscription": [String: Any]()
-            ] as [String: Any]
+                ]
+            ] as [String: Any],
+            "systemInstruction": [
+                "parts": [
+                    ["text": translationPrompt]
+                ]
+            ],
+            "realtimeInputConfig": [
+                "automaticActivityDetection": vadConfig
+            ],
+            "inputAudioTranscription": [String: Any](),
+            "outputAudioTranscription": [String: Any]()
+        ]
+        
+        // 上下文窗口压缩（启用滑动窗口，允许无限时长会话）
+        setupContent["contextWindowCompression"] = [
+            "slidingWindow": [String: Any]()
+        ]
+        
+        // 会话恢复（处理10分钟连接重置）
+        var sessionResumptionConfig: [String: Any] = [String: Any]()
+        if let handle = sessionResumptionHandle {
+            sessionResumptionConfig["handle"] = handle
+            print("[GeminiAPI] 使用会话恢复句柄重连")
+        }
+        setupContent["sessionResumption"] = sessionResumptionConfig
+        
+        let setupMessage: [String: Any] = [
+            "setup": setupContent
         ]
         
         try await sendJSON(setupMessage)
-        print("[GeminiAPI] setup 已发送")
+        print("[GeminiAPI] setup 已发送（含上下文压缩和会话恢复）")
+        print("[GeminiAPI] VAD模式: \(mode == .immersive ? "禁用（手动活动控制）" : "自动")")
         print("[GeminiAPI] === 提示词 ===")
         print(translationPrompt)
         print("[GeminiAPI] === 提示词结束 ===")
     }
     
+    // MARK: - VAD 配置（v10: 同声传译禁用自动VAD）
+    
     private func buildVADConfig(mode: TranslationMode) -> [String: Any] {
         switch mode {
         case .conversation:
+            // 对话模式：自动VAD，快速响应
             return [
                 "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
                 "endOfSpeechSensitivity": "END_SENSITIVITY_HIGH",
@@ -189,12 +278,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
-            // 沉浸模式：持续监听，高灵敏度检测语音开始，较长静音容忍度避免频繁打断
+            // v10 核心修复：同声传译禁用自动VAD
+            // 禁用后由客户端手动发送 activityStart/activityEnd
+            // 模型不再等待静音来判断"说话结束"
+            // 而是在积累足够语义信息后自动开始翻译
             return [
-                "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
-                "endOfSpeechSensitivity": "END_SENSITIVITY_LOW",
-                "prefixPaddingMs": 300,
-                "silenceDurationMs": 1500
+                "disabled": true
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
@@ -204,22 +293,42 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         }
     }
     
-    // MARK: - 提示词构建（v8 双向互译）
+    // MARK: - 提示词构建（v10: 强化同声传译的即时翻译指令）
     
-    /// 构建双向互译提示词
-    /// 核心变化：不再是"从A翻译到B"的单向模式，
-    /// 而是"听到A就说B，听到B就说A"的双向模式。
-    /// Gemini 的 native audio 模型具备自动语言检测能力，
-    /// 可以识别输入是哪种语言，然后翻译成另一种。
     private func buildTranslationPrompt(config: TranslationConfig, mode: TranslationMode) -> String {
         let langA = config.sourceLanguage.englishName
         let langB = config.targetLanguage.englishName
         let langACode = config.sourceLanguage.rawValue
         let langBCode = config.targetLanguage.rawValue
         
-        // ═══════════════════════════════════════════
-        // 核心指令：双向互译
-        // ═══════════════════════════════════════════
+        switch mode {
+        case .immersive:
+            return buildImmersivePrompt(langA: langA, langB: langB, langACode: langACode, langBCode: langBCode)
+        case .conversation, .outdoor:
+            return buildBidirectionalPrompt(langA: langA, langB: langB, langACode: langACode, langBCode: langBCode, mode: mode)
+        }
+    }
+    
+    /// 同声传译模式专用提示词（v10增强版）
+    /// 核心改动：强调即时翻译、不等待、分块输出
+    private func buildImmersivePrompt(langA: String, langB: String, langACode: String, langBCode: String) -> String {
+        return """
+        You are a professional simultaneous interpreter at the United Nations.
+
+        TASK: Translate \(langA) speech into \(langB) in real-time.
+
+        CRITICAL RULES:
+        1. TRANSLATE IMMEDIATELY — Do NOT wait for the speaker to finish a sentence. Start translating as soon as you understand the meaning of a phrase or clause. Deliver translation in small, natural chunks.
+        2. CONTINUOUS FLOW — The audio stream is continuous. Treat it as an ongoing speech. Translate each meaningful segment as it comes.
+        3. ECHO REJECTION — You will hear your own translated \(langB) output mixed into the audio stream. You MUST ignore any \(langB) speech you hear. Only translate \(langA) speech.
+        4. SILENCE = WAIT — When there is no \(langA) speech, stay completely silent. Do not speak, acknowledge, or fill silence.
+        5. PURE TRANSLATION — Never add commentary, never answer questions, never explain. Only translate.
+        6. NATURAL OUTPUT — Speak fluent, natural \(langB). Handle accents, filler words, and incomplete sentences gracefully.
+        """
+    }
+    
+    /// 双向互译提示词（对话模式和户外模式）
+    private func buildBidirectionalPrompt(langA: String, langB: String, langACode: String, langBCode: String, mode: TranslationMode) -> String {
         let languageDirective = """
         YOU ARE A BIDIRECTIONAL REAL-TIME SPEECH INTERPRETER BETWEEN \(langA.uppercased()) AND \(langB.uppercased()).
 
@@ -230,17 +339,11 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         YOU MUST AUTOMATICALLY DETECT WHICH LANGUAGE IS BEING SPOKEN AND TRANSLATE TO THE OTHER ONE.
         """
         
-        // ═══════════════════════════════════════════
-        // 角色定义
-        // ═══════════════════════════════════════════
         let rolePrompt = """
         
         ROLE: You are a transparent, invisible interpreter — a language bridge between \(langA) and \(langB). You are NOT a chatbot, NOT an assistant. You exist solely to convert speech from one language to the other.
         """
         
-        // ═══════════════════════════════════════════
-        // 行为规则
-        // ═══════════════════════════════════════════
         let rulesPrompt = """
         
         RULES:
@@ -253,17 +356,9 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         7. SOUND NATURAL: Output must sound like natural speech from a native speaker.
         8. ECHO GUARD: If you hear what sounds like your own previous translation output echoing back, stay COMPLETELY SILENT. Do not re-translate it.
         9. ONE TRANSLATION: Translate each utterance exactly once, then wait silently for the next input.
-        10. NATIVE-LEVEL COMPREHENSION: You MUST understand speech like a native speaker would. This means:
-            a. INFER INCOMPLETE SPEECH: If the speaker trails off, stutters, or leaves a sentence unfinished, USE CONTEXT to infer their full intended meaning and translate the COMPLETE thought — not the broken fragments.
-            b. TOLERATE IMPERFECTION: Handle accents, mispronunciations, grammatical errors, slang, filler words ("um", "uh", "那个", "就是") gracefully. Strip them out and translate the actual meaning.
-            c. CONTEXTUAL MEMORY: Use the conversation history to resolve ambiguity. If the speaker says "that thing we talked about" or "跟上次一样", connect it to prior context and produce a clear translation.
-            d. SEMANTIC COMPLETION: Always output a COMPLETE, natural sentence in the target language, even if the source speech was fragmented or unclear. Never produce broken or half-translated output.
-            e. SMART GUESSING: When you can only hear 60-70% of what was said (due to noise, mumbling, or interruption), make your best inference based on context, common phrases, and conversational logic — just like a native listener would.
+        10. NATIVE-LEVEL COMPREHENSION: Handle accents, mispronunciations, grammatical errors, slang, filler words gracefully. Infer the intended meaning from context.
         """
         
-        // ═══════════════════════════════════════════
-        // 模式指令
-        // ═══════════════════════════════════════════
         let modePrompt: String
         switch mode {
         case .conversation:
@@ -271,34 +366,15 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             
             MODE: Live face-to-face conversation between a \(langA) speaker and a \(langB) speaker. Prioritize speed and naturalness. Translate once, then wait.
             """
-        case .immersive:
-            modePrompt = """
-            
-            MODE: REAL-TIME SIMULTANEOUS INTERPRETATION (同声传译)
-            
-            YOU ARE A PROFESSIONAL SIMULTANEOUS INTERPRETER — like those at the United Nations.
-            
-            CRITICAL RULES FOR THIS MODE:
-            1. DIRECTION: ONE-WAY ONLY. Translate FROM \(langA) TO \(langB). NEVER the reverse.
-            2. SPEED IS EVERYTHING: Do NOT wait for the speaker to finish a complete sentence. Start translating as soon as you grasp a meaningful chunk (a phrase, a clause, or even a few key words). Deliver partial translations in real-time, then continue as more speech arrives.
-            3. CONTINUOUS FLOW: You are receiving a non-stop audio stream. Treat it like a live UN speech — translate in overlapping segments. When one segment is translated, immediately listen for the next.
-            4. NEVER PAUSE TO LISTEN: You must listen AND translate simultaneously. Do not stop translating to "catch up" — if you fall behind, summarize and move on to the current speech.
-            5. IGNORE \(langB) SPEECH: If you hear \(langB), stay COMPLETELY SILENT — the user already understands it.
-            6. IGNORE NON-SPEECH: Background noise, music, applause, mechanical sounds — ignore all of it. Only translate human speech in \(langA).
-            7. SILENCE HANDLING: If there is a long pause or only background noise, stay silent and wait. Resume instantly when speech resumes.
-            8. NATURAL OUTPUT: Your translated speech must sound like a fluent, natural \(langB) speaker — not robotic or word-by-word.
-            9. ECHO PREVENTION: The user's device microphone may pick up your own translated audio output. If you detect your own voice being fed back, IGNORE IT COMPLETELY and do not re-translate it.
-            """
         case .outdoor:
             modePrompt = """
             
             MODE: Push-to-talk outdoor conversation. Each audio segment is a complete utterance from one speaker. Translate it immediately and concisely. The environment may be noisy — focus only on the human speech content.
             """
+        case .immersive:
+            modePrompt = ""
         }
         
-        // ═══════════════════════════════════════════
-        // 示例
-        // ═══════════════════════════════════════════
         let examplesPrompt: String
         if (langACode == "zh" && langBCode == "en") || (langACode == "en" && langBCode == "zh") {
             examplesPrompt = """
@@ -306,8 +382,6 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             EXAMPLES:
             - Hear Chinese: "你好" → Say English: "Hello" (then STOP)
             - Hear English: "Hello" → Say Chinese: "你好" (then STOP)
-            - Hear Chinese: "这个多少钱" → Say English: "How much is this?" (then STOP)
-            - Hear English: "How much is this?" → Say Chinese: "这个多少钱？" (then STOP)
             - Hear your own echo → Say NOTHING
             """
         } else if (langACode == "zh" && langBCode == "th") || (langACode == "th" && langBCode == "zh") {
@@ -316,8 +390,6 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             EXAMPLES:
             - Hear Chinese: "你好" → Say Thai: "สวัสดี" (then STOP)
             - Hear Thai: "สวัสดี" → Say Chinese: "你好" (then STOP)
-            - Hear Chinese: "谢谢" → Say Thai: "ขอบคุณ" (then STOP)
-            - Hear Thai: "ขอบคุณ" → Say Chinese: "谢谢" (then STOP)
             - Hear your own echo → Say NOTHING
             """
         } else {
@@ -330,12 +402,16 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         return languageDirective + rolePrompt + rulesPrompt + modePrompt + examplesPrompt
     }
     
-    // MARK: - 音频数据传输
+    // MARK: - 音频数据传输（v10: 同声传译不受回声防护和VAD影响）
     
     /// 发送音频数据到 Gemini Live API
-    /// 回声防护：模型输出期间不发送麦克风数据
     func sendAudio(data: Data) {
-        guard isConnected, !isModelOutputting else { return }
+        guard isConnected else { return }
+        
+        // 回声防护仅在对话模式下生效
+        // 同声传译模式需要持续不断的音频流，不能暂停
+        if currentMode != .immersive && isModelOutputting { return }
+        
         // 户外模式下，只有在手动录音状态时才发送音频
         if currentMode == .outdoor && !isManualRecording { return }
         
@@ -364,10 +440,9 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     func startManualRecording() {
         guard isConnected, currentMode == .outdoor else { return }
         isManualRecording = true
-        isModelOutputting = false  // 确保不被回声防护阻止
+        isModelOutputting = false
         resumeAudioTask?.cancel()
         
-        // 发送 activityStart 信号告知 Gemini 用户开始说话
         let startMessage: [String: Any] = [
             "realtimeInput": [
                 "activityStart": [String: Any]()
@@ -376,7 +451,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         Task {
             try? await sendJSON(startMessage)
         }
-        print("[GeminiAPI] 🎙️ 户外模式：开始手动录音")
+        print("[GeminiAPI] 户外模式：开始手动录音")
     }
     
     /// 停止手动录音（户外模式：用户松开按钮时调用）
@@ -384,7 +459,6 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         guard currentMode == .outdoor else { return }
         isManualRecording = false
         
-        // 发送 activityEnd 信号告知 Gemini 用户停止说话
         let endMessage: [String: Any] = [
             "realtimeInput": [
                 "activityEnd": [String: Any]()
@@ -393,16 +467,24 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         Task {
             try? await sendJSON(endMessage)
         }
-        print("[GeminiAPI] 🎙️ 户外模式：停止手动录音")
+        print("[GeminiAPI] 户外模式：停止手动录音")
     }
     
     /// 断开连接
     func disconnect() {
+        // v10: 同声传译模式断开前发送 activityEnd
+        if currentMode == .immersive && immersiveActivityStarted {
+            Task {
+                await sendImmersiveActivityEnd()
+            }
+        }
+        
         isDisconnecting = true
         isConnected = false
         isSetupComplete = false
         isModelOutputting = false
         isManualRecording = false
+        immersiveActivityStarted = false
         accumulatedInputTranscript = ""
         accumulatedOutputTranscript = ""
         resumeAudioTask?.cancel()
@@ -417,23 +499,27 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         print("[GeminiAPI] 已断开连接")
     }
     
-    // MARK: - 自动重连
+    // MARK: - 自动重连（支持会话恢复）
     
     private func attemptReconnect() {
         guard !isDisconnecting,
               reconnectCount < maxReconnectAttempts,
               let config = currentConfig else {
             if reconnectCount >= maxReconnectAttempts {
-                print("[GeminiAPI] 已达到最大重连次数，停止重连")
+                print("[GeminiAPI] 已达到最大重连次数(\(maxReconnectAttempts))，停止重连")
                 connectionStateSubject.send(.error("连接已断开，请重新开始"))
+                sessionResumptionHandle = nil
             }
             return
         }
         
         reconnectCount += 1
-        let delay = pow(2.0, Double(reconnectCount))
+        let delay = min(pow(2.0, Double(reconnectCount)), 10.0)
         
         print("[GeminiAPI] 将在 \(delay)s 后第 \(reconnectCount)/\(maxReconnectAttempts) 次重连...")
+        if sessionResumptionHandle != nil {
+            print("[GeminiAPI] 将使用会话恢复句柄")
+        }
         connectionStateSubject.send(.connecting)
         
         reconnectTask = Task {
@@ -447,6 +533,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 urlSession = nil
                 isSetupComplete = false
                 isModelOutputting = false
+                immersiveActivityStarted = false
                 
                 try await establishConnection(config: config, mode: currentMode)
                 reconnectCount = 0
@@ -502,7 +589,19 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         
         if json["setupComplete"] != nil {
             isSetupComplete = true
-            print("[GeminiAPI] setup 完成，双向翻译引擎就绪")
+            print("[GeminiAPI] setup 完成，翻译引擎就绪")
+            return
+        }
+        
+        // 处理会话恢复更新
+        if let sessionResumptionUpdate = json["sessionResumptionUpdate"] as? [String: Any] {
+            handleSessionResumptionUpdate(sessionResumptionUpdate)
+            return
+        }
+        
+        // 处理GoAway消息（服务器即将断开连接的预警）
+        if let goAway = json["goAway"] as? [String: Any] {
+            handleGoAway(goAway)
             return
         }
         
@@ -514,10 +613,26 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         if json["toolCall"] != nil { return }
     }
     
+    // MARK: - 会话恢复处理
+    
+    private func handleSessionResumptionUpdate(_ update: [String: Any]) {
+        if let newHandle = update["newHandle"] as? String, !newHandle.isEmpty {
+            sessionResumptionHandle = newHandle
+            let resumable = update["resumable"] as? Bool ?? false
+            print("[GeminiAPI] 收到会话恢复句柄 (可恢复: \(resumable))")
+        }
+    }
+    
+    private func handleGoAway(_ goAway: [String: Any]) {
+        let timeLeft = goAway["timeLeft"] as? String ?? "未知"
+        print("[GeminiAPI] 收到GoAway消息，剩余时间: \(timeLeft)")
+        print("[GeminiAPI] 服务器即将断开连接，准备使用会话恢复重连...")
+    }
+    
     /// 处理 serverContent 消息
     private func handleServerContent(_ content: [String: Any]) {
         
-        // 处理输入转录（可能不准确，已知 bug）
+        // 处理输入转录
         if let inputTranscription = content["inputTranscription"] as? [String: Any],
            let text = inputTranscription["text"] as? String, !text.isEmpty {
             accumulatedInputTranscript += text
@@ -541,11 +656,13 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                    let base64Data = inlineData["data"] as? String,
                    let audioData = Data(base64Encoded: base64Data) {
                     
-                    // 回声防护：收到模型音频输出时，暂停麦克风发送
-                    if !isModelOutputting {
-                        isModelOutputting = true
-                        resumeAudioTask?.cancel()
-                        print("[GeminiAPI] 🔇 模型输出中，暂停麦克风")
+                    // 回声防护仅在对话模式下生效（非同声传译）
+                    if currentMode == .conversation {
+                        if !isModelOutputting {
+                            isModelOutputting = true
+                            resumeAudioTask?.cancel()
+                            print("[GeminiAPI] 模型输出中，暂停麦克风（对话模式）")
+                        }
                     }
                     
                     translatedAudioSubject.send(audioData)
@@ -582,15 +699,17 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             accumulatedInputTranscript = ""
             accumulatedOutputTranscript = ""
             
-            // 回声防护：回合结束后延迟 0.8 秒恢复麦克风
-            resumeAudioTask?.cancel()
-            resumeAudioTask = Task {
-                do {
-                    try await Task.sleep(nanoseconds: 800_000_000)
-                    guard !Task.isCancelled else { return }
-                    self.isModelOutputting = false
-                    print("[GeminiAPI] 🔊 恢复麦克风")
-                } catch {}
+            // 回声防护恢复逻辑仅在对话模式下执行
+            if currentMode == .conversation {
+                resumeAudioTask?.cancel()
+                resumeAudioTask = Task {
+                    do {
+                        try await Task.sleep(nanoseconds: 800_000_000)
+                        guard !Task.isCancelled else { return }
+                        self.isModelOutputting = false
+                        print("[GeminiAPI] 恢复麦克风")
+                    } catch {}
+                }
             }
             
             connectionStateSubject.send(.connected)
@@ -645,8 +764,13 @@ extension RealtimeTranslationService: URLSessionWebSocketDelegate {
         print("[GeminiAPI] WebSocket 关闭，代码: \(closeCode.rawValue), 原因: \(reasonStr)")
         
         if !isDisconnecting && isConnected {
-            print("[GeminiAPI] 意外断连，准备重连...")
+            if sessionResumptionHandle != nil {
+                print("[GeminiAPI] 连接重置（可能是10分钟限制），使用会话恢复重连...")
+            } else {
+                print("[GeminiAPI] 意外断连，准备重连...")
+            }
             isConnected = false
+            immersiveActivityStarted = false
             attemptReconnect()
         } else {
             connectionStateSubject.send(.disconnected)
