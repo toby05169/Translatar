@@ -86,12 +86,16 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             // 对话模式：允许蓝牙（AirPods麦克风+AirPods播放）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // v3.1 修复：同声传译模式
-            // 保留 .allowBluetooth 和 .allowBluetoothA2DP（确保音频路由正常工作）
-            // 通过后续的 setPreferredInput 来强制指定内置麦克风
-            // .mixWithOthers 确保收音和播放同时进行
-            // .defaultToSpeaker 确保没有蓝牙设备时也能播放
-            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
+            // v3.2 核心修复：同声传译模式
+            //
+            // 只用 .allowBluetoothA2DP，不用 .allowBluetooth
+            // 原理：
+            //   - .allowBluetooth 会启用HFP协议，导致AirPods麦克风变成输入源
+            //   - .allowBluetoothA2DP 只允许A2DP输出（高质量立体声）
+            //   - 不启用HFP = AirPods不作为麦克风 = 输入自动回退到iPhone内置麦克风
+            //   - 效果：iPhone麦克风收音 + AirPods A2DP高质量播放
+            // Apple文档确认：iOS 10+的playAndRecord支持allowBluetoothA2DP
+            options = [.allowBluetoothA2DP, .defaultToSpeaker]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
@@ -103,7 +107,9 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             options: options
         )
         
-        // v3: 同声传译模式额外步骤 - 强制选择内置麦克风
+        // v3.2: 同声传译模式不需要手动指定麦克风
+        // 因为没有启用.allowBluetooth，输入自动回退到iPhone内置麦克风
+        // 保留forceBuiltInMicrophone作为双保险（以防某些iOS版本行为不一致）
         if mode == .immersive {
             try forceBuiltInMicrophone(session: session)
         }
