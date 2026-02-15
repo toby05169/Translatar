@@ -158,11 +158,10 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         isConnected = true
         connectionStateSubject.send(.connected)
         
-        // v10: 同声传译模式连接成功后立即发送 activityStart
+        // v10.8: 同声传译模式不再发送activityStart，使用自动VAD
         if mode == .immersive {
-            await sendImmersiveActivityStart()
             print("[GeminiAPI] 已连接 - 同声传译模式: \(config.sourceLanguage.englishName) → \(config.targetLanguage.englishName)")
-            print("[GeminiAPI] 已发送 activityStart，持续活动模式已启动")
+            print("[GeminiAPI] VAD模式: 自动(静音200ms)，开始灵敏度HIGH，结束灵敏度LOW")
         } else {
             print("[GeminiAPI] 已连接 - \(config.sourceLanguage.englishName) ↔ \(config.targetLanguage.englishName) (双向互译)")
         }
@@ -278,12 +277,15 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
-            // v10 核心修复：同声传译禁用自动VAD
-            // 禁用后由客户端手动发送 activityStart/activityEnd
-            // 模型不再等待静音来判断"说话结束"
-            // 而是在积累足够语义信息后自动开始翻译
+            // v10.8 修复：同声传译使用极短静音的自动VAD
+            // 之前禁用VAD导致模型一直等activityEnd，永远不翻译
+            // 现在用自动VAD + 极短静音时间(200ms)，让模型快速响应
+            // 高灵敏度检测说话开始，低灵敏度检测说话结束（容忍短暂停顿）
             return [
-                "disabled": true
+                "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
+                "endOfSpeechSensitivity": "END_SENSITIVITY_LOW",
+                "prefixPaddingMs": 50,
+                "silenceDurationMs": 200
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
