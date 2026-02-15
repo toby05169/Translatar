@@ -1,7 +1,7 @@
 // AudioCaptureService.swift
 // Translatar - AI实时翻译耳机应用
 //
-// 音频捕获服务（v3 - 同声传译麦克风修复）
+// 音频捕获服务（v4 - 修复AirPods无声音）
 //
 // v3 修复说明（2026-02-15）：
 // 【问题：电脑播放手机收不到】
@@ -86,16 +86,17 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             // 对话模式：允许蓝牙（AirPods麦克风+AirPods播放）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // v3.2 核心修复：同声传译模式
+            // v4 核心修复：同声传译模式
             //
-            // 只用 .allowBluetoothA2DP，不用 .allowBluetooth
-            // 原理：
+            // 只用 .allowBluetoothA2DP，不用 .allowBluetooth，不用 .defaultToSpeaker
+            // 原理（参考 Rob Napier, StackOverflow 302k声望）：
             //   - .allowBluetooth 会启用HFP协议，导致AirPods麦克风变成输入源
             //   - .allowBluetoothA2DP 只允许A2DP输出（高质量立体声）
             //   - 不启用HFP = AirPods不作为麦克风 = 输入自动回退到iPhone内置麦克风
-            //   - 效果：iPhone麦克风收音 + AirPods A2DP高质量播放
-            // Apple文档确认：iOS 10+的playAndRecord支持allowBluetoothA2DP
-            options = [.allowBluetoothA2DP, .defaultToSpeaker]
+            //   - .defaultToSpeaker 会把输出路由到内置扬声器，覆盖A2DP输出！
+            //   - 所以不能加 .defaultToSpeaker，否则AirPods没有声音
+            //   - 效果：iPhone内置麦克风收音 + AirPods A2DP高质量播放
+            options = [.allowBluetoothA2DP]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
