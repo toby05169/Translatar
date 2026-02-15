@@ -277,15 +277,15 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
-            // v10.8 修复：同声传译使用极短静音的自动VAD
-            // 之前禁用VAD导致模型一直等activityEnd，永远不翻译
-            // 现在用自动VAD + 极短静音时间(200ms)，让模型快速响应
-            // 高灵敏度检测说话开始，低灵敏度检测说话结束（容忍短暂停顿）
+            // v10.9: 同声传译VAD参数优化
+            // 静音时间800ms：容忍说话中的自然停顿、换气，避免频繁中断
+            // 结束灵敏度LOW：不会因为小停顿就判定说完
+            // 开始灵敏度HIGH：快速检测新的说话开始
             return [
                 "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
                 "endOfSpeechSensitivity": "END_SENSITIVITY_LOW",
-                "prefixPaddingMs": 50,
-                "silenceDurationMs": 200
+                "prefixPaddingMs": 100,
+                "silenceDurationMs": 800
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
