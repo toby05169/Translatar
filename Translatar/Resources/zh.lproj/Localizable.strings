@@ -10,10 +10,10 @@
 
 // === 翻译模式 ===
 "mode.conversation" = "对话模式";
-"mode.immersive" = "沉浸模式";
+"mode.immersive" = "同声传译";
 "mode.outdoor" = "户外模式";
 "mode.conversation.desc" = "适合面对面交流，自动识别对话轮次";
-"mode.immersive.desc" = "单向同声传译，持续监听环境外语并实时翻译";
+"mode.immersive.desc" = "边听边译，像联合国同传一样实时翻译";
 "mode.outdoor.desc" = "按住说话，适合公交、街道等嘈杂环境";
 
 // === 连接状态 ===
@@ -73,13 +73,13 @@
 "onboarding.subtitle" = "语言不再是障碍";
 
 // === 付费墙 ===
-"paywall.immersive" = "沉浸模式（机场广播翻译）";
+"paywall.immersive" = "同声传译模式";
 "paywall.conversation" = "对话模式";
 "paywall.start.trial" = "开始7天免费试用";
 
 // === 订阅功能描述 ===
 "subscription.free.features" = "每天5分钟翻译额度,对话模式,10种语言,双语字幕";
-"subscription.pro.features" = "无限翻译时长,对话模式 + 沉浸模式,AI智能降噪,离线翻译,翻译历史导出,优先客服支持";
+"subscription.pro.features" = "无限翻译时长,对话模式 + 同声传译,AI智能降噪,离线翻译,翻译历史导出,优先客服支持";
 
 // === 语言分组 ===
 "group.eastAsia" = "东亚语言";
@@ -146,9 +146,9 @@
 "onboarding.title2" = "AI实时翻译";
 "onboarding.subtitle2" = "毫秒级响应，自然流畅";
 "onboarding.desc2" = "基于最先进的AI语音模型，不是逐字翻译，而是理解语境后的自然表达。支持30+种语言互译。";
-"onboarding.title3" = "沉浸模式";
-"onboarding.subtitle3" = "机场广播再也不会错过";
-"onboarding.desc3" = "在机场、车站等场景，开启沉浸模式，自动翻译周围所有语音。登机口变更、航班延误，第一时间知道。";
+"onboarding.title3" = "同声传译";
+"onboarding.subtitle3" = "边听边译，实时同步";
+"onboarding.desc3" = "像联合国同传一样，边听边翻译。听讲座、看电视、听广播，外语实时变母语。";
 "onboarding.title4" = "智能降噪 · 离线可用";
 "onboarding.subtitle4" = "嘈杂环境也能精准翻译";
 "onboarding.desc4" = "AI降噪技术过滤环境噪音，精准捕捉人声。即使没有网络，离线翻译也能为您保驾护航。";
@@ -156,9 +156,9 @@
 "onboarding.next" = "下一步";
 "onboarding.start" = "开始体验";
 "paywall.title" = "解锁全部功能";
-"paywall.subtitle" = "无限翻译 · 沉浸模式 · AI降噪 · 离线翻译";
+"paywall.subtitle" = "无限翻译 · 同声传译 · AI降噪 · 离线翻译";
 "paywall.feature.unlimited" = "无限翻译时长";
-"paywall.feature.immersive" = "沉浸模式（机场广播翻译）";
+"paywall.feature.immersive" = "同声传译模式";
 "paywall.feature.noise" = "AI智能降噪";
 "paywall.feature.offline" = "离线翻译";
 "paywall.feature.conversation" = "对话模式";
@@ -186,7 +186,7 @@
 "sub.feature.languages" = "30+种语言";
 "sub.feature.bilingual" = "双语字幕";
 "sub.feature.unlimited" = "无限翻译时长";
-"sub.feature.allModes" = "对话模式 + 沉浸模式";
+"sub.feature.allModes" = "对话模式 + 同声传译";
 "sub.feature.noise" = "AI智能降噪";
 "sub.feature.offline" = "离线翻译";
 "sub.feature.export" = "翻译历史导出";
@@ -234,9 +234,9 @@
 "status.outdoor" = "户外模式";
 
 // === 沉浸模式（单向同声传译） ===
-"immersive.listening" = "监听";
+"immersive.listening" = "源语言";
 "immersive.translating.to" = "翻译为";
-"immersive.status.listening" = "正在监听环境音...";
-"immersive.earphone.hint" = "通过耳机收听翻译";
-"immersive.waiting" = "正在监听环境中的语音...\n检测到语音后将自动翻译";
-"button.start.immersive" = "开始监听";
+"immersive.status.listening" = "同声传译中...";
+"immersive.earphone.hint" = "边听边译，实时同步";
+"immersive.waiting" = "正在听取环境中的语音...\n检测到语音后将实时翻译";
+"button.start.immersive" = "开始传译";

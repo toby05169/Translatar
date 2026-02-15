@@ -7,9 +7,9 @@
 "tab.history" = "기록";
 "tab.settings" = "설정";
 "mode.conversation" = "대화 모드";
-"mode.immersive" = "몰입 모드";
+"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "대면 대화, 자동 턴 감지";
-"mode.immersive.desc" = "주변 소리를 지속적으로 듣고 실시간 번역";
+"mode.immersive.desc" = "Real-time simultaneous interpretation";
 "status.disconnected" = "연결 안 됨";
 "status.connecting" = "연결 중...";
 "status.connected" = "준비 완료, 음성 대기 중";

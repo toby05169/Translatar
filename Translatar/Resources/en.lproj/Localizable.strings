@@ -10,10 +10,10 @@
 
 // === Translation Modes ===
 "mode.conversation" = "Conversation";
-"mode.immersive" = "Immersive";
+"mode.immersive" = "Interpreter";
 "mode.outdoor" = "Outdoor";
 "mode.conversation.desc" = "Face-to-face chat with auto turn detection";
-"mode.immersive.desc" = "One-way interpreter: listens to ambient speech and translates in real time";
+"mode.immersive.desc" = "Real-time simultaneous interpretation, like a UN interpreter";
 "mode.outdoor.desc" = "Push-to-talk for noisy environments like buses and streets";
 
 // === Connection Status ===
@@ -73,13 +73,13 @@
 "onboarding.subtitle" = "Language is no longer a barrier";
 
 // === Paywall ===
-"paywall.immersive" = "Immersive Mode (Airport Broadcasts)";
+"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "Conversation Mode";
 "paywall.start.trial" = "Start 7-Day Free Trial";
 
 // === Subscription Features ===
 "subscription.free.features" = "5 min daily quota,Conversation mode,10 languages,Bilingual subtitles";
-"subscription.pro.features" = "Unlimited translation,Conversation + Immersive,AI noise reduction,Offline translation,Export history,Priority support";
+"subscription.pro.features" = "Unlimited translation,Conversation + Interpreter,AI noise reduction,Offline translation,Export history,Priority support";
 
 // === Language Groups ===
 "group.eastAsia" = "East Asian";
@@ -145,9 +145,9 @@
 "onboarding.title2" = "AI Real-time Translation";
 "onboarding.subtitle2" = "Millisecond response, naturally fluent";
 "onboarding.desc2" = "Powered by the most advanced AI voice models. Not word-by-word translation, but natural expression after understanding context. Supports 30+ languages.";
-"onboarding.title3" = "Immersive Mode";
-"onboarding.subtitle3" = "Never miss an airport announcement";
-"onboarding.desc3" = "At airports, stations, and more — turn on Immersive Mode to auto-translate all surrounding speech. Gate changes, flight delays — know instantly.";
+"onboarding.title3" = "Simultaneous Interpretation";
+"onboarding.subtitle3" = "Listen and translate in real time";
+"onboarding.desc3" = "Like a UN interpreter by your side. Lectures, TV, broadcasts — foreign speech translated to your language in real time.";
 "onboarding.title4" = "Smart Noise Reduction · Works Offline";
 "onboarding.subtitle4" = "Accurate translation even in noisy environments";
 "onboarding.desc4" = "AI noise reduction filters ambient noise and captures voices precisely. Even without internet, offline translation has you covered.";
@@ -155,9 +155,9 @@
 "onboarding.next" = "Next";
 "onboarding.start" = "Get Started";
 "paywall.title" = "Unlock All Features";
-"paywall.subtitle" = "Unlimited Translation · Immersive Mode · AI Noise Reduction · Offline";
+"paywall.subtitle" = "Unlimited Translation · Interpreter · AI Noise Reduction · Offline";
 "paywall.feature.unlimited" = "Unlimited translation time";
-"paywall.feature.immersive" = "Immersive Mode (airport announcements)";
+"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "AI Smart Noise Reduction";
 "paywall.feature.offline" = "Offline Translation";
 "paywall.feature.conversation" = "Conversation Mode";
@@ -185,7 +185,7 @@
 "sub.feature.languages" = "30+ Languages";
 "sub.feature.bilingual" = "Bilingual Subtitles";
 "sub.feature.unlimited" = "Unlimited translation time";
-"sub.feature.allModes" = "Conversation + Immersive Mode";
+"sub.feature.allModes" = "Conversation + Interpreter";
 "sub.feature.noise" = "AI Smart Noise Reduction";
 "sub.feature.offline" = "Offline Translation";
 "sub.feature.export" = "Translation History Export";
@@ -233,9 +233,9 @@
 "status.outdoor" = "Outdoor Mode";
 
 // === Immersive Mode (One-way Simultaneous Interpretation) ===
-"immersive.listening" = "Listening";
+"immersive.listening" = "Source";
 "immersive.translating.to" = "Translate to";
-"immersive.status.listening" = "Listening to ambient audio...";
-"immersive.earphone.hint" = "Translation via earphones";
-"immersive.waiting" = "Listening for speech...\nTranslation will start automatically";
-"button.start.immersive" = "Start Listening";
+"immersive.status.listening" = "Interpreting...";
+"immersive.earphone.hint" = "Listen and translate simultaneously";
+"immersive.waiting" = "Listening for speech...\nInterpretation starts automatically";
+"button.start.immersive" = "Start Interpreting";

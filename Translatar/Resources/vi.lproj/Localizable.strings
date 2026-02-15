@@ -10,9 +10,9 @@
 
 // === Chế độ dịch ===
 "mode.conversation" = "Chế độ hội thoại";
-"mode.immersive" = "Chế độ lắng nghe";
+"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "Trò chuyện trực tiếp, tự động nhận diện lượt nói";
-"mode.immersive.desc" = "Lắng nghe liên tục, dịch thông báo và âm thanh xung quanh";
+"mode.immersive.desc" = "Real-time simultaneous interpretation";
 
 // === Trạng thái kết nối ===
 "status.disconnected" = "Chưa kết nối";
@@ -71,7 +71,7 @@
 "onboarding.subtitle" = "Ngôn ngữ không còn là rào cản";
 
 // === Paywall ===
-"paywall.immersive" = "Chế độ lắng nghe (Dịch thông báo sân bay)";
+"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "Chế độ hội thoại";
 "paywall.start.trial" = "Dùng thử miễn phí 7 ngày";
 
@@ -152,7 +152,7 @@
 "paywall.title" = "Mở khóa tất cả tính năng";
 "paywall.subtitle" = "Dịch không giới hạn · Chế độ đắm chìm · Giảm tiếng ồn AI · Ngoại tuyến";
 "paywall.feature.unlimited" = "Thời gian dịch không giới hạn";
-"paywall.feature.immersive" = "Chế độ đắm chìm (thông báo sân bay)";
+"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "Giảm tiếng ồn AI thông minh";
 "paywall.feature.offline" = "Dịch ngoại tuyến";
 "paywall.feature.conversation" = "Chế độ hội thoại";
@@ -180,7 +180,7 @@
 "sub.feature.languages" = "30+ ngôn ngữ";
 "sub.feature.bilingual" = "Phụ đề song ngữ";
 "sub.feature.unlimited" = "Thời gian dịch không giới hạn";
-"sub.feature.allModes" = "Hội thoại + Đắm chìm";
+"sub.feature.allModes" = "Conversation + Interpreter";
 "sub.feature.noise" = "Giảm tiếng ồn AI thông minh";
 "sub.feature.offline" = "Dịch ngoại tuyến";
 "sub.feature.export" = "Xuất lịch sử dịch";

@@ -10,9 +10,9 @@
 
 // === 翻訳モード ===
 "mode.conversation" = "会話モード";
-"mode.immersive" = "没入モード";
+"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "対面での会話に最適、自動ターン検出";
-"mode.immersive.desc" = "環境音を継続的にリスニングし、リアルタイム翻訳";
+"mode.immersive.desc" = "Real-time simultaneous interpretation";
 
 // === 接続状態 ===
 "status.disconnected" = "未接続";
@@ -71,7 +71,7 @@
 "onboarding.subtitle" = "言葉の壁はもうありません";
 
 // === ペイウォール ===
-"paywall.immersive" = "没入モード（空港アナウンス翻訳）";
+"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "会話モード";
 "paywall.start.trial" = "7日間無料トライアルを開始";
 
@@ -152,7 +152,7 @@
 "paywall.title" = "全機能をアンロック";
 "paywall.subtitle" = "無制限翻訳・イマーシブモード・AIノイズリダクション・オフライン";
 "paywall.feature.unlimited" = "無制限の翻訳時間";
-"paywall.feature.immersive" = "イマーシブモード（空港アナウンス）";
+"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "AIスマートノイズリダクション";
 "paywall.feature.offline" = "オフライン翻訳";
 "paywall.feature.conversation" = "会話モード";
@@ -180,7 +180,7 @@
 "sub.feature.languages" = "30以上の言語";
 "sub.feature.bilingual" = "バイリンガル字幕";
 "sub.feature.unlimited" = "無制限の翻訳時間";
-"sub.feature.allModes" = "会話モード + イマーシブモード";
+"sub.feature.allModes" = "Conversation + Interpreter";
 "sub.feature.noise" = "AIスマートノイズリダクション";
 "sub.feature.offline" = "オフライン翻訳";
 "sub.feature.export" = "翻訳履歴エクスポート";

@@ -90,7 +90,7 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             // 对话模式：允许蓝牙，默认扬声器
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // 沉浸模式：允许蓝牙，混合其他音频
+            // 同声传译模式：允许蓝牙，混合音频确保收音和播放同时进行
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
@@ -103,8 +103,8 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             options: options
         )
         
-        // 设置缓冲区大小
-        let bufferDuration = (mode == .conversation || mode == .outdoor) ? 0.01 : 0.02
+        // 设置缓冲区大小（同声传译模式使用更小缓冲区提升实时性）
+        let bufferDuration = 0.01 // 所有模式统一使用最小缓冲区，最大化实时性
         try session.setPreferredIOBufferDuration(bufferDuration)
         
         // 设置首选采样率

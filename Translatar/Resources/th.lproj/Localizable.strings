@@ -10,9 +10,9 @@
 
 // === โหมดแปล ===
 "mode.conversation" = "โหมดสนทนา";
-"mode.immersive" = "โหมดดื่มด่ำ";
+"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "สนทนาแบบตัวต่อตัว ตรวจจับการสลับพูดอัตโนมัติ";
-"mode.immersive.desc" = "ฟังต่อเนื่อง แปลประกาศและเสียงรอบข้าง";
+"mode.immersive.desc" = "Real-time simultaneous interpretation";
 
 // === สถานะการเชื่อมต่อ ===
 "status.disconnected" = "ไม่ได้เชื่อมต่อ";
@@ -71,7 +71,7 @@
 "onboarding.subtitle" = "ภาษาไม่ใช่อุปสรรคอีกต่อไป";
 
 // === หน้าสมัครสมาชิก ===
-"paywall.immersive" = "โหมดดื่มด่ำ (แปลประกาศสนามบิน)";
+"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "โหมดสนทนา";
 "paywall.start.trial" = "เริ่มทดลองใช้ฟรี 7 วัน";
 
@@ -152,7 +152,7 @@
 "paywall.title" = "ปลดล็อกฟีเจอร์ทั้งหมด";
 "paywall.subtitle" = "แปลไม่จำกัด · โหมดดื่มด่ำ · ลดเสียงรบกวน AI · ออฟไลน์";
 "paywall.feature.unlimited" = "เวลาแปลไม่จำกัด";
-"paywall.feature.immersive" = "โหมดดื่มด่ำ (ประกาศสนามบิน)";
+"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "ลดเสียงรบกวน AI อัจฉริยะ";
 "paywall.feature.offline" = "แปลออฟไลน์";
 "paywall.feature.conversation" = "โหมดสนทนา";
@@ -180,7 +180,7 @@
 "sub.feature.languages" = "30+ ภาษา";
 "sub.feature.bilingual" = "คำบรรยายสองภาษา";
 "sub.feature.unlimited" = "เวลาแปลไม่จำกัด";
-"sub.feature.allModes" = "โหมดสนทนา + โหมดดื่มด่ำ";
+"sub.feature.allModes" = "Conversation + Interpreter";
 "sub.feature.noise" = "ลดเสียงรบกวน AI อัจฉริยะ";
 "sub.feature.offline" = "แปลออฟไลน์";
 "sub.feature.export" = "ส่งออกประวัติการแปล";

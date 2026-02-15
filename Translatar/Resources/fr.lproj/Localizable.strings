@@ -7,9 +7,9 @@
 "tab.history" = "Historique";
 "tab.settings" = "Réglages";
 "mode.conversation" = "Mode conversation";
-"mode.immersive" = "Mode immersif";
+"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "Conversation en face à face avec détection automatique";
-"mode.immersive.desc" = "Écoute continue pour les annonces et sons ambiants";
+"mode.immersive.desc" = "Real-time simultaneous interpretation";
 "status.disconnected" = "Déconnecté";
 "status.connecting" = "Connexion...";
 "status.connected" = "Prêt, en attente de voix";
@@ -46,7 +46,7 @@
 "onboarding.next" = "Suivant";
 "onboarding.start" = "Commencer";
 "onboarding.subtitle" = "La langue n'est plus une barrière";
-"paywall.immersive" = "Mode immersif (Annonces d'aéroport)";
+"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "Mode conversation";
 "paywall.start.trial" = "Essai gratuit de 7 jours";
 "subscription.free.features" = "5 min/jour,Mode conversation,10 langues,Sous-titres bilingues";

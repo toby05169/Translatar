@@ -80,7 +80,7 @@ struct ContentView: View {
                             .padding(.bottom, 8)
                         
                     } else if viewModel.translationMode == .immersive {
-                        // === 沉浸模式布局（单向同声传译） ===
+                        // === 同声传译模式布局 ===
                         
                         // 语言方向显示（单向箭头）
                         ImmersiveLanguageBar()
@@ -90,7 +90,7 @@ struct ContentView: View {
                         StatusBarView()
                             .padding(.top, 8)
                         
-                        // 沉浸模式专用显示区域（突出翻译结果）
+                        // 同声传译专用显示区域（突出翻译结果）
                         ImmersiveDisplayView()
                             .padding(.top, 12)
                         
@@ -721,7 +721,7 @@ struct TranslationControlButton: View {
     private var buttonIcon: String {
         if viewModel.connectionState.isActive { return "stop.fill" }
         switch viewModel.translationMode {
-        case .immersive: return "ear.fill"
+        case .immersive: return "waveform.and.mic"
         case .outdoor: return "figure.walk"
         case .conversation: return "mic.fill"
         }
@@ -860,14 +860,14 @@ struct TranslationEntryCard: View {
     }
 }
 
-// MARK: - 沉浸模式语言方向栏（单向）
+// MARK: - 同声传译语言方向栏（单向）
 
 struct ImmersiveLanguageBar: View {
     @EnvironmentObject var viewModel: TranslationViewModel
     
     var body: some View {
         HStack(spacing: 12) {
-            // 源语言（监听的语言）
+            // 源语言（听取的语言）
             VStack(spacing: 2) {
                 Text(NSLocalizedString("immersive.listening", comment: ""))
                     .font(.caption2)
@@ -907,17 +907,17 @@ struct ImmersiveLanguageBar: View {
     }
 }
 
-// MARK: - 沉浸模式专用显示区域
+// MARK: - 同声传译专用显示区域
 
 struct ImmersiveDisplayView: View {
     @EnvironmentObject var viewModel: TranslationViewModel
     
     var body: some View {
         VStack(spacing: 16) {
-            // 监听状态指示器
+            // 传译状态指示器
             HStack {
                 if viewModel.connectionState.isActive {
-                    // 正在监听动画
+                    // 正在传译动画
                     HStack(spacing: 6) {
                         Circle()
                             .fill(Color.indigo)
@@ -956,7 +956,7 @@ struct ImmersiveDisplayView: View {
             }
             .padding(.horizontal, 24)
             
-            // 翻译结果显示（突出显示，这是沉浸模式的核心）
+            // 翻译结果显示（突出显示，这是同声传译的核心）
             if !viewModel.currentTranslatedText.isEmpty {
                 VStack(alignment: .leading, spacing: 8) {
                     // 原文（小字号，辅助信息）

@@ -6,7 +6,7 @@
 // 管理整个翻译流程的状态和生命周期
 //
 // 第二阶段新增能力：
-// - 翻译模式切换（对话模式/沉浸模式）
+// - 翻译模式切换（对话模式/同声传译/户外模式）
 // - AI降噪开关控制
 // - 离线翻译自动切换（网络断开时自动降级）
 // - 网络状态监测
@@ -263,7 +263,7 @@ class TranslationViewModel: ObservableObject {
                 )
                 
                 if translationMode == .immersive {
-                    print("[ViewModel] 沉浸模式已启动（单向同声传译）: \(config.sourceLanguage.displayName) → \(config.targetLanguage.displayName)")
+                    print("[ViewModel] 同声传译已启动: \(config.sourceLanguage.displayName) → \(config.targetLanguage.displayName)")
                 } else {
                     print("[ViewModel] 在线翻译已启动: \(config.sourceLanguage.displayName) ↔ \(config.targetLanguage.displayName), 模式: \(translationMode.displayName)")
                 }
