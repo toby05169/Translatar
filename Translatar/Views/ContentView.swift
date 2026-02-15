@@ -234,6 +234,7 @@ struct ContentView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 )
+            }
         }
     }
 }
