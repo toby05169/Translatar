@@ -104,7 +104,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     private let immersiveSegmentInterval: TimeInterval = 8.0
     
     /// 同声传译等待turnComplete的continuation（v11.3新增）
-    private var turnCompleteContinuation: CheckedContinuation<Void, Never>?
+    private var turnCompleteContinuation: CheckedContinuation<Bool, Never>?
     
     // MARK: - 自动重连
     
