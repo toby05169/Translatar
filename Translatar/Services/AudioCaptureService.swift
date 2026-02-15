@@ -86,12 +86,12 @@ class AudioCaptureService: AudioCaptureServiceProtocol {
             // 对话模式：允许蓝牙（AirPods麦克风+AirPods播放）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
         case .immersive:
-            // v3 核心修复：同声传译模式
-            // 不使用 .allowBluetooth —— 这会阻止iOS将麦克风路由到AirPods
-            // 只使用 .allowBluetoothA2DP —— 允许AirPods作为输出设备（A2DP仅输出）
-            // 效果：输入=iPhone内置麦克风，输出=AirPods
+            // v3.1 修复：同声传译模式
+            // 保留 .allowBluetooth 和 .allowBluetoothA2DP（确保音频路由正常工作）
+            // 通过后续的 setPreferredInput 来强制指定内置麦克风
             // .mixWithOthers 确保收音和播放同时进行
-            options = [.allowBluetoothA2DP, .mixWithOthers]
+            // .defaultToSpeaker 确保没有蓝牙设备时也能播放
+            options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
         case .outdoor:
             // 户外模式：允许蓝牙，默认扬声器（双通道输出）
             options = [.defaultToSpeaker, .allowBluetooth, .allowBluetoothA2DP]
