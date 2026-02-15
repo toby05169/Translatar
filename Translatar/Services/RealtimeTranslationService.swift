@@ -1,20 +1,16 @@
 // RealtimeTranslationService.swift
 // Translatar - AI实时翻译耳机应用
 //
-// Gemini Live API 翻译服务（v10 - 同声传译核心修复）
+// Gemini Live API 翻译服务（v11 - 同声传译定时分段）
 //
-// v10 修复说明（2026-02-15）：
-// 【问题1：不停顿不翻译】
-// - 同声传译模式禁用自动VAD（automaticActivityDetection.disabled = true）
-// - 连接成功后立即发送 activityStart，保持持续活动状态
-// - 模型会在积累足够语义后自动翻译，不需要等待静音
-// - 提示词强调"translate in small chunks immediately"
+// v11 修复说明（2026-02-15）：
+// 【核心改动：定时分段翻译】
+// - 同声传译禁用自动VAD，由客户端定时分段控制
+// - 每隔4秒发送activityEnd触发翻译，然后立即activityStart开始下一段
+// - 解决了“环境有人说话时不翻译”的问题
+// - 实现真正的“边听边翻”体验
 //
-// 【问题2：回声防护优化】
-// - 同声传译模式完全禁用回声防护（不暂停麦克风）
-// - 依赖提示词让模型忽略回声
-//
-// v9 保留功能：
+// 保留功能：
 // - 上下文窗口压缩（无限时长会话）
 // - 会话恢复机制（10分钟连接重置）
 // - 双向互译（对话模式）
@@ -101,6 +97,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     /// 同声传译模式下是否已发送 activityStart
     private var immersiveActivityStarted = false
     
+    /// 同声传译定时分段定时器（v11新增）
+    private var immersiveSegmentTimer: Task<Void, Never>?
+    
+    /// 同声传译分段间隔（秒）
+    private let immersiveSegmentInterval: TimeInterval = 4.0
+    
     // MARK: - 自动重连
     
     private var reconnectCount = 0
@@ -158,10 +160,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         isConnected = true
         connectionStateSubject.send(.connected)
         
-        // v10.8: 同声传译模式不再发送activityStart，使用自动VAD
+        // v11: 同声传译模式发送activityStart并启动定时分段
         if mode == .immersive {
+            await sendImmersiveActivityStart()
+            startImmersiveSegmentTimer()
             print("[GeminiAPI] 已连接 - 同声传译模式: \(config.sourceLanguage.englishName) → \(config.targetLanguage.englishName)")
-            print("[GeminiAPI] VAD模式: 自动(静音200ms)，开始灵敏度HIGH，结束灵敏度LOW")
+            print("[GeminiAPI] 定时分段模式: 每\(immersiveSegmentInterval)秒触发一次翻译")
         } else {
             print("[GeminiAPI] 已连接 - \(config.sourceLanguage.englishName) ↔ \(config.targetLanguage.englishName) (双向互译)")
         }
@@ -188,7 +192,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         }
     }
     
-    /// 同声传译模式：发送 activityEnd 信号（仅在断开连接时调用）
+    /// 同声传译模式：发送 activityEnd 信号
     private func sendImmersiveActivityEnd() async {
         guard currentMode == .immersive, immersiveActivityStarted else { return }
         
@@ -204,6 +208,46 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         } catch {
             print("[GeminiAPI] 同声传译: activityEnd 发送失败: \(error)")
         }
+    }
+    
+    // MARK: - 同声传译定时分段（v11新增）
+    
+    /// 启动定时分段器：每隔N秒发送activityEnd触发翻译，然后立即activityStart开始下一段
+    private func startImmersiveSegmentTimer() {
+        immersiveSegmentTimer?.cancel()
+        immersiveSegmentTimer = Task { [weak self] in
+            guard let self = self else { return }
+            
+            while !Task.isCancelled && self.isConnected && self.currentMode == .immersive {
+                do {
+                    // 等待分段间隔
+                    try await Task.sleep(nanoseconds: UInt64(self.immersiveSegmentInterval * 1_000_000_000))
+                    guard !Task.isCancelled, self.isConnected else { break }
+                    
+                    // 发送 activityEnd 触发翻译
+                    print("[GeminiAPI] 定时分段: 发送 activityEnd")
+                    await self.sendImmersiveActivityEnd()
+                    
+                    // 短暂等待让Gemini处理
+                    try await Task.sleep(nanoseconds: 300_000_000)
+                    guard !Task.isCancelled, self.isConnected else { break }
+                    
+                    // 立即发送 activityStart 开始下一段
+                    print("[GeminiAPI] 定时分段: 发送 activityStart")
+                    await self.sendImmersiveActivityStart()
+                    
+                } catch {
+                    break
+                }
+            }
+            print("[GeminiAPI] 定时分段器已停止")
+        }
+    }
+    
+    /// 停止定时分段器
+    private func stopImmersiveSegmentTimer() {
+        immersiveSegmentTimer?.cancel()
+        immersiveSegmentTimer = nil
     }
     
     // MARK: - Setup 消息（v10: 同声传译禁用自动VAD）
@@ -277,15 +321,10 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 "silenceDurationMs": 400
             ]
         case .immersive:
-            // v10.9: 同声传译VAD参数优化
-            // 静音时间800ms：容忍说话中的自然停顿、换气，避免频繁中断
-            // 结束灵敏度LOW：不会因为小停顿就判定说完
-            // 开始灵敏度HIGH：快速检测新的说话开始
+            // v11: 同声传译禁用自动VAD，由客户端定时分段控制
+            // 每隔N秒发送activityEnd触发翻译，然后立即activityStart开始下一段
             return [
-                "startOfSpeechSensitivity": "START_SENSITIVITY_HIGH",
-                "endOfSpeechSensitivity": "END_SENSITIVITY_LOW",
-                "prefixPaddingMs": 100,
-                "silenceDurationMs": 800
+                "disabled": true
             ]
         case .outdoor:
             // 户外模式：禁用自动VAD，用户手动控制录音开始/结束
@@ -474,7 +513,10 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 断开连接
     func disconnect() {
-        // v10: 同声传译模式断开前发送 activityEnd
+        // v11: 停止定时分段器
+        stopImmersiveSegmentTimer()
+        
+        // 同声传译模式断开前发送 activityEnd
         if currentMode == .immersive && immersiveActivityStarted {
             Task {
                 await sendImmersiveActivityEnd()
