@@ -247,6 +247,8 @@ class TranslationViewModel: ObservableObject {
         // 重置状态
         resetState()
         
+        // 设置播放服务的当前模式（v2: 避免同声传译模式下覆盖音频会话配置）
+        audioPlaybackService.currentMode = translationMode
         // 户外模式启用双通道输出
         audioPlaybackService.isDualOutputEnabled = (translationMode == .outdoor)
         
