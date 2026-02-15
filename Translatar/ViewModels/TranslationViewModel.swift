@@ -144,7 +144,16 @@ class TranslationViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        // 原文转录 → UI + 历史记录
+        // 实时原文转录 → UI（边说边出字）
+        translationService.liveTranscriptPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                guard let self = self else { return }
+                self.currentTranscript = text
+            }
+            .store(in: &cancellables)
+        
+        // 原文转录回合结束 → 历史记录
         translationService.transcriptPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] text in

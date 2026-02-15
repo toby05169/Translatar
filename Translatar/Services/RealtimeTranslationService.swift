@@ -49,6 +49,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         transcriptSubject.eraseToAnyPublisher()
     }
     
+    /// 实时转录发布者（边说边出字）
+    private let liveTranscriptSubject = PassthroughSubject<String, Never>()
+    var liveTranscriptPublisher: AnyPublisher<String, Never> {
+        liveTranscriptSubject.eraseToAnyPublisher()
+    }
+    
     private let connectionStateSubject = CurrentValueSubject<ConnectionState, Never>(.disconnected)
     var connectionStatePublisher: AnyPublisher<ConnectionState, Never> {
         connectionStateSubject.eraseToAnyPublisher()
@@ -529,11 +535,14 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         let contentKeys = content.keys.sorted().joined(separator: ", ")
         print("[GeminiAPI] serverContent keys: [\(contentKeys)]")
         
-        // 处理输入转录
+        // 处理输入转录（实时显示，边说边出字）
         if let inputTranscription = content["inputTranscription"] as? [String: Any],
            let text = inputTranscription["text"] as? String, !text.isEmpty {
-            accumulatedInputTranscript += text
-            print("[GeminiAPI] 输入转录: \(text)")
+            let simplifiedText = convertToSimplifiedChinese(text)
+            accumulatedInputTranscript += simplifiedText
+            // 实时发送累积的原文，让UI立即更新
+            liveTranscriptSubject.send(accumulatedInputTranscript)
+            print("[GeminiAPI] 输入转录: \(simplifiedText)")
         }
         
         // 处理输出转录
@@ -620,6 +629,13 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     }
     
     // MARK: - 工具方法
+    
+    /// 繁体中文转简体中文（使用iOS内置CFStringTransform）
+    private func convertToSimplifiedChinese(_ text: String) -> String {
+        let mutableString = NSMutableString(string: text)
+        CFStringTransform(mutableString, nil, "Traditional-Simplified" as CFString, false)
+        return mutableString as String
+    }
     
     private func sendJSON(_ dict: [String: Any]) async throws {
         guard let task = webSocketTask else {
