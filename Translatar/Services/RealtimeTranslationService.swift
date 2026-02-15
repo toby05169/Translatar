@@ -228,8 +228,8 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                     print("[GeminiAPI] 定时分段: 发送 activityEnd")
                     await self.sendImmersiveActivityEnd()
                     
-                    // 短暂等待让Gemini处理
-                    try await Task.sleep(nanoseconds: 100_000_000)
+                    // 等待Gemini完成翻译输出
+                    try await Task.sleep(nanoseconds: 1_500_000_000)
                     guard !Task.isCancelled, self.isConnected else { break }
                     
                     // 立即发送 activityStart 开始下一段
