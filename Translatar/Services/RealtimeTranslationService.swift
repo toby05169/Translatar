@@ -632,6 +632,10 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     /// 处理 serverContent 消息
     private func handleServerContent(_ content: [String: Any]) {
         
+        // 调试：打印serverContent的所有顶层key
+        let contentKeys = content.keys.sorted().joined(separator: ", ")
+        print("[GeminiAPI] serverContent keys: [\(contentKeys)]")
+        
         // 处理输入转录
         if let inputTranscription = content["inputTranscription"] as? [String: Any],
            let text = inputTranscription["text"] as? String, !text.isEmpty {
@@ -648,31 +652,41 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         }
         
         // 处理模型输出（音频）
-        if let modelTurn = content["modelTurn"] as? [String: Any],
-           let parts = modelTurn["parts"] as? [[String: Any]] {
+        if let modelTurn = content["modelTurn"] as? [String: Any] {
+            let turnKeys = modelTurn.keys.sorted().joined(separator: ", ")
+            print("[GeminiAPI] modelTurn keys: [\(turnKeys)]")
             
-            for part in parts {
-                if let inlineData = part["inlineData"] as? [String: Any],
-                   let base64Data = inlineData["data"] as? String,
-                   let audioData = Data(base64Encoded: base64Data) {
+            if let parts = modelTurn["parts"] as? [[String: Any]] {
+                for (idx, part) in parts.enumerated() {
+                    let partKeys = part.keys.sorted().joined(separator: ", ")
+                    print("[GeminiAPI] part[\(idx)] keys: [\(partKeys)]")
                     
-                    // 回声防护仅在对话模式下生效（非同声传译）
-                    if currentMode == .conversation {
-                        if !isModelOutputting {
-                            isModelOutputting = true
-                            resumeAudioTask?.cancel()
-                            print("[GeminiAPI] 模型输出中，暂停麦克风（对话模式）")
+                    if let inlineData = part["inlineData"] as? [String: Any],
+                       let base64Data = inlineData["data"] as? String,
+                       let audioData = Data(base64Encoded: base64Data) {
+                        
+                        print("[GeminiAPI] 收到音频: \(audioData.count)字节")
+                        
+                        // 回声防护仅在对话模式下生效（非同声传译）
+                        if currentMode == .conversation {
+                            if !isModelOutputting {
+                                isModelOutputting = true
+                                resumeAudioTask?.cancel()
+                                print("[GeminiAPI] 模型输出中，暂停麦克风（对话模式）")
+                            }
                         }
+                        
+                        translatedAudioSubject.send(audioData)
+                        connectionStateSubject.send(.translating)
                     }
                     
-                    translatedAudioSubject.send(audioData)
-                    connectionStateSubject.send(.translating)
+                    if let text = part["text"] as? String, !text.isEmpty {
+                        translatedTextSubject.send(text)
+                        accumulatedOutputTranscript += text
+                    }
                 }
-                
-                if let text = part["text"] as? String, !text.isEmpty {
-                    translatedTextSubject.send(text)
-                    accumulatedOutputTranscript += text
-                }
+            } else {
+                print("[GeminiAPI] modelTurn 没有 parts")
             }
         }
         
