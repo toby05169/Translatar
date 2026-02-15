@@ -44,7 +44,7 @@ struct OutdoorModeView: View {
                     isActive: viewModel.isOutdoorRecording && viewModel.currentOutdoorSpeaker == .other
                 )
             }
-            .frame(height: 160)
+            .frame(height: 80)
             .padding(.horizontal, 4)
             .padding(.bottom, 4)
         }
@@ -83,52 +83,45 @@ struct OutdoorSpeakButton: View {
             if isActive {
                 Circle()
                     .fill(gradientColors[0].opacity(0.2))
-                    .frame(width: 120, height: 120)
+                    .frame(width: 80, height: 80)
                     .scaleEffect(pulseScale)
                     .animation(
                         .easeInOut(duration: 1.0).repeatForever(autoreverses: true),
                         value: pulseScale
                     )
-                    .onAppear { pulseScale = 1.4 }
+                    .onAppear { pulseScale = 1.3 }
                     .onDisappear { pulseScale = 1.0 }
             }
             
-            VStack(spacing: 6) {
-                // 语言标识（国旗 + 语言名）
+            HStack(spacing: 8) {
+                // 国旗
                 Text(language.flag)
-                    .font(.system(size: 28))
+                    .font(.system(size: 22))
                 
-                Text(language.localizedName)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                    .lineLimit(1)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(language.localizedName)
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                    
+                    Text(isActive
+                         ? NSLocalizedString("outdoor.recording", comment: "")
+                         : NSLocalizedString("outdoor.hold.to.speak", comment: ""))
+                        .font(.caption2)
+                        .foregroundColor(.white.opacity(isActive ? 1.0 : 0.6))
+                        .lineLimit(1)
+                }
+                
+                Spacer()
                 
                 // 麦克风图标
                 Image(systemName: isActive ? "mic.fill" : "mic")
-                    .font(.system(size: 28))
+                    .font(.system(size: 20))
                     .foregroundColor(.white)
                     .symbolEffect(.pulse, isActive: isActive)
-                
-                // 提示文字
-                Text(isActive
-                     ? NSLocalizedString("outdoor.recording", comment: "")
-                     : NSLocalizedString("outdoor.hold.to.speak", comment: ""))
-                    .font(.caption2)
-                    .fontWeight(.medium)
-                    .foregroundColor(.white.opacity(isActive ? 1.0 : 0.7))
-                    .lineLimit(1)
-                
-                // 音频电平指示器（录音时）
-                if isActive {
-                    OutdoorAudioLevelView(
-                        level: viewModel.audioLevel,
-                        color: gradientColors[1]
-                    )
-                    .frame(height: 12)
-                    .padding(.horizontal, 8)
-                }
             }
+            .padding(.horizontal, 14)
             .padding(.vertical, 8)
         }
         .clipShape(RoundedRectangle(cornerRadius: 16))
