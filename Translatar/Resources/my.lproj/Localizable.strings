@@ -10,9 +10,7 @@
 
 // === Translation Modes ===
 "mode.conversation" = "စကားပြောမုဒ်";
-"mode.immersive" = "နားထောင်မုဒ်";
 "mode.conversation.desc" = "မျက်နှာချင်းဆိုင် စကားပြောရန်၊ အလိုအလျောက် အလှည့်ကျ ရှာဖွေခြင်း";
-"mode.immersive.desc" = "ပတ်ဝန်းကျင် အသံကို ဆက်တိုက် နားထောင်ပြီး ဘာသာပြန်ခြင်း";
 
 // === Connection Status ===
 "status.disconnected" = "ချိတ်ဆက်မထားပါ";
@@ -46,7 +44,6 @@
 // === Translation History ===
 "history.recent" = "မကြာသေးမီ";
 "history.title" = "ဘာသာပြန် မှတ်တမ်း";
-"history.empty.immersive" = "နားထောင်ပြီးနောက် ဘာသာပြန်ချက်များ ဤနေရာတွင် ပေါ်လာမည်";
 "history.empty.conversation" = "ဘာသာပြန်ပြီးနောက် စကားပြောမှတ်တမ်း ဤနေရာတွင် ပေါ်လာမည်";
 "history.auto.save" = "စကားပြောမှတ်တမ်းများ အလိုအလျောက် သိမ်းဆည်းပါမည်";
 
@@ -71,7 +68,6 @@
 "onboarding.subtitle" = "ဘာသာစကားသည် အတားအဆီး မဟုတ်တော့ပါ";
 
 // === Paywall ===
-"paywall.immersive" = "နားထောင်မုဒ် (လေဆိပ်ကြေညာချက် ဘာသာပြန်)";
 "paywall.conversation" = "စကားပြောမုဒ်";
 "paywall.start.trial" = "၇ ရက် အခမဲ့ စမ်းသုံးရန်";
 

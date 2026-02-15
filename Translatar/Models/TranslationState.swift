@@ -42,7 +42,6 @@ enum ConnectionState: Equatable {
 /// 翻译模式
 enum TranslationMode: String, CaseIterable, Identifiable {
     case conversation = "conversation"  // 对话模式：你一句我一句
-    case immersive = "immersive"        // 同声传译：边听边翻译
     case outdoor = "outdoor"            // 户外模式：按住说话，适合嘈杂环境
     
     var id: String { rawValue }
@@ -50,7 +49,6 @@ enum TranslationMode: String, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .conversation: return NSLocalizedString("mode.conversation", comment: "")
-        case .immersive: return NSLocalizedString("mode.immersive", comment: "")
         case .outdoor: return NSLocalizedString("mode.outdoor", comment: "")
         }
     }
@@ -58,7 +56,6 @@ enum TranslationMode: String, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .conversation: return NSLocalizedString("mode.conversation.desc", comment: "")
-        case .immersive: return NSLocalizedString("mode.immersive.desc", comment: "")
         case .outdoor: return NSLocalizedString("mode.outdoor.desc", comment: "")
         }
     }
@@ -66,7 +63,6 @@ enum TranslationMode: String, CaseIterable, Identifiable {
     var iconName: String {
         switch self {
         case .conversation: return "person.2.fill"
-        case .immersive: return "waveform.and.mic"
         case .outdoor: return "figure.walk"
         }
     }

@@ -7,9 +7,7 @@
 "tab.history" = "기록";
 "tab.settings" = "설정";
 "mode.conversation" = "대화 모드";
-"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "대면 대화, 자동 턴 감지";
-"mode.immersive.desc" = "Real-time simultaneous interpretation";
 "status.disconnected" = "연결 안 됨";
 "status.connecting" = "연결 중...";
 "status.connected" = "준비 완료, 음성 대기 중";
@@ -31,7 +29,6 @@
 "button.start.translate" = "번역 시작";
 "history.recent" = "최근 번역";
 "history.title" = "번역 기록";
-"history.empty.immersive" = "듣기 시작 후 번역이 여기에 표시됩니다";
 "history.empty.conversation" = "번역 시작 후 대화 기록이 여기에 표시됩니다";
 "history.auto.save" = "대화 기록이 자동으로 저장됩니다";
 "quota.title" = "오늘의 무료 할당량";
@@ -46,7 +43,6 @@
 "onboarding.next" = "다음";
 "onboarding.start" = "시작하기";
 "onboarding.subtitle" = "언어는 더 이상 장벽이 아닙니다";
-"paywall.immersive" = "몰입 모드 (공항 안내 번역)";
 "paywall.conversation" = "대화 모드";
 "paywall.start.trial" = "7일 무료 체험 시작";
 "subscription.free.features" = "매일 5분 번역,대화 모드,10개 언어,이중 자막";

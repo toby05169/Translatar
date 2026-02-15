@@ -10,10 +10,8 @@
 
 // === 翻译模式 ===
 "mode.conversation" = "对话模式";
-"mode.immersive" = "同声传译";
 "mode.outdoor" = "户外模式";
 "mode.conversation.desc" = "适合面对面交流，自动识别对话轮次";
-"mode.immersive.desc" = "边听边译，像联合国同传一样实时翻译";
 "mode.outdoor.desc" = "按住说话，适合公交、街道等嘈杂环境";
 
 // === 连接状态 ===
@@ -48,7 +46,6 @@
 // === 翻译历史 ===
 "history.recent" = "最近翻译";
 "history.title" = "翻译记录";
-"history.empty.immersive" = "开始监听后，环境音翻译将显示在这里";
 "history.empty.conversation" = "开始翻译后，对话记录将显示在这里";
 "history.auto.save" = "开始翻译后，对话记录将自动保存在这里";
 
@@ -73,7 +70,6 @@
 "onboarding.subtitle" = "语言不再是障碍";
 
 // === 付费墙 ===
-"paywall.immersive" = "同声传译模式";
 "paywall.conversation" = "对话模式";
 "paywall.start.trial" = "开始7天免费试用";
 
@@ -158,7 +154,6 @@
 "paywall.title" = "解锁全部功能";
 "paywall.subtitle" = "无限翻译 · 同声传译 · AI降噪 · 离线翻译";
 "paywall.feature.unlimited" = "无限翻译时长";
-"paywall.feature.immersive" = "同声传译模式";
 "paywall.feature.noise" = "AI智能降噪";
 "paywall.feature.offline" = "离线翻译";
 "paywall.feature.conversation" = "对话模式";
@@ -234,9 +229,3 @@
 "status.outdoor" = "户外模式";
 
 // === 沉浸模式（单向同声传译） ===
-"immersive.listening" = "源语言";
-"immersive.translating.to" = "翻译为";
-"immersive.status.listening" = "同声传译中...";
-"immersive.earphone.hint" = "边听边译，实时同步";
-"immersive.waiting" = "正在听取环境中的语音...\n检测到语音后将实时翻译";
-"button.start.immersive" = "开始传译";

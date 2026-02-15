@@ -52,10 +52,10 @@
         <string>processing</string>
     </array>
     
-    <!-- 后台任务标识符（用于沉浸模式后台翻译） -->
+    <!-- 后台任务标识符（用于后台翻译） -->
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>com.translatar.app.immersive-translation</string>
+        <string>com.translatar.app.background-translation</string>
     </array>
     
     <!-- ===== 网络安全设置 ===== -->

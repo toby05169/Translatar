@@ -110,7 +110,6 @@ struct PaywallView: View {
     private var featureComparisonSection: some View {
         VStack(spacing: 12) {
             FeatureRow(icon: "infinity", text: NSLocalizedString("paywall.feature.unlimited", comment: ""), isFree: false, isPro: true)
-            FeatureRow(icon: "ear.fill", text: NSLocalizedString("paywall.feature.immersive", comment: ""), isFree: false, isPro: true)
             FeatureRow(icon: "waveform.badge.minus", text: NSLocalizedString("paywall.feature.noise", comment: ""), isFree: false, isPro: true)
             FeatureRow(icon: "wifi.slash", text: NSLocalizedString("paywall.feature.offline", comment: ""), isFree: false, isPro: true)
             FeatureRow(icon: "person.2.fill", text: NSLocalizedString("paywall.feature.conversation", comment: ""), isFree: true, isPro: true)

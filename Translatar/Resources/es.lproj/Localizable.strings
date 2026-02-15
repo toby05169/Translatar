@@ -7,9 +7,7 @@
 "tab.history" = "Historial";
 "tab.settings" = "Ajustes";
 "mode.conversation" = "Modo conversación";
-"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "Conversación cara a cara con detección automática de turnos";
-"mode.immersive.desc" = "Real-time simultaneous interpretation";
 "status.disconnected" = "Desconectado";
 "status.connecting" = "Conectando...";
 "status.connected" = "Listo, esperando voz";
@@ -31,7 +29,6 @@
 "button.start.translate" = "Traducir";
 "history.recent" = "Recientes";
 "history.title" = "Historial";
-"history.empty.immersive" = "Las traducciones aparecerán aquí después de comenzar a escuchar";
 "history.empty.conversation" = "Las conversaciones aparecerán aquí después de comenzar";
 "history.auto.save" = "Las conversaciones se guardarán automáticamente aquí";
 "quota.title" = "Cuota gratuita diaria";
@@ -46,7 +43,6 @@
 "onboarding.next" = "Siguiente";
 "onboarding.start" = "Comenzar";
 "onboarding.subtitle" = "El idioma ya no es una barrera";
-"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "Modo conversación";
 "paywall.start.trial" = "Prueba gratuita de 7 días";
 "subscription.free.features" = "5 min diarios,Modo conversación,10 idiomas,Subtítulos bilingües";

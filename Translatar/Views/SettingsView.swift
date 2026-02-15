@@ -218,7 +218,7 @@ struct SettingsView: View {
                 } label: {
                     HStack {
                         Image(systemName: mode.iconName)
-                            .foregroundColor(mode == .immersive ? .indigo : .cyan)
+                            .foregroundColor(.cyan)
                             .frame(width: 30)
                         
                         VStack(alignment: .leading, spacing: 2) {
@@ -227,15 +227,7 @@ struct SettingsView: View {
                                     .font(.subheadline)
                                     .foregroundColor(.white)
                                 
-                                if mode == .immersive && subscriptionService.currentSubscription == .free {
-                                    Text("PRO")
-                                        .font(.system(size: 8))
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.yellow)
-                                        .padding(.horizontal, 4)
-                                        .padding(.vertical, 1)
-                                        .background(Capsule().fill(Color.yellow.opacity(0.2)))
-                                }
+
                             }
                             Text(mode.description)
                                 .font(.caption2)

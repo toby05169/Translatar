@@ -10,9 +10,7 @@
 
 // === โหมดแปล ===
 "mode.conversation" = "โหมดสนทนา";
-"mode.immersive" = "Interpreter";
 "mode.conversation.desc" = "สนทนาแบบตัวต่อตัว ตรวจจับการสลับพูดอัตโนมัติ";
-"mode.immersive.desc" = "Real-time simultaneous interpretation";
 
 // === สถานะการเชื่อมต่อ ===
 "status.disconnected" = "ไม่ได้เชื่อมต่อ";
@@ -46,7 +44,6 @@
 // === ประวัติการแปล ===
 "history.recent" = "แปลล่าสุด";
 "history.title" = "ประวัติการแปล";
-"history.empty.immersive" = "คำแปลจะแสดงที่นี่หลังจากเริ่มฟัง";
 "history.empty.conversation" = "บันทึกสนทนาจะแสดงที่นี่หลังจากเริ่มแปล";
 "history.auto.save" = "บันทึกสนทนาจะถูกบันทึกอัตโนมัติที่นี่";
 
@@ -71,7 +68,6 @@
 "onboarding.subtitle" = "ภาษาไม่ใช่อุปสรรคอีกต่อไป";
 
 // === หน้าสมัครสมาชิก ===
-"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "โหมดสนทนา";
 "paywall.start.trial" = "เริ่มทดลองใช้ฟรี 7 วัน";
 
@@ -152,7 +148,6 @@
 "paywall.title" = "ปลดล็อกฟีเจอร์ทั้งหมด";
 "paywall.subtitle" = "แปลไม่จำกัด · โหมดดื่มด่ำ · ลดเสียงรบกวน AI · ออฟไลน์";
 "paywall.feature.unlimited" = "เวลาแปลไม่จำกัด";
-"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "ลดเสียงรบกวน AI อัจฉริยะ";
 "paywall.feature.offline" = "แปลออฟไลน์";
 "paywall.feature.conversation" = "โหมดสนทนา";

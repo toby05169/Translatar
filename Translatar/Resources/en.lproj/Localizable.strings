@@ -10,10 +10,8 @@
 
 // === Translation Modes ===
 "mode.conversation" = "Conversation";
-"mode.immersive" = "Interpreter";
 "mode.outdoor" = "Outdoor";
 "mode.conversation.desc" = "Face-to-face chat with auto turn detection";
-"mode.immersive.desc" = "Real-time simultaneous interpretation, like a UN interpreter";
 "mode.outdoor.desc" = "Push-to-talk for noisy environments like buses and streets";
 
 // === Connection Status ===
@@ -48,7 +46,6 @@
 // === Translation History ===
 "history.recent" = "Recent";
 "history.title" = "History";
-"history.empty.immersive" = "Translations will appear here after you start listening";
 "history.empty.conversation" = "Conversation records will appear here after you start";
 "history.auto.save" = "Conversations will be auto-saved here";
 
@@ -73,7 +70,6 @@
 "onboarding.subtitle" = "Language is no longer a barrier";
 
 // === Paywall ===
-"paywall.immersive" = "Simultaneous Interpretation";
 "paywall.conversation" = "Conversation Mode";
 "paywall.start.trial" = "Start 7-Day Free Trial";
 
@@ -157,7 +153,6 @@
 "paywall.title" = "Unlock All Features";
 "paywall.subtitle" = "Unlimited Translation · Interpreter · AI Noise Reduction · Offline";
 "paywall.feature.unlimited" = "Unlimited translation time";
-"paywall.feature.immersive" = "Simultaneous Interpretation";
 "paywall.feature.noise" = "AI Smart Noise Reduction";
 "paywall.feature.offline" = "Offline Translation";
 "paywall.feature.conversation" = "Conversation Mode";
@@ -232,10 +227,3 @@
 "history.empty.outdoor" = "Translation records will appear here after you speak";
 "status.outdoor" = "Outdoor Mode";
 
-// === Immersive Mode (One-way Simultaneous Interpretation) ===
-"immersive.listening" = "Source";
-"immersive.translating.to" = "Translate to";
-"immersive.status.listening" = "Interpreting...";
-"immersive.earphone.hint" = "Listen and translate simultaneously";
-"immersive.waiting" = "Listening for speech...\nInterpretation starts automatically";
-"button.start.immersive" = "Start Interpreting";
