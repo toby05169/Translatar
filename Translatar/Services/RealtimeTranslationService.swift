@@ -101,7 +101,10 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     private var immersiveSegmentTimer: Task<Void, Never>?
     
     /// 同声传译分段间隔（秒）
-    private let immersiveSegmentInterval: TimeInterval = 10.0
+    private let immersiveSegmentInterval: TimeInterval = 8.0
+    
+    /// 同声传译等待turnComplete的continuation（v11.3新增）
+    private var turnCompleteContinuation: CheckedContinuation<Void, Never>?
     
     // MARK: - 自动重连
     
@@ -212,7 +215,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     // MARK: - 同声传译定时分段（v11新增）
     
-    /// 启动定时分段器：每隔N秒发送activityEnd触发翻译，然后立即activityStart开始下一段
+    /// 启动定时分段器：每隔N秒发送activityEnd触发翻译，等turnComplete后再activityStart
     private func startImmersiveSegmentTimer() {
         immersiveSegmentTimer?.cancel()
         immersiveSegmentTimer = Task { [weak self] in
@@ -220,7 +223,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             
             while !Task.isCancelled && self.isConnected && self.currentMode == .immersive {
                 do {
-                    // 等待分段间隔
+                    // 等待分段间隔（积累音频）
                     try await Task.sleep(nanoseconds: UInt64(self.immersiveSegmentInterval * 1_000_000_000))
                     guard !Task.isCancelled, self.isConnected else { break }
                     
@@ -228,12 +231,18 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                     print("[GeminiAPI] 定时分段: 发送 activityEnd")
                     await self.sendImmersiveActivityEnd()
                     
-                    // 等待Gemini完成翻译输出
-                    try await Task.sleep(nanoseconds: 1_500_000_000)
+                    // 等待 turnComplete 信号（最多等待10秒）
+                    print("[GeminiAPI] 定时分段: 等待 turnComplete...")
+                    let gotTurnComplete = await self.waitForTurnComplete(timeout: 10.0)
                     guard !Task.isCancelled, self.isConnected else { break }
                     
-                    // 立即发送 activityStart 开始下一段
-                    print("[GeminiAPI] 定时分段: 发送 activityStart")
+                    if gotTurnComplete {
+                        print("[GeminiAPI] 定时分段: turnComplete 已收到，开始下一段")
+                    } else {
+                        print("[GeminiAPI] 定时分段: turnComplete 超时，强制开始下一段")
+                    }
+                    
+                    // 发送 activityStart 开始下一段
                     await self.sendImmersiveActivityStart()
                     
                 } catch {
@@ -241,6 +250,30 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                 }
             }
             print("[GeminiAPI] 定时分段器已停止")
+        }
+    }
+    
+    /// 等待turnComplete信号，超时返回false
+    private func waitForTurnComplete(timeout: TimeInterval) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            self.turnCompleteContinuation = continuation
+            
+            // 超时保护
+            Task {
+                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                if let cont = self.turnCompleteContinuation {
+                    self.turnCompleteContinuation = nil
+                    cont.resume(returning: false)
+                }
+            }
+        }
+    }
+    
+    /// 通知turnComplete已收到（从handleServerContent中调用）
+    private func notifyTurnComplete() {
+        if let cont = turnCompleteContinuation {
+            turnCompleteContinuation = nil
+            cont.resume(returning: true)
         }
     }
     
@@ -513,8 +546,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 断开连接
     func disconnect() {
-        // v11: 停止定时分段器
+        // v11.3: 停止定时分段器并清理等待
         stopImmersiveSegmentTimer()
+        if let cont = turnCompleteContinuation {
+            turnCompleteContinuation = nil
+            cont.resume(returning: false)
+        }
         
         // 同声传译模式断开前发送 activityEnd
         if currentMode == .immersive && immersiveActivityStarted {
@@ -745,6 +782,11 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         // 处理回合结束
         if let turnComplete = content["turnComplete"] as? Bool, turnComplete {
             print("[GeminiAPI] 回合结束")
+            
+            // v11.3: 通知定时分段器turnComplete已收到
+            if currentMode == .immersive {
+                notifyTurnComplete()
+            }
             
             if !accumulatedInputTranscript.isEmpty {
                 transcriptSubject.send(accumulatedInputTranscript)
