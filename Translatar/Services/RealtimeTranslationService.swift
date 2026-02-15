@@ -101,7 +101,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     private var immersiveSegmentTimer: Task<Void, Never>?
     
     /// 同声传译分段间隔（秒）
-    private let immersiveSegmentInterval: TimeInterval = 4.0
+    private let immersiveSegmentInterval: TimeInterval = 10.0
     
     // MARK: - 自动重连
     
@@ -229,7 +229,7 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
                     await self.sendImmersiveActivityEnd()
                     
                     // 短暂等待让Gemini处理
-                    try await Task.sleep(nanoseconds: 300_000_000)
+                    try await Task.sleep(nanoseconds: 100_000_000)
                     guard !Task.isCancelled, self.isConnected else { break }
                     
                     // 立即发送 activityStart 开始下一段
