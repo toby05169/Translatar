@@ -502,7 +502,7 @@ struct TranslationDisplayView: View {
             }
             .padding(.horizontal, 24)
             
-            // 原文显示
+            // 原文显示（完整显示，不截断）
             if !viewModel.currentTranscript.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(NSLocalizedString("display.original", comment: ""))
@@ -511,13 +511,15 @@ struct TranslationDisplayView: View {
                     Text(viewModel.currentTranscript)
                         .font(.subheadline)
                         .foregroundColor(.white.opacity(0.7))
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal, 24)
                 .transition(.opacity.combined(with: .move(edge: .top)))
             }
             
-            // 翻译结果显示
+            // 翻译结果显示（完整显示，不截断）
             if !viewModel.currentTranslatedText.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(NSLocalizedString("display.translated", comment: ""))
@@ -527,6 +529,8 @@ struct TranslationDisplayView: View {
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundColor(.cyan)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal, 24)

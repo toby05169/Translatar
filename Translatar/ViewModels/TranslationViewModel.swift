@@ -509,16 +509,30 @@ class TranslationViewModel: ObservableObject {
         accumulatedTranscript = ""
     }
     
-    /// 添加翻译历史记录
+    /// 添加翻译历史记录（自动检测实际翻译方向）
     private func addHistoryEntry(original: String, translated: String) {
         guard !translated.isEmpty else { return }
+        
+        // 检测原文实际语言，确定翻译方向
+        let detectedSource = detectLanguage(text: original)
+        let actualSource: SupportedLanguage
+        let actualTarget: SupportedLanguage
+        
+        if detectedSource == config.targetLanguage {
+            // 原文是目标语言，说明方向反了
+            actualSource = config.targetLanguage
+            actualTarget = config.sourceLanguage
+        } else {
+            actualSource = config.sourceLanguage
+            actualTarget = config.targetLanguage
+        }
         
         let entry = TranslationEntry(
             timestamp: Date(),
             originalText: original,
             translatedText: translated,
-            sourceLanguage: config.sourceLanguage,
-            targetLanguage: config.targetLanguage
+            sourceLanguage: actualSource,
+            targetLanguage: actualTarget
         )
         translationHistory.insert(entry, at: 0)
         
@@ -526,5 +540,57 @@ class TranslationViewModel: ObservableObject {
         if translationHistory.count > 100 {
             translationHistory.removeLast()
         }
+    }
+    
+    /// 检测文本的主要语言（通过Unicode字符范围判断）
+    private func detectLanguage(text: String) -> SupportedLanguage? {
+        var cjkCount = 0
+        var thaiCount = 0
+        var latinCount = 0
+        var japaneseKanaCount = 0
+        var koreanCount = 0
+        var arabicCount = 0
+        var cyrillicCount = 0
+        var totalLetters = 0
+        
+        for scalar in text.unicodeScalars {
+            let v = scalar.value
+            if (v >= 0x4E00 && v <= 0x9FFF) || (v >= 0x3400 && v <= 0x4DBF) {
+                cjkCount += 1; totalLetters += 1
+            } else if v >= 0x0E00 && v <= 0x0E7F {
+                thaiCount += 1; totalLetters += 1
+            } else if (v >= 0x3040 && v <= 0x309F) || (v >= 0x30A0 && v <= 0x30FF) {
+                japaneseKanaCount += 1; totalLetters += 1
+            } else if v >= 0xAC00 && v <= 0xD7AF {
+                koreanCount += 1; totalLetters += 1
+            } else if v >= 0x0600 && v <= 0x06FF {
+                arabicCount += 1; totalLetters += 1
+            } else if v >= 0x0400 && v <= 0x04FF {
+                cyrillicCount += 1; totalLetters += 1
+            } else if (v >= 0x0041 && v <= 0x005A) || (v >= 0x0061 && v <= 0x007A) {
+                latinCount += 1; totalLetters += 1
+            }
+        }
+        
+        guard totalLetters > 0 else { return nil }
+        
+        let counts: [(SupportedLanguage, Int)] = [
+            (.chinese, cjkCount),
+            (.thai, thaiCount),
+            (.japanese, japaneseKanaCount),
+            (.korean, koreanCount),
+            (.arabic, arabicCount),
+            (.russian, cyrillicCount),
+            (.english, latinCount)
+        ]
+        
+        if let dominant = counts.max(by: { $0.1 < $1.1 }), dominant.1 > 0 {
+            // 只有当主要语言占比超过30%才认为检测有效
+            let ratio = Double(dominant.1) / Double(totalLetters)
+            if ratio > 0.3 {
+                return dominant.0
+            }
+        }
+        return nil
     }
 }

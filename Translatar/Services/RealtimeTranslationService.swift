@@ -269,7 +269,12 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         8. NATURAL SPEECH: Translation must sound like a native speaker speaking naturally in daily conversation.
         9. ECHO GUARD: If you hear your own previous output echoing back, stay COMPLETELY SILENT.
         10. ONE TRANSLATION: Translate once, then STOP and wait silently. Do not continue speaking.
-        11. TRANSCRIPTION ACCURACY: When transcribing the input speech, use context to infer the correct words even if pronunciation is unclear. Proper nouns, technical terms, and brand names should be kept as-is or transliterated appropriately.
+        11. SMART ERROR CORRECTION: You MUST intelligently correct speech errors before translating:
+            - ACCENT/DIALECT: If the speaker has an accent or dialect that causes non-standard pronunciation, infer the intended standard word from context. Example: if someone says "ji neng" (鸡能) but context suggests "技能" (skill), transcribe and translate as "技能".
+            - MISSPOKEN WORDS: If the speaker accidentally says the wrong word but the intended meaning is clear from context, correct it. Example: "把门打开" when they clearly meant "把灯打开" based on the conversation about lights.
+            - FILLER/STUTTERING: Remove filler words (嗯, 啊, 那个, เอ่อ, อืม) and stuttering from both transcription and translation.
+            - TECHNICAL TERMS: Proper nouns, brand names, and technical terms should be kept as-is or transliterated appropriately based on context.
+            - ALWAYS prioritize conveying the speaker's INTENDED meaning over literal transcription of what was said.
 
         \(languagePairRules)
 
