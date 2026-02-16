@@ -660,25 +660,17 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         // 中泰翻译专用后处理
         if langCodes.contains("zh") && langCodes.contains("th") {
             // 检测输出主要是泰文还是中文
-            let thaiRange = UnicodeScalar(0x0E00)!...UnicodeScalar(0x0E7F)
-            let thaiCount = result.unicodeScalars.filter { thaiRange.contains($0) }.count
-            let cjkRanges: [ClosedRange<UInt32>] = [0x4E00...0x9FFF, 0x3400...0x4DBF, 0xF900...0xFAFF]
-            let cjkCount = result.unicodeScalars.filter { scalar in
-                cjkRanges.contains { $0.contains(scalar.value) }
-            }.count
+            let thaiCount = result.unicodeScalars.filter { isThai($0) }.count
+            let cjkCount = result.unicodeScalars.filter { isCJK($0) }.count
             
             if thaiCount > cjkCount {
                 // 输出主要是泰文：移除混入的中文字符，清理泰文词间多余空格
-                result = result.unicodeScalars.filter { scalar in
-                    !cjkRanges.contains { $0.contains(scalar.value) }
-                }.map { String($0) }.joined()
+                result = String(result.unicodeScalars.filter { !isCJK($0) })
                 // 清理泰文字符之间的多余空格（保留数字、英文之间的空格）
                 result = cleanThaiSpaces(result)
             } else if cjkCount > thaiCount {
                 // 输出主要是中文：移除混入的泰文字符
-                result = result.unicodeScalars.filter { scalar in
-                    !thaiRange.contains(scalar)
-                }.map { String($0) }.joined()
+                result = String(result.unicodeScalars.filter { !isThai($0) })
                 // 确保输出是简体中文
                 result = convertToSimplifiedChinese(result)
             }
@@ -698,20 +690,19 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     private func cleanThaiSpaces(_ text: String) -> String {
         var result = ""
         let chars = Array(text)
-        let thaiRange = UnicodeScalar(0x0E00)!...UnicodeScalar(0x0E7F)
         
         for i in 0..<chars.count {
             let char = chars[i]
             if char == " " {
                 // 检查空格前后是否都是泰文字符，如果是则跳过空格
-                let prevIsThai = i > 0 && chars[i-1].unicodeScalars.allSatisfy { thaiRange.contains($0) }
-                let nextIsThai = i < chars.count - 1 && chars[i+1].unicodeScalars.allSatisfy { thaiRange.contains($0) }
+                let prevIsThai = i > 0 && chars[i-1].unicodeScalars.allSatisfy { isThai($0) }
+                let nextIsThai = i < chars.count - 1 && chars[i+1].unicodeScalars.allSatisfy { isThai($0) }
                 if prevIsThai && nextIsThai {
                     continue // 跳过泰文词间空格
                 }
                 // 检查空格前是泰文、后是标点，或前是标点、后是泰文
-                let prevIsThaiOrPunct = i > 0 && (chars[i-1].unicodeScalars.allSatisfy { thaiRange.contains($0) } || chars[i-1].isPunctuation)
-                let nextIsThaiOrPunct = i < chars.count - 1 && (chars[i+1].unicodeScalars.allSatisfy { thaiRange.contains($0) } || chars[i+1].isPunctuation)
+                let prevIsThaiOrPunct = i > 0 && (chars[i-1].unicodeScalars.allSatisfy { isThai($0) } || chars[i-1].isPunctuation)
+                let nextIsThaiOrPunct = i < chars.count - 1 && (chars[i+1].unicodeScalars.allSatisfy { isThai($0) } || chars[i+1].isPunctuation)
                 if prevIsThaiOrPunct && nextIsThaiOrPunct {
                     continue
                 }
@@ -719,6 +710,19 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
             result.append(char)
         }
         return result
+    }
+    
+    /// 判断是否是泰文字符 (U+0E00 ~ U+0E7F)
+    private func isThai(_ scalar: Unicode.Scalar) -> Bool {
+        return scalar.value >= 0x0E00 && scalar.value <= 0x0E7F
+    }
+    
+    /// 判断是否是CJK中文字符
+    private func isCJK(_ scalar: Unicode.Scalar) -> Bool {
+        let v = scalar.value
+        return (v >= 0x4E00 && v <= 0x9FFF) ||   // CJK统一汉字
+               (v >= 0x3400 && v <= 0x4DBF) ||   // CJK扩展A
+               (v >= 0xF900 && v <= 0xFAFF)      // CJK兼容汉字
     }
     
     /// 繁体中文转简体中文（使用iOS内置CFStringTransform）
