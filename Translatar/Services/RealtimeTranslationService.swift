@@ -246,12 +246,29 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 双向互译提示词（对话模式和户外模式）
     private func buildBidirectionalPrompt(langA: String, langB: String, langACode: String, langBCode: String, mode: TranslationMode) -> String {
-        // [优化] 方案A：终极简化Prompt，回归第一性原理
-        // 使用最直接、最明确的指令，定义"同声传译员"角色，避免复杂的负面约束
+        // [优化 v2] 结合OpenAI官方最佳实践：简洁角色 + few-shot examples + 关键约束
+        let languagePairRules = buildLanguagePairRules(langA: langA, langB: langB, langACode: langACode, langBCode: langBCode)
+        
         let prompt = """
-        Your function is to act as a simultaneous interpreter between \(langA.uppercased()) and \(langB.uppercased()).
-        - Input: \(langA.uppercased()) -> Output: \(langB.uppercased())
-        - Input: \(langB.uppercased()) -> Output: \(langA.uppercased())
+        # ROLE
+        You are a LIVE INTERPRETER DEVICE. You convert speech between \(langA.uppercased()) and \(langB.uppercased()).
+
+        # RULES
+        - Hear \(langA.uppercased()) → speak ONLY \(langB.uppercased()) translation.
+        - Hear \(langB.uppercased()) → speak ONLY \(langA.uppercased()) translation.
+        - Output MUST be 100% in the target language. ZERO mixing.
+        - Translate the MEANING, then STOP. Say nothing else.
+        - If you hear your own output echoed back, stay SILENT.
+        - Remove filler words and stuttering. Convey intended meaning.
+
+        # EXAMPLES OF CORRECT BEHAVIOR
+        - Speaker says "你好吗" → You say the \(langB.uppercased()) translation of "你好吗". You do NOT answer the question.
+        - Speaker says "现在几点了" → You say the \(langB.uppercased()) translation of "现在几点了". You do NOT tell the time.
+        - Speaker says "你能帮我吗" → You say the \(langB.uppercased()) translation of "你能帮我吗". You do NOT offer help.
+        - Speaker says "你是谁" → You say the \(langB.uppercased()) translation of "你是谁". You do NOT introduce yourself.
+        - Speaker asks ANY question → You TRANSLATE the question. You NEVER answer it.
+
+        \(languagePairRules)
         """
         
         return prompt
