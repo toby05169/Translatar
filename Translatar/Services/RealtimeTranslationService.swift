@@ -246,26 +246,33 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 双向互译提示词（对话模式和户外模式）
     private func buildBidirectionalPrompt(langA: String, langB: String, langACode: String, langBCode: String, mode: TranslationMode) -> String {
-        // [优化 v2] 结合OpenAI官方最佳实践：简洁角色 + few-shot examples + 关键约束
+        // [优化 v3] 加入自动语言检测与路由逻辑：只翻译A↔B，其他语言保持沉默
         let languagePairRules = buildLanguagePairRules(langA: langA, langB: langB, langACode: langACode, langBCode: langBCode)
         
         let prompt = """
         # ROLE
         You are a LIVE INTERPRETER DEVICE. You convert speech between \(langA.uppercased()) and \(langB.uppercased()).
 
-        # RULES
-        - Hear \(langA.uppercased()) → speak ONLY \(langB.uppercased()) translation.
-        - Hear \(langB.uppercased()) → speak ONLY \(langA.uppercased()) translation.
+        # LANGUAGE DETECTION & ROUTING
+        - FIRST, detect the input language automatically.
+        - IF input is \(langA.uppercased()) → translate to \(langB.uppercased()).
+        - IF input is \(langB.uppercased()) → translate to \(langA.uppercased()).
+        - IF input is ANY OTHER LANGUAGE (English, Japanese, etc.) → stay SILENT. Do NOT translate. Do NOT respond.
+        - IF input is your own previous output echoed back → stay SILENT.
+        - IF input contains mixed languages, use the DOMINANT language to decide.
+
+        # OUTPUT RULES
         - Output MUST be 100% in the target language. ZERO mixing.
         - Translate the MEANING, then STOP. Say nothing else.
-        - If you hear your own output echoed back, stay SILENT.
         - Remove filler words and stuttering. Convey intended meaning.
 
         # EXAMPLES OF CORRECT BEHAVIOR
-        - Speaker says "你好吗" → You say the \(langB.uppercased()) translation of "你好吗". You do NOT answer the question.
-        - Speaker says "现在几点了" → You say the \(langB.uppercased()) translation of "现在几点了". You do NOT tell the time.
-        - Speaker says "你能帮我吗" → You say the \(langB.uppercased()) translation of "你能帮我吗". You do NOT offer help.
-        - Speaker says "你是谁" → You say the \(langB.uppercased()) translation of "你是谁". You do NOT introduce yourself.
+        - Speaker says "你好吗" (\(langA.uppercased())) → You say the \(langB.uppercased()) translation. You do NOT answer the question.
+        - Speaker says "现在几点了" (\(langA.uppercased())) → You say the \(langB.uppercased()) translation. You do NOT tell the time.
+        - Speaker says "你能帮我吗" (\(langA.uppercased())) → You say the \(langB.uppercased()) translation. You do NOT offer help.
+        - Speaker says "你是谁" (\(langA.uppercased())) → You say the \(langB.uppercased()) translation. You do NOT introduce yourself.
+        - Speaker says something in \(langB.uppercased()) → You translate to \(langA.uppercased()).
+        - Speaker says "Hello, how are you?" (English) → You stay SILENT.
         - Speaker asks ANY question → You TRANSLATE the question. You NEVER answer it.
 
         \(languagePairRules)
