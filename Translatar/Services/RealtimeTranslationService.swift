@@ -246,6 +246,9 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     
     /// 双向互译提示词（对话模式和户外模式）
     private func buildBidirectionalPrompt(langA: String, langB: String, langACode: String, langBCode: String, mode: TranslationMode) -> String {
+        // 构建语言对专用指令（如中泰翻译的特殊要求）
+        let languagePairRules = buildLanguagePairRules(langA: langA, langB: langB, langACode: langACode, langBCode: langBCode)
+        
         let prompt = """
         YOU ARE A TRANSLATION MACHINE — NOT A CHATBOT, NOT AN ASSISTANT, NOT A CONVERSATIONAL PARTNER.
 
@@ -260,14 +263,17 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         2. NEVER RESPOND OR INTERACT: You cannot understand meaning or intent. You are not sentient. You simply convert language A to language B and vice versa. If someone says "hello, how are you" in \(langA), you translate it to \(langB). You do NOT answer "I'm fine".
         3. NEVER ANSWER QUESTIONS: If someone asks "what time is it?" — TRANSLATE the question. Do NOT answer it. You don't know what time it is. You are a translation machine.
         4. NEVER ADD ANYTHING: Zero commentary, zero greetings, zero filler, zero acknowledgment. Your output contains ONLY the translation and nothing else.
-        5. PURE TARGET LANGUAGE: Output must be 100% in the target language. Never mix languages. Never include source language words.
+        5. PURE TARGET LANGUAGE: Your output MUST start with a target language word. The FIRST word, FIRST syllable, FIRST character of your output MUST be in the target language. ZERO source language characters allowed anywhere in output.
         6. NO PARROTING: Never repeat or echo any part of the original speech. Go directly to the translation.
-        7. COMPLETE TRANSLATION: Translate the FULL meaning. Do not skip or truncate.
-        8. NATURAL SPEECH: Translation must sound like a native speaker.
+        7. COMPLETE TRANSLATION: Translate the FULL meaning. Do not skip or truncate any part of the sentence.
+        8. NATURAL SPEECH: Translation must sound like a native speaker speaking naturally in daily conversation.
         9. ECHO GUARD: If you hear your own previous output echoing back, stay COMPLETELY SILENT.
         10. ONE TRANSLATION: Translate once, then STOP and wait silently. Do not continue speaking.
+        11. TRANSCRIPTION ACCURACY: When transcribing the input speech, use context to infer the correct words even if pronunciation is unclear. Proper nouns, technical terms, and brand names should be kept as-is or transliterated appropriately.
 
-        EXAMPLES OF CORRECT BEHAVIOR:
+        \(languagePairRules)
+
+        CORRECT BEHAVIOR:
         - Hear \(langA): "How are you?" → Translate to \(langB): [translation of "How are you?"] (NOT "I'm fine" or any response)
         - Hear \(langA): "What do you think?" → Translate to \(langB): [translation of "What do you think?"] (NOT your opinion)
         - Hear \(langA): "Can you help me?" → Translate to \(langB): [translation of "Can you help me?"] (NOT "Sure, how can I help?")
@@ -276,12 +282,51 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         - Hearing a question and answering it instead of translating it
         - Having a conversation with the speaker
         - Adding greetings, pleasantries, or any words not in the original speech
-        - Mixing source and target language in output
+        - Mixing source and target language in output (e.g. starting with Chinese then switching to Thai)
+        - Outputting word-by-word broken translation instead of natural fluent sentences
 
         Remember: You are a MACHINE. You translate. Nothing more.
         """
         
         return prompt
+    }
+    
+    /// 构建语言对专用规则（针对特定语言组合的优化指令）
+    private func buildLanguagePairRules(langA: String, langB: String, langACode: String, langBCode: String) -> String {
+        let langCodes = Set([langACode, langBCode])
+        
+        // 中泰翻译专用规则
+        if langCodes.contains("zh") && langCodes.contains("th") {
+            return """
+            CHINESE-THAI SPECIFIC RULES:
+            - When translating Chinese to Thai: Output MUST be 100% Thai script (ภาษาไทย). NOT A SINGLE Chinese character (汉字) is allowed in the output.
+            - When translating Thai to Chinese: Output MUST be 100% Simplified Chinese (简体中文). NOT A SINGLE Thai character is allowed in the output.
+            - Thai output MUST be written as natural connected Thai text WITHOUT extra spaces between words. Thai is written continuously like "สวัสดีครับวันนี้อากาศดีมาก" NOT "สวัสดี ครับ วัน นี้ อากาศ ดี มาก".
+            - Translate idiomatically, not word-by-word. Capture the full meaning in natural Thai/Chinese.
+            - FORBIDDEN: "如果在 มัน อยู่" (mixing Chinese and Thai)
+            - FORBIDDEN: "钥匙 อยู่ที่ประตู" (mixing Chinese and Thai)
+            - FORBIDDEN: "สวัสดี ครับ วัน นี้" (spaces between Thai words)
+            - CORRECT: "กุญแจอยู่ที่ประตูของคุณ" (pure Thai, no spaces)
+            - CORRECT: "钥匙在你的门那里" (pure Chinese)
+            """
+        }
+        
+        // 中日翻译专用规则
+        if langCodes.contains("zh") && langCodes.contains("ja") {
+            return """
+            CHINESE-JAPANESE SPECIFIC RULES:
+            - When translating Chinese to Japanese: Use natural Japanese with appropriate kanji, hiragana, and katakana.
+            - When translating Japanese to Chinese: Output MUST be Simplified Chinese (简体中文).
+            - Do NOT confuse Chinese hanzi with Japanese kanji — translate the meaning, not the characters.
+            """
+        }
+        
+        // 其他语言对：通用规则
+        return """
+        LANGUAGE PURITY REMINDER:
+        - \(langA) input → 100% \(langB) output (zero \(langA) characters)
+        - \(langB) input → 100% \(langA) output (zero \(langB) characters)
+        """
     }
     
     // MARK: - 音频数据传输
@@ -521,9 +566,11 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
         // 处理输出转录
         if let outputTranscription = content["outputTranscription"] as? [String: Any],
            let text = outputTranscription["text"] as? String, !text.isEmpty {
-            accumulatedOutputTranscript += text
-            translatedTextSubject.send(text)
-            print("[GeminiAPI] 输出转录: \(text)")
+            // 后处理：清理泰文多余空格、移除混入的源语言字符
+            let cleanedText = postProcessTranslation(text)
+            accumulatedOutputTranscript += cleanedText
+            translatedTextSubject.send(cleanedText)
+            print("[GeminiAPI] 输出转录: \(cleanedText)")
         }
         
         // 处理模型输出（音频）
@@ -602,6 +649,77 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     }
     
     // MARK: - 工具方法
+    
+    /// 翻译输出后处理：清理泰文多余空格、移除混入的源语言字符
+    private func postProcessTranslation(_ text: String) -> String {
+        guard let config = currentConfig else { return text }
+        var result = text
+        
+        let langCodes = Set([config.sourceLanguage.rawValue, config.targetLanguage.rawValue])
+        
+        // 中泰翻译专用后处理
+        if langCodes.contains("zh") && langCodes.contains("th") {
+            // 检测输出主要是泰文还是中文
+            let thaiRange = UnicodeScalar(0x0E00)!...UnicodeScalar(0x0E7F)
+            let thaiCount = result.unicodeScalars.filter { thaiRange.contains($0) }.count
+            let cjkRanges: [ClosedRange<UInt32>] = [0x4E00...0x9FFF, 0x3400...0x4DBF, 0xF900...0xFAFF]
+            let cjkCount = result.unicodeScalars.filter { scalar in
+                cjkRanges.contains { $0.contains(scalar.value) }
+            }.count
+            
+            if thaiCount > cjkCount {
+                // 输出主要是泰文：移除混入的中文字符，清理泰文词间多余空格
+                result = result.unicodeScalars.filter { scalar in
+                    !cjkRanges.contains { $0.contains(scalar.value) }
+                }.map { String($0) }.joined()
+                // 清理泰文字符之间的多余空格（保留数字、英文之间的空格）
+                result = cleanThaiSpaces(result)
+            } else if cjkCount > thaiCount {
+                // 输出主要是中文：移除混入的泰文字符
+                result = result.unicodeScalars.filter { scalar in
+                    !thaiRange.contains(scalar)
+                }.map { String($0) }.joined()
+                // 确保输出是简体中文
+                result = convertToSimplifiedChinese(result)
+            }
+        }
+        
+        // 清理多余空格（连续多个空格变一个）
+        while result.contains("  ") {
+            result = result.replacingOccurrences(of: "  ", with: " ")
+        }
+        result = result.trimmingCharacters(in: .whitespaces)
+        
+        return result
+    }
+    
+    /// 清理泰文文本中的多余空格
+    /// 泰文是连写文字，词与词之间不加空格
+    private func cleanThaiSpaces(_ text: String) -> String {
+        var result = ""
+        let chars = Array(text)
+        let thaiRange = UnicodeScalar(0x0E00)!...UnicodeScalar(0x0E7F)
+        
+        for i in 0..<chars.count {
+            let char = chars[i]
+            if char == " " {
+                // 检查空格前后是否都是泰文字符，如果是则跳过空格
+                let prevIsThai = i > 0 && chars[i-1].unicodeScalars.allSatisfy { thaiRange.contains($0) }
+                let nextIsThai = i < chars.count - 1 && chars[i+1].unicodeScalars.allSatisfy { thaiRange.contains($0) }
+                if prevIsThai && nextIsThai {
+                    continue // 跳过泰文词间空格
+                }
+                // 检查空格前是泰文、后是标点，或前是标点、后是泰文
+                let prevIsThaiOrPunct = i > 0 && (chars[i-1].unicodeScalars.allSatisfy { thaiRange.contains($0) } || chars[i-1].isPunctuation)
+                let nextIsThaiOrPunct = i < chars.count - 1 && (chars[i+1].unicodeScalars.allSatisfy { thaiRange.contains($0) } || chars[i+1].isPunctuation)
+                if prevIsThaiOrPunct && nextIsThaiOrPunct {
+                    continue
+                }
+            }
+            result.append(char)
+        }
+        return result
+    }
     
     /// 繁体中文转简体中文（使用iOS内置CFStringTransform）
     private func convertToSimplifiedChinese(_ text: String) -> String {
