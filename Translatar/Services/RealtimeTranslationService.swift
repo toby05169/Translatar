@@ -247,13 +247,13 @@ class RealtimeTranslationService: NSObject, RealtimeTranslationServiceProtocol {
     /// 双向互译提示词（对话模式和户外模式）
     private func buildBidirectionalPrompt(langA: String, langB: String, langACode: String, langBCode: String, mode: TranslationMode) -> String {
         // [优化] 方案A：终极简化Prompt，回归第一性原理
-        // 使用最直接、最明确的指令，定义“同声传译员”角色，避免复杂的负面约束
-        let prompt = "\"\"
+        // 使用最直接、最明确的指令，定义"同声传译员"角色，避免复杂的负面约束
+        let prompt = """
         Your function is to act as a simultaneous interpreter between \(langA.uppercased()) and \(langB.uppercased()).
         - Input: \(langA.uppercased()) -> Output: \(langB.uppercased())
         - Input: \(langB.uppercased()) -> Output: \(langA.uppercased())
-        \"\""
-        return prompt
+        """
+        
         return prompt
     }
     
